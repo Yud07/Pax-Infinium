@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pax_infinium.Windows", "pax_infinium.Windows\pax_infinium.Windows.csproj", "{63117ACA-F37F-4A77-824E-2A145770E72D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pax_infinium.Android", "pax_infinium.Android\pax_infinium.Android.csproj", "{8C629D9F-1049-4834-B549-1E001C67B8AC}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "pax_infinium.Shared", "pax_infinium.Shared\pax_infinium.Shared.shproj", "{74235492-CAB3-43AF-A532-8956358A280C}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		pax_infinium.Shared\pax_infinium.Shared.projitems*{63117aca-f37f-4a77-824e-2a145770e72d}*SharedItemsImports = 4
+		pax_infinium.Shared\pax_infinium.Shared.projitems*{74235492-cab3-43af-a532-8956358a280c}*SharedItemsImports = 13
+		pax_infinium.Shared\pax_infinium.Shared.projitems*{8c629d9f-1049-4834-b549-1e001c67b8ac}*SharedItemsImports = 4
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63117ACA-F37F-4A77-824E-2A145770E72D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{63117ACA-F37F-4A77-824E-2A145770E72D}.Debug|Any CPU.Build.0 = Debug|x86
+		{63117ACA-F37F-4A77-824E-2A145770E72D}.Debug|Any CPU.Deploy.0 = Debug|x86
+		{63117ACA-F37F-4A77-824E-2A145770E72D}.Debug|x86.ActiveCfg = Debug|x86
+		{63117ACA-F37F-4A77-824E-2A145770E72D}.Debug|x86.Build.0 = Debug|x86
+		{63117ACA-F37F-4A77-824E-2A145770E72D}.Release|Any CPU.ActiveCfg = Release|x86
+		{63117ACA-F37F-4A77-824E-2A145770E72D}.Release|x86.ActiveCfg = Release|x86
+		{63117ACA-F37F-4A77-824E-2A145770E72D}.Release|x86.Build.0 = Release|x86
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Debug|x86.Build.0 = Debug|Any CPU
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|x86.ActiveCfg = Release|Any CPU
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|x86.Build.0 = Release|Any CPU
+		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|x86.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
