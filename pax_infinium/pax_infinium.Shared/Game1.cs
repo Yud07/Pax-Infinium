@@ -57,27 +57,9 @@ namespace pax_infinium
         /// </summary>
         protected override void LoadContent()
         {
-            World.textureManager.Load("Gray");
-            World.textureManager.Load("Black");
-            World.textureManager.Load("Light Gray");
-
-            World.textureManager.Load("new_cell");
-            World.textureManager.Load("fancy_cell_greyscale");
-            World.textureManager.Load("a");
-            World.textureManager.Load("c");
-            World.textureManager.Load("g");
-            World.textureManager.Load("t");
             World.textureManager.Load("BG-Layer");
-            World.textureManager.Load("helix-resource");
-            World.textureManager.Load("Cell-Division");
-            World.textureManager.Load("highlight_ring");
-            World.textureManager.Load("arrow");
-            World.textureManager.Load("plus");
-
             World.textureManager.Load("m");
 
-            World.fontManager.Load("ScoreFont");
-            World.fontManager.Load("InfoFont");
 
             // create 1x1 texture for line drawing
             world.oneByOne = new Texture2D(GraphicsDevice, 1, 1);

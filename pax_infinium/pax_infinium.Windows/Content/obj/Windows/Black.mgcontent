@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/Black.png</SourceFile>
+  <SourceFile>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Black.png</SourceFile>
   <SourceTime>2016-11-25T18:48:28.8496388-05:00</SourceTime>
-  <DestFile>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Windows/Content/bin/Windows/Black.xnb</DestFile>
-  <DestTime>2016-11-25T18:49:26.1821827-05:00</DestTime>
+  <DestFile>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Windows/Content/bin/Windows/Black.xnb</DestFile>
+  <DestTime>2016-12-16T14:59:47.148379-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2016-03-30T02:36:08-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

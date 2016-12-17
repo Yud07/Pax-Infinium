@@ -74,6 +74,50 @@ namespace pax_infinium
             return tex2;
         }
 
+        public Texture2D GenTex(int width, int height, Color color, bool top=true, bool mirrored=false)
+        { 
+            var size = width * height;
+            Color[] mapcolors = new Color[size];
+            int i = 0;
+            for (var w = 0; w < width; w++)
+            { 
+                for (var h = 0; h < height; h++)
+                {
+                    //if (w < 2 || w > width - 3 || h < 2 || h > height - 3) //apears bezeled
+                    if (w < 5 || w > width - 6 || h < 5 || h > height - 6)
+                    {
+                        Color tempColor = color;
+                        //tempColor.A -= 25; // lighter
+                        tempColor = Color.Multiply(tempColor, .75f);
+                        //`tempColor = new Color(color.R * (1 - .25f), color.G * (1 - .25f), color.B * (1 - .25f));
+                        mapcolors[i] = tempColor;
+                    }
+                    else
+                    {
+                        mapcolors[i] = color;
+                    }
+                    i++;
+                }
+            }
+            var tex = new Texture2D(graphicsDevice, width, height, false, SurfaceFormat.Color);
+            tex.SetData(mapcolors);
+            if (top)
+            {
+                return Convert(tex);
+            }
+            else
+            {
+                if (mirrored)
+                {
+                    return Convert2(tex, true);
+                }
+                else
+                {
+                    return Convert2(tex);
+                }
+            }
+        }
+
         public Texture2D Convert(Texture2D tex)
         {
             int isoW = tex.Width * 2;
@@ -116,7 +160,7 @@ namespace pax_infinium
             int isoW = tex.Width;
             int yOffset = (int)(.75 * Math.Sqrt((tex.Height / 2.0) * (tex.Height / 2.0) + tex.Width * tex.Width));
             //int isoH = yOffset + tex.Height / 2;
-            int isoH = (int)(tex.Height*1.5);
+            int isoH = (int)(tex.Height*1.5 + 1);
             Console.WriteLine("isoW:" + isoW.ToString() + " isoH:" + isoH.ToString());//+ " yOffset:" + yOffset.ToString());
             //Console.WriteLine("64,0: " + Game1.world.twoDToIso(new Point(64, 0)) + " 64,64: " + Game1.world.twoDToIso(new Point(64, 64)) + " 0,64: " + Game1.world.twoDToIso(new Point(0, 64)) +
             //" 0,0: " + Game1.world.twoDToIso(new Point(0, 0)));

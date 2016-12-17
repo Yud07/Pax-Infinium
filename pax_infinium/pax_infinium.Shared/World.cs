@@ -149,7 +149,7 @@ namespace pax_infinium
             {
                 if (mirrored)
                 {
-                    tempPt.Y = (int)(y + Math.Sqrt((height / 2.0) * (height / 2.0)) - 1);
+                    tempPt.Y = (int)(y + Math.Sqrt((height / 2.0) * (height / 2.0)));
                 }
                 else
                 {

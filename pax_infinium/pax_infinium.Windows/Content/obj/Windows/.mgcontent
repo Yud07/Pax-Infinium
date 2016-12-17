@@ -4,24 +4,11 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/a.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/c.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/g.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/t.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/BG-Layer.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/helix-resource.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/top-border.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/ScoreFont.spritefont</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/Cell-Division.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/new_cell.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/fancy_cell_greyscale.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/highlight_ring.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/InfoFont.spritefont</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/arrow.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/plus.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/Gray.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/Light Gray.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/Black.png</File>
-    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/pax_infinium/pax_infinium.Shared/Content/m.png</File>
+    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/BG-Layer.png</File>
+    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/top-border.png</File>
+    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Gray.png</File>
+    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Light Gray.png</File>
+    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Black.png</File>
+    <File>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/m.png</File>
   </SourceFiles>
 </SourceFileCollection>
