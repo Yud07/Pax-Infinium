@@ -15,7 +15,7 @@ namespace pax_infinium
         public Sprite east;
         public Sprite south;
         public Vector2 position;
-        public Vector2 gridPos;
+        public Vector3 gridPos;
         public Vector2 origin;
         Texture2D westTex;
         Texture2D southTex;
@@ -23,13 +23,15 @@ namespace pax_infinium
         GraphicsDeviceManager graphics;
         SpriteSheetInfo spriteSheetInfo;
 
-        public Cube(Vector2 origin, Vector2 gridPos, Texture2D westTex, Texture2D southTex, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
+        public Cube(Vector2 origin, Vector3 gridPos, Texture2D westTex, Texture2D southTex, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
             this.westTex = westTex;
             this.southTex = southTex;
             this.topTex = topTex;
             this.origin = origin;
-            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * westTex.Width), (int)(gridPos.Y * westTex.Height))).ToVector2();
+            this.gridPos = gridPos;
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * westTex.Width), (int)(gridPos.Y * westTex.Height * .65f))).ToVector2();
+            this.position.Y -= gridPos.Z * westTex.Height * .65F;
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
             

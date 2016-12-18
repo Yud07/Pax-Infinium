@@ -79,6 +79,7 @@ namespace pax_infinium
             var size = width * height;
             Color[] mapcolors = new Color[size];
             int i = 0;
+            int temp = 0;
             for (var w = 0; w < width; w++)
             { 
                 for (var h = 0; h < height; h++)
@@ -88,9 +89,27 @@ namespace pax_infinium
                     {
                         Color tempColor = color;
                         //tempColor.A -= 25; // lighter
-                        tempColor = Color.Multiply(tempColor, .75f);
+                        if (temp == 0)
+                        {
+                            Console.WriteLine("B4: " + tempColor);
+                        }
+                        // Make the border
+                        if (tempColor.R * 1.25f < 256f && tempColor.G * 1.25f < 256f && tempColor.B * 1.25f < 256f)
+                        {
+                            tempColor = Color.Multiply(tempColor, 1.25f);
+                        }
+                        else
+                        {
+                            tempColor = Color.Multiply(tempColor, .75f);
+                        }
+                        tempColor.A = color.A;
                         //`tempColor = new Color(color.R * (1 - .25f), color.G * (1 - .25f), color.B * (1 - .25f));
+                        if (temp == 0)
+                        {
+                            Console.WriteLine("After: " + tempColor);
+                        }
                         mapcolors[i] = tempColor;
+                        temp++;
                     }
                     else
                     {
@@ -161,7 +180,7 @@ namespace pax_infinium
             int yOffset = (int)(.75 * Math.Sqrt((tex.Height / 2.0) * (tex.Height / 2.0) + tex.Width * tex.Width));
             //int isoH = yOffset + tex.Height / 2;
             int isoH = (int)(tex.Height*1.5 + 1);
-            Console.WriteLine("isoW:" + isoW.ToString() + " isoH:" + isoH.ToString());//+ " yOffset:" + yOffset.ToString());
+            //Console.WriteLine("isoW:" + isoW.ToString() + " isoH:" + isoH.ToString());//+ " yOffset:" + yOffset.ToString());
             //Console.WriteLine("64,0: " + Game1.world.twoDToIso(new Point(64, 0)) + " 64,64: " + Game1.world.twoDToIso(new Point(64, 64)) + " 0,64: " + Game1.world.twoDToIso(new Point(0, 64)) +
             //" 0,0: " + Game1.world.twoDToIso(new Point(0, 0)));
             int isoSize = isoW * isoH;
