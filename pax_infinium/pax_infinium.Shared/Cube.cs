@@ -59,8 +59,11 @@ namespace pax_infinium
             top.scale = 1f;
         }
 
-        public void Update(GameTime gameTime)
+        public void recalcPos()
         {
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * westTex.Width), (int)(gridPos.Y * westTex.Height * .65f))).ToVector2();
+            this.position.Y -= gridPos.Z * westTex.Height * .65F;
+
             west.position = position;
             west.position.X -= west.tex.Width / 2;// - 1;
             west.position.Y += west.tex.Height / 2;
@@ -70,6 +73,13 @@ namespace pax_infinium
             south.position.Y += west.tex.Height / 2;// - 1;
 
             top.position = position;
+
+            darken();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            //recalcPos();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -77,6 +87,34 @@ namespace pax_infinium
             west.Draw(spriteBatch);
             south.Draw(spriteBatch);
             top.Draw(spriteBatch);
+        }
+
+        public void darken()
+        {
+            westTex = darkenTex(westTex);
+            southTex = darkenTex(southTex);
+            topTex = darkenTex(topTex);
+        }
+
+        public Texture2D darkenTex(Texture2D tex)
+        {
+            var size = tex.Width * tex.Height;
+            Color[] mapcolors = new Color[size];
+            tex.GetData(mapcolors);
+            //Color[] newmapcolors = new Color[size];
+            for (var s = 0; s < size; s++)
+            {
+                Color color = mapcolors[s];
+                Color tempColor = color;
+                for (int h = 0; h < 6 - gridPos.Z + 11 - gridPos.Y + 11 - gridPos.X; h++)
+                {
+                    tempColor = Color.Multiply(tempColor, .98f);
+                }
+                tempColor.A = color.A;
+                mapcolors[s] = tempColor;
+            }
+            tex.SetData(mapcolors);
+            return tex;
         }
 
         /*

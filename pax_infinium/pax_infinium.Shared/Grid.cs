@@ -24,73 +24,37 @@ namespace pax_infinium
             cubes = new List<Cube>();
             origin = new Vector2(Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Width / 2, 
                 Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Height / 2);
-
-            /*cubes.Add(new Cube(origin, new Vector3(0,0,0), Game1.world.textureConverter.GenTex(64, 64, Color.Brown, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.Chocolate, false, true), Game1.world.textureConverter.GenTex(64,64, Color.Green), 
-                graphics, new SpriteSheetInfo(64, 96)));
-
-            cubes.Add(new Cube(origin, new Vector3(0, 1, 0), Game1.world.textureConverter.GenTex(64, 64, Color.Brown, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.Chocolate, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Green),
-                graphics, new SpriteSheetInfo(64, 96)));
-
-            cubes.Add(new Cube(origin, new Vector3(0, 2, 0), Game1.world.textureConverter.GenTex(64, 64, Color.Brown, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.Chocolate, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Green),
-                graphics, new SpriteSheetInfo(64, 96)));
-
-            cubes.Add(new Cube(origin, new Vector3(0, -1, 0), Game1.world.textureConverter.GenTex(64, 64, Color.Brown, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.Chocolate, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Green),
-                graphics, new SpriteSheetInfo(64, 96)));
-
-            cubes.Add(new Cube(origin, new Vector3(0, -2, 0), Game1.world.textureConverter.GenTex(64, 64, Color.OrangeRed, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.DarkOrange, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Red), 
-                graphics, new SpriteSheetInfo(64, 96)));
-
-            cubes.Add(new Cube(origin, new Vector3(1, 0, -1), Game1.world.textureConverter.GenTex(64, 64, Color.OrangeRed, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.DarkOrange, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Red),
-                graphics, new SpriteSheetInfo(64, 96)));
-
-            cubes.Add(new Cube(origin, new Vector3(2, 0, -2), Game1.world.textureConverter.GenTex(64, 64, Color.Gray, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.LightGray, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.DarkGray), 
-                graphics, new SpriteSheetInfo(64, 96)));
-
-            cubes.Add(new Cube(origin, new Vector3(-1, 0, 1), Game1.world.textureConverter.GenTex(64, 64, Color.YellowGreen, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.Yellow, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Fuchsia), 
-                graphics, new SpriteSheetInfo(64, 96)));
-
-            cubes.Add(new Cube(origin, new Vector3(-2, 0, 2), Game1.world.textureConverter.GenTex(64, 64, Color.Tan, false),
-                Game1.world.textureConverter.GenTex(64, 64, Color.LightGoldenrodYellow, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Beige), 
-                graphics, new SpriteSheetInfo(64, 96)));*/
-
+ 
             int rand;
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 100; i++)
             {
                 rand = random.Next(0, 4);
-                Vector3 coords = new Vector3(random.Next(-5, 5), random.Next(-5, 5), random.Next(-1, 1));
+                Vector3 coords = new Vector3(random.Next(-5, 6), random.Next(-5, 6), 0);
 
                 switch (rand)
                 {
                     case 0:
-                        cubes.Add(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Brown, false),
+                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Brown, false),
                             Game1.world.textureConverter.GenTex(64, 64, Color.Chocolate, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Green),
                             graphics, new SpriteSheetInfo(64, 96)));
                         break;
                     case 1:
-                        cubes.Add(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.OrangeRed, false),
+                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.OrangeRed, false),
                             Game1.world.textureConverter.GenTex(64, 64, Color.DarkOrange, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Red),
                             graphics, new SpriteSheetInfo(64, 96)));
                         break;
                     case 2:
-                        cubes.Add(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Gray, false),
-                            Game1.world.textureConverter.GenTex(64, 64, Color.LightGray, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.DarkGray),
+                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Gray, false),
+                            Game1.world.textureConverter.GenTex(64, 64, Color.DarkGray, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.LightGray),
                             graphics, new SpriteSheetInfo(64, 96)));
                         break;
                     case 3:
-                        cubes.Add(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.YellowGreen, false),
+                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.YellowGreen, false),
                             Game1.world.textureConverter.GenTex(64, 64, Color.Yellow, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Fuchsia),
                             graphics, new SpriteSheetInfo(64, 96)));
                         break;
                     case 4:
-                        cubes.Add(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Tan, false),
+                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Tan, false),
                              Game1.world.textureConverter.GenTex(64, 64, Color.LightGoldenrodYellow, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Beige),
                              graphics, new SpriteSheetInfo(64, 96)));
                         break;
@@ -100,6 +64,25 @@ namespace pax_infinium
             /*cubes.Add(new Cube(Vector2.Zero, new Vector2(300, 200), Game1.world.textureConverter.Convert2(World.textureManager["m"], false), 
                 Game1.world.textureConverter.Convert2(World.textureManager["m"], true), Game1.world.textureConverter.Convert(World.textureManager["m"]), 
                 graphics, new SpriteSheetInfo(64, 64)));*/
+        }
+
+        public void dropCube(Cube cube)
+        {
+            //int before = (int) cube.gridPos.Z;
+            int height = 0;
+            foreach (Cube c in cubes)
+            {
+                if (c.gridPos.X == cube.gridPos.X && c.gridPos.Y == cube.gridPos.Y)
+                {
+                    height += 1;
+                }
+            }
+            cube.gridPos.Z = height;
+            //Vector2 posBefore = cube.position;
+            cube.recalcPos();
+            //Console.WriteLine("posBefore=" + posBefore + " pos=" + cube.position + " X=" + cube.gridPos.X + " Y=" + cube.gridPos.Y +  " B4=" + before + " After=" + cube.gridPos.Z);
+            cubes.Add(cube);
+
         }
 
         public void Update(GameTime gameTime)
@@ -123,11 +106,11 @@ namespace pax_infinium
         {
             List<Cube> sortedCubes = cubes.OrderBy(c => (c.gridPos.X + c.gridPos.Y + c.gridPos.Z)).ToList();
             //sortedCubes.Reverse();
-            Console.WriteLine("\n");
-            foreach (Cube cube in sortedCubes)
-            {
-                Console.WriteLine("gX=" + cube.gridPos.X + " gY=" + cube.gridPos.Y);
-            }
+            //Console.WriteLine("\n");
+            //foreach (Cube cube in sortedCubes)
+            //{
+                //Console.WriteLine("gX=" + cube.gridPos.X + " gY=" + cube.gridPos.Y + " gZ=" + cube.gridPos.Z);
+            //}
             return sortedCubes;
         }
     }

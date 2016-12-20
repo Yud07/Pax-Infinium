@@ -89,10 +89,10 @@ namespace pax_infinium
                     {
                         Color tempColor = color;
                         //tempColor.A -= 25; // lighter
-                        if (temp == 0)
-                        {
-                            Console.WriteLine("B4: " + tempColor);
-                        }
+                        //if (temp == 0)
+                        //{
+                            //Console.WriteLine("B4: " + tempColor);
+                        //}
                         // Make the border
                         if (tempColor.R * 1.25f < 256f && tempColor.G * 1.25f < 256f && tempColor.B * 1.25f < 256f)
                         {
@@ -104,10 +104,10 @@ namespace pax_infinium
                         }
                         tempColor.A = color.A;
                         //`tempColor = new Color(color.R * (1 - .25f), color.G * (1 - .25f), color.B * (1 - .25f));
-                        if (temp == 0)
-                        {
-                            Console.WriteLine("After: " + tempColor);
-                        }
+                        //if (temp == 0)
+                        //{
+                            //Console.WriteLine("After: " + tempColor);
+                        //}
                         mapcolors[i] = tempColor;
                         temp++;
                     }
