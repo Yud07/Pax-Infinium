@@ -22,68 +22,216 @@ namespace pax_infinium
             random = new Random();
             this.graphics = graphics;
             cubes = new List<Cube>();
-            origin = new Vector2(Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Width / 2, 
-                Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Height / 2);
- 
+            origin = new Vector2(Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Width / 2,
+                Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Height / 2 - 128);
+
+            List<List<List<Vector3>>> isoarray = new List<List<List<Vector3>>>();
+            int width = 10;
+            int height = 10;
+            for (int w = 0; w < width; w++)
+            {
+                isoarray.Add(new List<List<Vector3>>());
+                for (int h = 0; h < height; h++)
+                {
+                    isoarray[w].Add(new List<Vector3>());
+                }
+            }
+            int cx, cy, cz;
+            for (int i = 0; i < 200; i++)
+            {
+                cx = random.Next(1, width);
+                cy = random.Next(1, height);
+                cz = isoarray[cx][cy].Count;
+                isoarray[cx][cy].Add(new Vector3(cx, cy, cz));
+            }
+
             int rand;
-            for (int i = 0; i < 100; i++)
+            int texWidth = 64;
+            int texHeight = 64;
+            Color colorA = Color.White;
+            Color colorB = Color.White;
+            Color colorC = Color.White;
+            bool topA, topB, topC;
+            bool mirroredA, mirroredB, mirroredC;
+            bool borderA, borderB, borderC;
+            int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
+            for (int x = 0; x < isoarray.Count; x++)
             {
-                rand = random.Next(0, 4);
-                Vector3 coords = new Vector3(random.Next(-5, 6), random.Next(-5, 6), 0);
-
-                switch (rand)
+                for (int y = 0; y < isoarray[x].Count; y++)
                 {
-                    case 0:
-                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Brown, false),
-                            Game1.world.textureConverter.GenTex(64, 64, Color.Chocolate, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Green),
-                            graphics, new SpriteSheetInfo(64, 96)));
-                        break;
-                    case 1:
-                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.OrangeRed, false),
-                            Game1.world.textureConverter.GenTex(64, 64, Color.DarkOrange, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Red),
-                            graphics, new SpriteSheetInfo(64, 96)));
-                        break;
-                    case 2:
-                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Gray, false),
-                            Game1.world.textureConverter.GenTex(64, 64, Color.DarkGray, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.LightGray),
-                            graphics, new SpriteSheetInfo(64, 96)));
-                        break;
-                    case 3:
-                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.YellowGreen, false),
-                            Game1.world.textureConverter.GenTex(64, 64, Color.Yellow, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Fuchsia),
-                            graphics, new SpriteSheetInfo(64, 96)));
-                        break;
-                    case 4:
-                        dropCube(new Cube(origin, coords, Game1.world.textureConverter.GenTex(64, 64, Color.Tan, false),
-                             Game1.world.textureConverter.GenTex(64, 64, Color.LightGoldenrodYellow, false, true), Game1.world.textureConverter.GenTex(64, 64, Color.Beige),
-                             graphics, new SpriteSheetInfo(64, 96)));
-                        break;
+                    for (int z = 0; z < isoarray[x][y].Count; z++)
+                    {   //a = west, b= south, c = top
+                        bool a = false, b = false, c = false;
+                        // a0 = bottom left, a1 = left, a2 = borth left
+                        // b0 = bottom right, b1 = right, b2 = both right
+                        // c0 = top right, c1 = top left, c2 = both top
+                        int lineNumA = 0, lineNumB = 0, lineNumC = 0;
+
+                        // Add checking for cube neighbors in cartesian view perhaps -----------------------------------------------------------------------
+                        // right now I am doing only the reverse of that. checking lack of neighbors in iso
+
+                        // if it is the top of a column
+                        if (isoarray[x][y].Count - 1 == z) {
+                            bool topLeft, topRight;
+                            if (x > 0)
+                            {
+                                topLeft = isoarray[x - 1][y].Count - 1 < z;
+                            }
+                            else
+                            {
+                                topLeft = false;
+                            }
+
+                            if (y > 0)
+                            {
+                                topRight = isoarray[x][y - 1].Count -1 < z;
+                            }
+                            else
+                            {
+                                topRight = false;
+                            }
+                            
+                            // draw lines for each of the top 2 sides that lacks a neighbor
+                            if (topLeft && topRight) { c = true; lineNumC = 2; }
+                            else if (topLeft) { c = true; lineNumC = 1; }
+                            else if (topRight) { c = true; lineNumC = 0; }
+                        }
+
+                        // ADD side and bottom line handling ---------------------------------------------------
+
+                        // right and bottom right sides required
+                        // lack of a right or bottomRight neighbor
+                        bool right;//, bottomRight;
+                        if (x + 1 < width && y > 0)
+                        {
+                            //                 no east cube same level and no south east cube same level
+                            right = isoarray[x][y - 1].Count - 1 < z && isoarray[x + 1][y - 1].Count - 1 < z;
+                        }
+                        else if (y > 0)
+                        {
+                            right = isoarray[x][y - 1].Count - 1 < z;
+                        }
+                        else
+                        {
+                            right = false;
+                        }
+
+                        /*if (y > 0) // unfinished
+                        {
+                            bottomRight = isoarray[x][y][z-1]. - 1 >= z - 1;
+                        }
+                        else
+                        {
+                            bottomRight = false;
+                        }*/
+
+                        // draw lines for each of the top 2 sides that lacks a neighbor
+                        //if (right && bottomRight) { b = true; lineNumB = 2; }
+                        /*else*/ if (right) { b = true; lineNumB = 1; }
+                        //else if (bottomRight) { b = true; lineNumB = 0; }
+
+                        
+                        bool left;//, bottomRight;
+                        if (x > 0 && y + 1 < height)
+                        {
+                            //                 no north cube same level and no north west cube same level
+                            left = isoarray[x - 1][y].Count - 1 < z && isoarray[x - 1][y + 1].Count - 1 < z;
+                        }
+                        else if (x > 0)
+                        {
+                            left = isoarray[x - 1][y].Count - 1 < z;
+                        }
+                        else
+                        {
+                            left = false;
+                        }
+                        if (left) { a = true; lineNumA = 1; }
+
+                        // if it is not the bottom cube and there is no back left? neighbor
+                        //if (x>0 && y<width - 1 && isoarray[x-1][y+1].Count < z) { b = true; }
+                        // if it is not the bottom cube or first cube and there is no back right? neighbor
+                        //if (x > 0 && y > 0 && isoarray[x-1][y-1].Count < z) { c = true; }
+
+
+                        topA = false;
+                        mirroredA = false;
+                        if (a)
+                        {
+                            borderA = true;
+                            topOrWestOrSouthA = 1;
+                        }
+                        else
+                        {
+                            borderA = false;
+                            topOrWestOrSouthA = 0;
+                        }
+
+                        topB = false;
+                        mirroredB = true;
+                        if (b)
+                        {
+                            borderB = true;
+                            topOrWestOrSouthB = 1;
+                        }
+                        else
+                        {
+                            borderB = false;
+                            topOrWestOrSouthB = 0;
+                        }
+
+                        topC = true;
+                        mirroredC = false;
+                        topOrWestOrSouthC = 0;
+                        if (c)
+                        {
+                            borderC = true;
+                            
+                        }
+                        else
+                        {
+                            borderC = false;
+                        }
+
+                        rand = 0;// random.Next(0, 4);
+                        switch (rand)
+                        {
+                            case 0:
+                                colorA = Color.Brown;
+                                colorB = Color.Chocolate;
+                                colorC = Color.Green;
+                                break;
+                            case 1:
+                                colorA = Color.OrangeRed;
+                                colorB = Color.DarkOrange;
+                                colorC = Color.Red;
+                                break;
+                            case 2:
+                                colorA = Color.Gray;
+                                colorB = Color.DarkGray;
+                                colorC = Color.LightGray;
+                                break;
+                            case 3:
+                                colorA = Color.YellowGreen;
+                                colorB = Color.Yellow;
+                                colorC = Color.Fuchsia;
+                                break;
+                            case 4:
+                                colorA = Color.Tan;
+                                colorB = Color.LightGoldenrodYellow;
+                                colorC = Color.Beige;
+                                break;
+                        }
+                        Cube tempCube = new Cube(origin, isoarray[x][y][z], 
+                            Game1.world.textureConverter.GenTex(texWidth, texHeight, colorA, isoarray[x][y][z], topA, mirroredA, borderA, topOrWestOrSouthA, lineNumA),
+                            Game1.world.textureConverter.GenTex(texWidth, texHeight, colorB, isoarray[x][y][z], topB, mirroredB, borderB, topOrWestOrSouthB, lineNumB),
+                            Game1.world.textureConverter.GenTex(texWidth, texHeight, colorC, isoarray[x][y][z], topC, mirroredC, borderC, topOrWestOrSouthC, lineNumC),
+                            graphics, new SpriteSheetInfo(64, 96));
+                        tempCube.recalcPos();
+                        cubes.Add(tempCube);
+                    }
                 }
             }
-
-            /*cubes.Add(new Cube(Vector2.Zero, new Vector2(300, 200), Game1.world.textureConverter.Convert2(World.textureManager["m"], false), 
-                Game1.world.textureConverter.Convert2(World.textureManager["m"], true), Game1.world.textureConverter.Convert(World.textureManager["m"]), 
-                graphics, new SpriteSheetInfo(64, 64)));*/
-        }
-
-        public void dropCube(Cube cube)
-        {
-            //int before = (int) cube.gridPos.Z;
-            int height = 0;
-            foreach (Cube c in cubes)
-            {
-                if (c.gridPos.X == cube.gridPos.X && c.gridPos.Y == cube.gridPos.Y)
-                {
-                    height += 1;
-                }
-            }
-            cube.gridPos.Z = height;
-            //Vector2 posBefore = cube.position;
-            cube.recalcPos();
-            //Console.WriteLine("posBefore=" + posBefore + " pos=" + cube.position + " X=" + cube.gridPos.X + " Y=" + cube.gridPos.Y +  " B4=" + before + " After=" + cube.gridPos.Z);
-            cubes.Add(cube);
-
-        }
+        }       
 
         public void Update(GameTime gameTime)
         {

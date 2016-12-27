@@ -74,7 +74,7 @@ namespace pax_infinium
             return tex2;
         }
 
-        public Texture2D GenTex(int width, int height, Color color, bool top=true, bool mirrored=false)
+        public Texture2D GenTex(int width, int height, Color color, Vector3 coords, bool top=true, bool mirrored=false, bool border=false, int topOrWestOrSouth=0, int lineNum=0)
         { 
             var size = width * height;
             Color[] mapcolors = new Color[size];
@@ -84,8 +84,46 @@ namespace pax_infinium
             { 
                 for (var h = 0; h < height; h++)
                 {
-                    //if (w < 2 || w > width - 3 || h < 2 || h > height - 3) //apears bezeled
-                    if (w < 5 || w > width - 6 || h < 5 || h > height - 6)
+                    bool trigger = false;
+                    switch (topOrWestOrSouth)
+                    {
+                        case 0:
+                            switch (lineNum)
+                            {
+                                case 0:
+                                    if (w < 3) { trigger = true; }
+                                    break;
+                                case 1:
+                                    if (h < 3) { trigger = true; }
+                                    break;
+                                case 2:
+                                    if (w < 3 || h < 3) { trigger = true; }
+                                    break;
+                            }
+                            break;
+                        case 1:
+                            switch (lineNum)
+                            {
+                                case 0:
+                                    if (w > width - 4) { trigger = true; }
+                                    break;
+                                case 1:
+                                    if (h > height - 4) { trigger = true; }
+                                    break;
+                                case 2:
+                                    if (w > width - 4 || h > height - 4) { trigger = true; }
+                                    break;
+                            }
+                            break;
+                    }
+                    if (border && trigger)
+                    {
+                        /*Color tempColor = Color.Multiply(Color.White, (coords.X + coords.Y) * .02f);
+                        tempColor.A = 1;*/
+                        mapcolors[i] = Color.Black;// tempColor;
+                        temp++;
+                    }
+                    else if (w < 5 || w > width - 6 || h < 5 || h > height - 6)
                     {
                         Color tempColor = color;
                         //tempColor.A -= 25; // lighter
@@ -304,7 +342,7 @@ namespace pax_infinium
             }
             int rotW = rightest - leftest;
             int rotH = highest - lowest;
-            Console.WriteLine("rotW: " + rotW + " rotH: " + rotH);
+            //Console.WriteLine("rotW: " + rotW + " rotH: " + rotH);
             //Console.WriteLine("64,0: " + Game1.world.twoDToIso(new Point(64, 0)) + " 64,64: " + Game1.world.twoDToIso(new Point(64, 64)) + " 0,64: " + Game1.world.twoDToIso(new Point(0, 64)) +
             //" 0,0: " + Game1.world.twoDToIso(new Point(0, 0)));
             int texSize = tex.Width * tex.Height;

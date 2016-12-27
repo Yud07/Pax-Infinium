@@ -17,9 +17,9 @@ namespace pax_infinium
         public Vector2 position;
         public Vector3 gridPos;
         public Vector2 origin;
-        Texture2D westTex;
-        Texture2D southTex;
-        Texture2D topTex;
+        public Texture2D westTex;
+        public Texture2D southTex;
+        public Texture2D topTex;
         GraphicsDeviceManager graphics;
         SpriteSheetInfo spriteSheetInfo;
 
@@ -108,10 +108,86 @@ namespace pax_infinium
                 Color tempColor = color;
                 for (int h = 0; h < 6 - gridPos.Z + 11 - gridPos.Y + 11 - gridPos.X; h++)
                 {
-                    tempColor = Color.Multiply(tempColor, .98f);
+                    tempColor = Color.Multiply(tempColor, .96f);
                 }
                 tempColor.A = color.A;
                 mapcolors[s] = tempColor;
+            }
+            tex.SetData(mapcolors);
+            return tex;
+        }
+
+        public Texture2D border(Texture2D tex, int topOrWestOrSouth)
+        {
+            var size = tex.Width * tex.Height;
+            Color[] mapcolors = new Color[size];
+            tex.GetData(mapcolors);
+
+            List<int> maxes = new List<int>();
+            List<int> mins = new List<int>();
+
+            int index = 0;
+            int max;
+            int min;
+            for (int w = 0; w < tex.Width; w++)
+            {
+                max = 0;
+                min = int.MaxValue;
+                for (int h = 0; h < tex.Height; h++)
+                {
+                    if (mapcolors[index].A != 0)
+                    {
+                        max = h;
+                        if (h < min)
+                        {
+                            min = h;
+                        }
+                    }
+                    index++;
+                }
+                maxes.Add(max);
+                mins.Add(min);
+
+            }
+            //Console.WriteLine();
+            //foreach (int m in maxes)
+            //{
+                //Console.Write(m + " ");
+            //}
+
+            index = 0;
+            for (int w = 0; w < tex.Width; w++)
+            {
+                for (int h = 0; h < tex.Height; h++)
+                {
+                    bool trigger = false;
+                    switch (topOrWestOrSouth)
+                    {
+                        case 0:
+                            // top left or top right
+                            if (((h == mins[w] || h == mins[w] + 1 && mins[w] != 0) || (h == maxes[w]  || h == maxes[w] - 1 && maxes[w] != 63)) &&
+                                w < topTex.Width / 2){ trigger = true; }
+                                break;
+                        case 1:
+                            if (((h == mins[w] || h == mins[w] + 1 && mins[w] != 0) || (h == maxes[w] || h == maxes[w] - 1 && maxes[w] != 63)) &&
+                                w < westTex.Width / 2) { trigger = true; }
+                            break;
+                        case 2:
+                            Point rotated = new Point(0, 0);
+                            rotated.X = (int)Math.Floor((w) * Math.Cos(180) - (h) * Math.Sin(180));
+                            rotated.Y = (int)Math.Floor((w) * Math.Sin(180) + (h) * Math.Cos(180));
+                            if (rotated.X == 0 || rotated.Y == 0) { trigger = true; }
+                            break;
+                    }
+
+                    if (trigger)
+                    {
+                        mapcolors[index] = Color.White;
+                    }
+
+                    index++;
+                }          
+                
             }
             tex.SetData(mapcolors);
             return tex;
