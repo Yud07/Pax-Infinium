@@ -19,7 +19,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)DebugRectangle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Grid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Level.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Line.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenSimplexNoise.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PermanantStates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Room.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sprite.cs" />

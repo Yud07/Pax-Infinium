@@ -47,7 +47,6 @@ namespace pax_infinium
             world = new World(graphics);
             World.textureManager = new ContentManager<Texture2D>(Content);
             World.fontManager = new ContentManager<SpriteFont>(Content);
-
             base.Initialize();
         }
 

@@ -4,6 +4,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
+using NoiseTest;
+
 
 namespace pax_infinium
 {
@@ -27,22 +29,31 @@ namespace pax_infinium
 
             List<List<List<Vector3>>> isoarray = new List<List<List<Vector3>>>();
             int width = 10;
-            int height = 10;
+            int depth = 10;
+            int height = 5;
+            OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise("The world is mine!".GetHashCode()); // ADD SEED --------------------------------------------------------
             for (int w = 0; w < width; w++)
             {
                 isoarray.Add(new List<List<Vector3>>());
-                for (int h = 0; h < height; h++)
+                for (int d = 0; d < depth; d++)
                 {
                     isoarray[w].Add(new List<Vector3>());
+                    for (int h = 0; h < height; h++)
+                    {
+                        //(c1 * x, c2 * y, c3 * z);// + c3 * z + c4)
+                        int c1, c2, c3, c4;
+                        c1 = 1;
+                        c2 = 1;
+                        c3 = 1;
+                        c4 = 0;
+                        double val = openSimplexNoise.Evaluate(c1 * w, c2 * d, c3 * h) + 0* c3 * h + c4;
+                        Console.WriteLine("x"+ w + " y" + d + " z" + h + " val" + val);
+                        if (val > 0.0)
+                        {
+                            isoarray[w][d].Add(new Vector3(w, d, h));
+                        }
+                    }
                 }
-            }
-            int cx, cy, cz;
-            for (int i = 0; i < 200; i++)
-            {
-                cx = random.Next(1, width);
-                cy = random.Next(1, height);
-                cz = isoarray[cx][cy].Count;
-                isoarray[cx][cy].Add(new Vector3(cx, cy, cz));
             }
 
             int rand;
