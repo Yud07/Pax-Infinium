@@ -61,7 +61,7 @@ namespace pax_infinium
         public TextureConverter textureConverter;
 
         public PermanantStates<Room> rooms;
-        public Grid grid;
+        public Level level;
 
         public Texture2D oneByOne;
 

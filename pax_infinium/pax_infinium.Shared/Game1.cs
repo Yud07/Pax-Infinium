@@ -17,8 +17,6 @@ namespace pax_infinium
         public KeyboardState previousKeyboardState;
         public MouseState previousMouseState;
 
-        Background background;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -69,11 +67,9 @@ namespace pax_infinium
             //tex2 = world.textureConverter.Rotate90(tex2);
             //tex = world.textureConverter.Rotate(tex, 45);
 
-            background = new Background(World.textureManager["BG-Layer"], graphics.GraphicsDevice.Viewport);
-            world.grid = new Grid(graphics);//World.textureManager["Light Gray"], graphics);
-
-            world.rooms.CurrentState.AddDraw(background.Draw);
-            world.rooms.CurrentState.AddDraw(world.grid.Draw);
+            world.level = new Level(graphics, "The world is mine!");
+            world.rooms.CurrentState.AddDraw(world.level.Draw);
+            world.rooms.CurrentState.AddUpdate(world.level.Update);
         }
 
         /// <summary>

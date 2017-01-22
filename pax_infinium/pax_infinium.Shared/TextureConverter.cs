@@ -14,18 +14,22 @@ namespace pax_infinium
             this.graphicsDevice = graphicsDevice;
         }
 
-        public Texture2D ConvTest()
+        public Texture2D GenRectangle(int width, int height, Color color)
         {
-            int width = 64, height = 64;
             var size = width * height;
             Color[] mapcolors = new Color[size];
             for (var i = 0; i < size; i++)
             {
-                mapcolors[i] = Color.Blue;
+                mapcolors[i] = color;
             }
             var tex = new Texture2D(graphicsDevice, width, height, false, SurfaceFormat.Color);
             tex.SetData(mapcolors);
-            return Convert(tex);
+            return tex;
+        }
+
+        public Texture2D ConvTest()
+        {
+            return Convert(GenRectangle(64, 64, Color.Blue));
         }
 
         public Texture2D ConvTest2()
