@@ -386,7 +386,7 @@ namespace pax_infinium
             {
                 mapcolors[i] = Color.Transparent;
             }
-            Random rand = new Random();
+            Random rand = World.Random;
             for (var i = 0; i < numStars; i++)
             {
                 var n = rand.Next(size);

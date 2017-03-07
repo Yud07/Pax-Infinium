@@ -83,3 +83,6 @@ C:\Users\myudy_000\Desktop\School\College\Semester 6\Building Game Engines\Pax-I
 C:\Users\myudy_000\Desktop\School\College\Semester 6\Building Game Engines\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.application
 C:\Users\myudy_000\Desktop\School\College\Semester 6\Building Game Engines\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.exe
 C:\Users\myudy_000\Desktop\School\College\Semester 6\Building Game Engines\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.pdb
+C:\Users\myudy_000\Desktop\School\College\Semester 6\Building Game Engines\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Impact-36.xnb
+C:\Users\myudy_000\Desktop\School\College\Semester 6\Building Game Engines\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\InfoFont.xnb
+C:\Users\myudy_000\Desktop\School\College\Semester 6\Building Game Engines\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\ScoreFont.xnb

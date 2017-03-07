@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="204720">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="206768">
       <assemblyIdentity name="pax_infinium.Windows" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>NFfHKV96OdabwNHdJg+PGH0P7NPuIgAkpJZErXD9AGk=</dsig:DigestValue>
+        <dsig:DigestValue>eQ+IcY7Am5VgU6o9cTDUssfCNqcIK9WBSTo1cwHvpSg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -210,6 +210,24 @@
       <dsig:DigestValue>WXkWqojczoVfVmbmwReCYlK4geU39CeePV5RAZQFzDE=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="Content\Impact-36.xnb" size="136212">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>Aj5aSKMRTfQnCDzGABneFl37gyOh7xs6ISHdtzXaZ2Q=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\InfoFont.xnb" size="21524">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>0eNGu0UKz+dZDZMqNDi5QP7qfIpLGV0Jba76hT7VL48=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="Content\Light Gray.xnb" size="262229">
     <hash>
       <dsig:Transforms>
@@ -226,6 +244,15 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>Qb3IJocaOjYxdjzflpYK91Z2AuVNCw3B6HoxTzLH3N4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\ScoreFont.xnb" size="70676">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>9hRmhxksAM/p7s68Xl7UaZIsJFEbx/m/QyoNZh56CDw=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\top-border.xnb" size="8294485">

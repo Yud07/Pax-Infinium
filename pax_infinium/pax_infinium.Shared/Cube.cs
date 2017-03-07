@@ -22,6 +22,7 @@ namespace pax_infinium
         public Texture2D topTex;
         GraphicsDeviceManager graphics;
         SpriteSheetInfo spriteSheetInfo;
+        TextItem text;
 
         public Cube(Vector2 origin, Vector3 gridPos, Texture2D westTex, Texture2D southTex, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -57,6 +58,9 @@ namespace pax_infinium
             top.position = position;
             top.origin = new Vector2(topTex.Width / 2, topTex.Height / 2);
             top.scale = 1f;
+
+            text = new TextItem(World.fontManager["InfoFont"], "X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z);
+            text.position = position;
         }
 
         public void recalcPos()
@@ -75,6 +79,8 @@ namespace pax_infinium
             top.position = position;
 
             darken();
+            text.Text = "X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z;
+            text.position = position;
         }
 
         public void Update(GameTime gameTime)
@@ -87,6 +93,7 @@ namespace pax_infinium
             west.Draw(spriteBatch);
             south.Draw(spriteBatch);
             top.Draw(spriteBatch);
+            text.Draw(spriteBatch);
         }
 
         public void darken()

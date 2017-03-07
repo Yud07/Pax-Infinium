@@ -56,7 +56,9 @@ namespace pax_infinium
         {
             World.textureManager.Load("BG-Layer");
             World.textureManager.Load("m");
-
+            World.fontManager.Load("ScoreFont");
+            World.fontManager.Load("InfoFont");
+            World.fontManager.Load("Impact-36");
 
             // create 1x1 texture for line drawing
             world.oneByOne = new Texture2D(GraphicsDevice, 1, 1);

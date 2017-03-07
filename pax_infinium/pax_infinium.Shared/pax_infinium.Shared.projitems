@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SpriteBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpriteSheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextureConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)World.cs" />
   </ItemGroup>

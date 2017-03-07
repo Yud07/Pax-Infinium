@@ -16,8 +16,8 @@ namespace pax_infinium
 
         public Level(GraphicsDeviceManager graphics, string seed)
         {
-            random = new Random();
-            grid = new Grid(graphics, seed, random);
+            random = World.Random;
+            grid = new Grid(graphics, seed);
             characters = new Characters();
             background = new Background(World.textureManager["BG-Layer"], graphics.GraphicsDevice.Viewport);
             characters.list.Add(new Character(Vector2.Zero, Vector3.Zero, Game1.world.textureConverter.GenRectangle(32,64, Color.Black), graphics, new SpriteSheetInfo(32,64)));
