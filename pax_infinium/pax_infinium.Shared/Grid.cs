@@ -25,18 +25,17 @@ namespace pax_infinium
             origin = new Vector2(Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Width / 2,
                 Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Height / 2 - 128);
 
-            List<List<List<Vector3>>> isoarray = new List<List<List<Vector3>>>();
+            // cartesian space
             int width = 10;
             int depth = 10;
             int height = 5;
-            OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise(seed.GetHashCode()); // ADD SEED --------------------------------------------------------
-            for (int w = 0; w < width; w++)
+            bool[,,] binaryMatrix = new bool[width, depth, height];
+            OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise(seed.GetHashCode());
+            for (int w = 0; w < width - 1; w++) 
             {
-                isoarray.Add(new List<List<Vector3>>());
-                for (int d = 0; d < depth; d++)
+                for (int d = 0; d < depth - 1; d++)
                 {
-                    isoarray[w].Add(new List<Vector3>());
-                    for (int h = 0; h < height; h++)
+                    for (int h = 0; h < height - 1; h++)
                     {
                         //(c1 * x, c2 * y, c3 * z);// + c3 * z + c4)
                         int c1, c2, c3, c4;
@@ -47,10 +46,12 @@ namespace pax_infinium
                         c4 = 1;
                         double val = openSimplexNoise.Evaluate(c1 * w, c2 * d, c3 * h) + c3 * h + c4;
                         //Console.WriteLine("x"+ w + " y" + d + " z" + h + " val" + val);
+                        bool result = false;
                         if (val > c3 * h + c4)
                         {
-                            isoarray[w][d].Add(new Vector3(w, d, h));
+                            result = true;
                         }
+                        binaryMatrix[w, d, h] = result;
                     }
                 }
             }
@@ -65,182 +66,179 @@ namespace pax_infinium
             bool mirroredA, mirroredB, mirroredC;
             bool borderA, borderB, borderC;
             int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
-            for (int x = 0; x < isoarray.Count; x++)
+            for (int x = 0; x < width - 1; x++)
             {
-                for (int y = 0; y < isoarray[x].Count; y++)
+                for (int y = 0; y < depth - 1; y++)
                 {
-                    for (int z = 0; z < isoarray[x][y].Count; z++)
-                    {   //a = west, b= south, c = top
-                        bool a = false, b = false, c = false;
-                        // a0 = bottom left, a1 = left, a2 = borth left
-                        // b0 = bottom right, b1 = right, b2 = both right
-                        // c0 = top right, c1 = top left, c2 = both top
-                        int lineNumA = 0, lineNumB = 0, lineNumC = 0;
+                    for (int z = 0; z < height - 1; z++)
+                    {
+                        if (binaryMatrix[x, y, z])
+                        {
+                            //a = west, b= south, c = top
+                            bool a = false, b = false, c = false;
+                            // a0 = bottom left, a1 = left, a2 = borth left
+                            // b0 = bottom right, b1 = right, b2 = both right
+                            // c0 = top right, c1 = top left, c2 = both top
+                            int lineNumA = 0, lineNumB = 0, lineNumC = 0;
 
-                        // Add checking for cube neighbors in cartesian view perhaps -----------------------------------------------------------------------
-                        // right now I am doing only the reverse of that. checking lack of neighbors in iso
+                            // if it is the top of a column
+                            if (topOfColumn(x, y, height, binaryMatrix) == z) // May want to remove this if --------------------------------------------------------------
+                            {
+                                bool topLeft = false, topRight = false;
+                                if (x > 0)
+                                {
+                                    //topLeft = isoarray[x - 1][y].Count - 1 < z;
+                                    topLeft = !binaryMatrix[x - 1, y, z];
 
-                        // if it is the top of a column
-                        if (isoarray[x][y].Count - 1 == z) {
-                            bool topLeft, topRight;
-                            if (x > 0)
-                            {
-                                topLeft = isoarray[x - 1][y].Count - 1 < z;
-                            }
-                            else
-                            {
-                                topLeft = false;
+                                }
+
+                                if (y > 0)
+                                {
+                                    //topRight = isoarray[x][y - 1].Count - 1 < z;
+                                    topRight = !binaryMatrix[x, y - 1, z];
+                                }
+
+                                // draw lines for each of the top 2 sides that lacks a neighbor
+                                if (topLeft && topRight) { c = true; lineNumC = 2; }
+                                else if (topLeft) { c = true; lineNumC = 1; }
+                                else if (topRight) { c = true; lineNumC = 0; }
                             }
 
-                            if (y > 0)
+                            // right and bottom right sides required
+                            // lack of a right or bottomRight neighbor
+                            bool right = false;//, bottomRight;
+                            if (x + 1 < width && y > 0)
                             {
-                                topRight = isoarray[x][y - 1].Count -1 < z;
+                                //                 no east cube same level and no south east cube same level
+                                //right = isoarray[x][y - 1].Count - 1 < z && isoarray[x + 1][y - 1].Count - 1 < z;
+                                right = !binaryMatrix[x, y - 1, z] && !binaryMatrix[x + 1, y - 1, z];
                             }
-                            else
+                            else if (y > 0)
                             {
-                                topRight = false;
+                                //right = isoarray[x][y - 1].Count - 1 < z;
+                                right = !binaryMatrix[x, y - 1, z];
                             }
-                            
+
                             // draw lines for each of the top 2 sides that lacks a neighbor
-                            if (topLeft && topRight) { c = true; lineNumC = 2; }
-                            else if (topLeft) { c = true; lineNumC = 1; }
-                            else if (topRight) { c = true; lineNumC = 0; }
-                        }
-
-                        // ADD side and bottom line handling ---------------------------------------------------
-
-                        // right and bottom right sides required
-                        // lack of a right or bottomRight neighbor
-                        bool right;//, bottomRight;
-                        if (x + 1 < width && y > 0)
-                        {
-                            //                 no east cube same level and no south east cube same level
-                            right = isoarray[x][y - 1].Count - 1 < z && isoarray[x + 1][y - 1].Count - 1 < z;
-                        }
-                        else if (y > 0)
-                        {
-                            right = isoarray[x][y - 1].Count - 1 < z;
-                        }
-                        else
-                        {
-                            right = false;
-                        }
-
-                        /*if (y > 0) // unfinished
-                        {
-                            bottomRight = isoarray[x][y][z-1]. - 1 >= z - 1;
-                        }
-                        else
-                        {
-                            bottomRight = false;
-                        }*/
-
-                        // draw lines for each of the top 2 sides that lacks a neighbor
-                        //if (right && bottomRight) { b = true; lineNumB = 2; }
-                        /*else*/ if (right) { b = true; lineNumB = 1; }
-                        //else if (bottomRight) { b = true; lineNumB = 0; }
-
-                        
-                        bool left;//, bottomRight;
-                        if (x > 0 && y + 1 < height)
-                        {
-                            //                 no north cube same level and no north west cube same level
-                            left = isoarray[x - 1][y].Count - 1 < z && isoarray[x - 1][y + 1].Count - 1 < z;
-                        }
-                        else if (x > 0)
-                        {
-                            left = isoarray[x - 1][y].Count - 1 < z;
-                        }
-                        else
-                        {
-                            left = false;
-                        }
-                        if (left) { a = true; lineNumA = 1; }
-
-                        // if it is not the bottom cube and there is no back left? neighbor
-                        //if (x>0 && y<width - 1 && isoarray[x-1][y+1].Count < z) { b = true; }
-                        // if it is not the bottom cube or first cube and there is no back right? neighbor
-                        //if (x > 0 && y > 0 && isoarray[x-1][y-1].Count < z) { c = true; }
+                            //if (right && bottomRight) { b = true; lineNumB = 2; }
+                            /*else*/
+                            if (right) { b = true; lineNumB = 1; }
+                            //else if (bottomRight) { b = true; lineNumB = 0; }
 
 
-                        topA = false;
-                        mirroredA = false;
-                        if (a)
-                        {
-                            borderA = true;
-                            topOrWestOrSouthA = 1;
-                        }
-                        else
-                        {
-                            borderA = false;
-                            topOrWestOrSouthA = 0;
-                        }
+                            bool left = false;//, bottomRight;
+                            if (x > 0 && y + 1 < height)
+                            {
+                                //                 no north cube same level and no north west cube same level
+                                //left = isoarray[x - 1][y].Count - 1 < z && isoarray[x - 1][y + 1].Count - 1 < z;
+                                left = !binaryMatrix[x - 1, y, z] && !binaryMatrix[x - 1, y + 1, z];
+                            }
+                            else if (x > 0)
+                            {
+                                //left = isoarray[x - 1][y].Count - 1 < z;
+                                left = !binaryMatrix[x - 1, y, z];
+                            }
+                            if (left) { a = true; lineNumA = 1; }
 
-                        topB = false;
-                        mirroredB = true;
-                        if (b)
-                        {
-                            borderB = true;
-                            topOrWestOrSouthB = 1;
-                        }
-                        else
-                        {
-                            borderB = false;
-                            topOrWestOrSouthB = 0;
-                        }
+                            // if it is not the bottom cube and there is no back left? neighbor
+                            //if (x>0 && y<width - 1 && isoarray[x-1][y+1].Count < z) { b = true; }
+                            // if it is not the bottom cube or first cube and there is no back right? neighbor
+                            //if (x > 0 && y > 0 && isoarray[x-1][y-1].Count < z) { c = true; }
 
-                        topC = true;
-                        mirroredC = false;
-                        topOrWestOrSouthC = 0;
-                        if (c)
-                        {
-                            borderC = true;
-                            
-                        }
-                        else
-                        {
-                            borderC = false;
-                        }
 
-                        rand = 0;// random.Next(0, 4);
-                        switch (rand)
-                        {
-                            case 0:
-                                colorA = Color.Brown;
-                                colorB = Color.Chocolate;
-                                colorC = Color.Green;
-                                break;
-                            case 1:
-                                colorA = Color.OrangeRed;
-                                colorB = Color.DarkOrange;
-                                colorC = Color.Red;
-                                break;
-                            case 2:
-                                colorA = Color.Gray;
-                                colorB = Color.DarkGray;
-                                colorC = Color.LightGray;
-                                break;
-                            case 3:
-                                colorA = Color.YellowGreen;
-                                colorB = Color.Yellow;
-                                colorC = Color.Fuchsia;
-                                break;
-                            case 4:
-                                colorA = Color.Tan;
-                                colorB = Color.LightGoldenrodYellow;
-                                colorC = Color.Beige;
-                                break;
+                            topA = false;
+                            mirroredA = false;
+                            if (a)
+                            {
+                                borderA = true;
+                                topOrWestOrSouthA = 1;
+                            }
+                            else
+                            {
+                                borderA = false;
+                                topOrWestOrSouthA = 0;
+                            }
+
+                            topB = false;
+                            mirroredB = true;
+                            if (b)
+                            {
+                                borderB = true;
+                                topOrWestOrSouthB = 1;
+                            }
+                            else
+                            {
+                                borderB = false;
+                                topOrWestOrSouthB = 0;
+                            }
+
+                            topC = true;
+                            mirroredC = false;
+                            topOrWestOrSouthC = 0;
+                            if (c)
+                            {
+                                borderC = true;
+
+                            }
+                            else
+                            {
+                                borderC = false;
+                            }
+
+                            rand = 0;// random.Next(0, 4);
+                            switch (rand)
+                            {
+                                case 0:
+                                    colorA = Color.Brown;
+                                    colorB = Color.Chocolate;
+                                    colorC = Color.Green;
+                                    break;
+                                case 1:
+                                    colorA = Color.OrangeRed;
+                                    colorB = Color.DarkOrange;
+                                    colorC = Color.Red;
+                                    break;
+                                case 2:
+                                    colorA = Color.Gray;
+                                    colorB = Color.DarkGray;
+                                    colorC = Color.LightGray;
+                                    break;
+                                case 3:
+                                    colorA = Color.YellowGreen;
+                                    colorB = Color.Yellow;
+                                    colorC = Color.Fuchsia;
+                                    break;
+                                case 4:
+                                    colorA = Color.Tan;
+                                    colorB = Color.LightGoldenrodYellow;
+                                    colorC = Color.Beige;
+                                    break;
+                            }
+                            Vector3 vect = new Vector3(x, y, z);
+                            Cube tempCube = new Cube(origin, vect,
+                                Game1.world.textureConverter.GenTex(texWidth, texHeight, colorA, vect, topA, mirroredA, borderA, topOrWestOrSouthA, lineNumA),
+                                Game1.world.textureConverter.GenTex(texWidth, texHeight, colorB, vect, topB, mirroredB, borderB, topOrWestOrSouthB, lineNumB),
+                                Game1.world.textureConverter.GenTex(texWidth, texHeight, colorC, vect, topC, mirroredC, borderC, topOrWestOrSouthC, lineNumC),
+                                graphics, new SpriteSheetInfo(64, 96));
+                            tempCube.recalcPos();
+                            cubes.Add(tempCube);
                         }
-                        Cube tempCube = new Cube(origin, isoarray[x][y][z], 
-                            Game1.world.textureConverter.GenTex(texWidth, texHeight, colorA, isoarray[x][y][z], topA, mirroredA, borderA, topOrWestOrSouthA, lineNumA),
-                            Game1.world.textureConverter.GenTex(texWidth, texHeight, colorB, isoarray[x][y][z], topB, mirroredB, borderB, topOrWestOrSouthB, lineNumB),
-                            Game1.world.textureConverter.GenTex(texWidth, texHeight, colorC, isoarray[x][y][z], topC, mirroredC, borderC, topOrWestOrSouthC, lineNumC),
-                            graphics, new SpriteSheetInfo(64, 96));
-                        tempCube.recalcPos();
-                        cubes.Add(tempCube);
                     }
                 }
             }
+        }
+        
+        public int topOfColumn(int x, int y, int maxHeight, bool[,,] binaryMatrix)
+        {
+            int topZ = int.MinValue;
+            for (int z = 0; z < maxHeight; z++)
+            {
+                if (binaryMatrix[x,y,z])
+                {
+                    topZ = z;
+                }
+            }
+            return topZ;
         }       
 
         public void Update(GameTime gameTime)
