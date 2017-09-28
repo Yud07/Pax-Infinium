@@ -16,7 +16,11 @@ namespace pax_infinium
         //private Texture2D southTex;
         private GraphicsDeviceManager graphics;
         public List<Cube> cubes;
-        Vector2 origin;
+        public Vector2 origin;
+        public bool[,,] binaryMatrix;
+        public int width;
+        public int depth;
+        public int height;
 
         public Grid(GraphicsDeviceManager graphics, string seed, Random random)
         {
@@ -26,24 +30,27 @@ namespace pax_infinium
                 Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Height / 2 - 128);
 
             // cartesian space
-            int width = 10;
-            int depth = 10;
-            int height = 5;
-            bool[,,] binaryMatrix = new bool[width, depth, height];
+            width = 10; // random.Next(4, 20);
+            depth = 10; // random.Next(4, 20);
+            height = 5; // random.Next(1, 10);
+            //Console.WriteLine("w " + width + " d " + depth + " h " + height);
+            binaryMatrix = new bool[width, depth, height];
             OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise(seed.GetHashCode());
+            //(c1 * x, c2 * y, c3 * z);// + c3 * z + c4)
+            int c1, c2, c3, c4;
+            //BIOMES--------------------------------------------------------------------------------------------------------
+            c1 = 1; // random.Next(1, 10);
+            c2 = 1; // random.Next(1, 10);
+            c3 = 1; // random.Next(1, 10);
+            c4 = 1; // random.Next(1, 10);
+           //Console.WriteLine("c1 " + c1 + " c2 " + c2 + " c3 " + c3 + " c4 " + c4);
+            Console.WriteLine("seed=" + seed + " w=" + width + " h=" + height + " d=" + depth + " c1=" + c1 + " c2=" + c2 + " c3=" + c3 + " c4=" + c4);
             for (int w = 0; w < width - 1; w++) 
             {
                 for (int d = 0; d < depth - 1; d++)
                 {
                     for (int h = 0; h < height - 1; h++)
                     {
-                        //(c1 * x, c2 * y, c3 * z);// + c3 * z + c4)
-                        int c1, c2, c3, c4;
-                        //BIOMES--------------------------------------------------------------------------------------------------------
-                        c1 = 1;
-                        c2 = 1;
-                        c3 = 1;
-                        c4 = 1;
                         double val = openSimplexNoise.Evaluate(c1 * w, c2 * d, c3 * h) + c3 * h + c4;
                         //Console.WriteLine("x"+ w + " y" + d + " z" + h + " val" + val);
                         bool result = false;
@@ -56,7 +63,7 @@ namespace pax_infinium
                 }
             }
 
-            int rand;
+            int randomColor;
             int texWidth = 64;
             int texHeight = 64;
             Color colorA = Color.White;
@@ -66,6 +73,8 @@ namespace pax_infinium
             bool mirroredA, mirroredB, mirroredC;
             bool borderA, borderB, borderC;
             int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
+            randomColor = random.Next(0, 5); //0;
+            Console.WriteLine("randomColor " + randomColor);
             for (int x = 0; x < width - 1; x++)
             {
                 for (int y = 0; y < depth - 1; y++)
@@ -185,8 +194,7 @@ namespace pax_infinium
                                 borderC = false;
                             }
 
-                            rand = 0;// random.Next(0, 4);
-                            switch (rand)
+                            switch (randomColor)
                             {
                                 case 0:
                                     colorA = Color.Brown;
@@ -227,7 +235,23 @@ namespace pax_infinium
                 }
             }
         }
-        
+
+        public int topOfColumn(Vector3 gridPos)
+        {
+            int x = (int) gridPos.X;
+            int y = (int) gridPos.Y;
+            int maxHeight = height;
+            int topZ = int.MinValue;
+            for (int z = 0; z < maxHeight; z++)
+            {
+                if (binaryMatrix[x, y, z])
+                {
+                    topZ = z;
+                }
+            }
+            return topZ;
+        }
+
         public int topOfColumn(int x, int y, int maxHeight, bool[,,] binaryMatrix)
         {
             int topZ = int.MinValue;

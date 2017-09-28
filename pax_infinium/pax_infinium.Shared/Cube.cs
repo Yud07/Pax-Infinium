@@ -35,7 +35,7 @@ namespace pax_infinium
             this.position.Y -= gridPos.Z * westTex.Height * .65F;
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
-            
+
             west = new Sprite(westTex, graphics, spriteSheetInfo);
             west.position = position;
             west.position.X -= west.tex.Width / 2;// - 1;
@@ -58,6 +58,11 @@ namespace pax_infinium
             top.position = position;
             top.origin = new Vector2(topTex.Width / 2, topTex.Height / 2);
             top.scale = 1f;
+            top.rectangle.X = (int) position.X;
+            top.rectangle.Y = (int) position.Y;
+            if (gridPos == new Vector3(8, 8, 1)) {
+                Console.WriteLine("cubeRect:" + top.rectangle);
+            }
 
             text = new TextItem(World.fontManager["InfoFont"], "X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z);
             text.position = position;
@@ -79,7 +84,7 @@ namespace pax_infinium
             top.position = position;
 
             darken();
-            text.Text = "X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z;
+            text.Text = "X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z; //"[" + position.X + "," + position.Y + "]";
             text.position = position;
         }
 
@@ -94,6 +99,7 @@ namespace pax_infinium
             south.Draw(spriteBatch);
             top.Draw(spriteBatch);
             text.Draw(spriteBatch);
+
         }
 
         public void darken()

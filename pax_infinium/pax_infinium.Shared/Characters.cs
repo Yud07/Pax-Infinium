@@ -9,6 +9,7 @@ namespace pax_infinium
     public class Characters
     {
         public List<Character> list;
+        public Character selectedCharacter;
 
         public Characters()
         {
@@ -24,7 +25,6 @@ namespace pax_infinium
 
         public void Draw(SpriteBatch spriteBatch)
         {
-
             foreach (Character character in list)
             {
                 character.Draw(spriteBatch);

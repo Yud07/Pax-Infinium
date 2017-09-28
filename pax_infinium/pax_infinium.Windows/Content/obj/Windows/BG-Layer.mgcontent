@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/BG-Layer.png</SourceFile>
-  <SourceTime>2016-10-23T18:20:15.2630089-04:00</SourceTime>
-  <DestFile>C:/Users/myudy_000/Desktop/School/College/Semester 6/Building Game Engines/Pax-Infinium/pax_infinium/pax_infinium.Windows/Content/bin/Windows/BG-Layer.xnb</DestFile>
-  <DestTime>2016-12-16T14:59:44.1832704-05:00</DestTime>
+  <SourceFile>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/BG-Layer.png</SourceFile>
+  <SourceTime>2017-09-13T18:11:04.1932484-04:00</SourceTime>
+  <DestFile>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Windows/Content/bin/Windows/BG-Layer.xnb</DestFile>
+  <DestTime>2017-09-13T18:59:36.8567855-04:00</DestTime>
   <Importer>TextureImporter</Importer>
-  <ImporterTime>2016-03-30T02:36:08-04:00</ImporterTime>
+  <ImporterTime>2017-03-01T10:05:36-05:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2016-03-30T02:36:08-04:00</ProcessorTime>
+  <ProcessorTime>2017-03-01T10:05:36-05:00</ProcessorTime>
   <Parameters>
     <Key>ColorKeyColor</Key>
     <Value>255,0,255,255</Value>

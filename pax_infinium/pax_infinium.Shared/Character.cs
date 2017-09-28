@@ -15,14 +15,16 @@ namespace pax_infinium
         public Texture2D topTex;
         GraphicsDeviceManager graphics;
         SpriteSheetInfo spriteSheetInfo;
+        public int cubeWidth = 64;
+        public int cubeHeight = (int)(64 * 1.5 + 1);
 
         public Character(Vector2 origin, Vector3 gridPos, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
             this.topTex = topTex;
             this.origin = origin;
             this.gridPos = gridPos;
-            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * topTex.Width), (int)(gridPos.Y * topTex.Height * .65f))).ToVector2();
-            this.position.Y -= gridPos.Z * topTex.Height * .65F;
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * cubeWidth), (int)(gridPos.Y * cubeHeight * .65f))).ToVector2();
+            this.position.Y -= gridPos.Z * cubeHeight * .65F + topTex.Height/2;
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
 
@@ -30,12 +32,14 @@ namespace pax_infinium
             top.position = position;
             top.origin = new Vector2(topTex.Width / 2, topTex.Height / 2);
             top.scale = 1f;
+
+            Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
         }
 
         public void recalcPos()
         {
-            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * topTex.Width), (int)(gridPos.Y * topTex.Height * .65f))).ToVector2();
-            this.position.Y -= gridPos.Z * topTex.Height * .65F;
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * cubeWidth), (int)(gridPos.Y * cubeHeight * .65f))).ToVector2();
+            this.position.Y -= gridPos.Z * cubeHeight * .65F + topTex.Height / 2;
 
             top.position = position;
 

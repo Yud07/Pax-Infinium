@@ -99,6 +99,55 @@ namespace pax_infinium
                 Exit();
             }
 
+            if (mouseState.LeftButton == ButtonState.Pressed &&
+                previousMouseState.LeftButton == ButtonState.Released)
+            {
+                Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
+                Console.WriteLine("mousePos tx:" + transformedMouseState.X + " ty:" + transformedMouseState.Y);
+                foreach (Cube cube in world.level.grid.cubes)
+                {
+                    if (cube.top.rectangle.Contains(transformedMouseState) && world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
+                    {
+                        cube.darken();
+                    }
+                }
+            }
+
+            /*// left click
+            if (mouseState.LeftButton == ButtonState.Pressed && 
+                previousMouseState.LeftButton == ButtonState.Released)
+            {
+                Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
+                foreach(Character character in world.level.characters.list)
+                {
+                    if (character.top.rectangle.Contains(transformedMouseState))
+                    {
+                        world.level.characters.selectedCharacter = character;
+                    }
+                }
+
+            }*/
+            /*world.level.characters.selectedCharacter = world.level.characters.list[0];
+
+            // right click
+            if (mouseState.LeftButton == ButtonState.Pressed &&
+                previousMouseState.LeftButton == ButtonState.Released)
+            {
+                if (world.level.characters.selectedCharacter != null) {
+                    Character selectedCharacter = world.level.characters.selectedCharacter;
+                Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
+                    foreach (Cube cube in world.level.grid.cubes)
+                    {
+                        if (cube.top.rectangle.Contains(transformedMouseState))
+                        {
+                            selectedCharacter.gridPos = cube.gridPos;
+                            selectedCharacter.recalcPos();
+                        }
+                    }
+                }
+
+            }*/
+
             world.Update(gameTime);            
 
             previousKeyboardState = keyboardState;
