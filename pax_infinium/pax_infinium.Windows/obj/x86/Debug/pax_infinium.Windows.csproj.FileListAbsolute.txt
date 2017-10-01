@@ -118,9 +118,9 @@ C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\b
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\SharpDX.Direct2D1.xml
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\SharpDX.XInput.xml
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
-C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.csprojResolveAssemblyReference.cache
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.csproj.CoreCompileInputs.cache
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.exe.manifest
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.application
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.exe
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.pdb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.csprojResolveAssemblyReference.cache

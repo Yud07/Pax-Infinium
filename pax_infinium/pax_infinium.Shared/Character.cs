@@ -33,7 +33,7 @@ namespace pax_infinium
             top.origin = new Vector2(topTex.Width / 2, topTex.Height / 2);
             top.scale = 1f;
 
-            Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
+            //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
         }
 
         public void recalcPos()

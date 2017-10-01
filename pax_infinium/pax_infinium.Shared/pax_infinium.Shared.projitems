@@ -25,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Line.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenSimplexNoise.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PermanantStates.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Polygon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Room.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpriteBase.cs" />

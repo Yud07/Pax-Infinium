@@ -20,7 +20,7 @@ namespace pax_infinium
             grid = new Grid(graphics, seed, random);
             characters = new Characters();
             background = new Background(World.textureManager["BG-Layer"], graphics.GraphicsDevice.Viewport);
-            characters.list.Add(new Character(grid.origin, new Vector3(5,5,3), Game1.world.textureConverter.GenRectangle(64, 128, Color.Black), graphics, new SpriteSheetInfo(64,128)));
+            characters.list.Add(new Character(grid.origin, new Vector3(5,5,3), Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue), graphics, new SpriteSheetInfo(64,128)));
         }
 
         public void Update(GameTime gameTime)

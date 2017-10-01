@@ -73,7 +73,7 @@ namespace pax_infinium
             bool mirroredA, mirroredB, mirroredC;
             bool borderA, borderB, borderC;
             int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
-            randomColor = random.Next(0, 5); //0;
+            randomColor = 2;//random.Next(0, 5); //0;
             Console.WriteLine("randomColor " + randomColor);
             for (int x = 0; x < width - 1; x++)
             {

@@ -23,6 +23,9 @@ namespace pax_infinium
         GraphicsDeviceManager graphics;
         SpriteSheetInfo spriteSheetInfo;
         TextItem text;
+        public Sprite rectangleSprite;
+        public Texture2D rectangleTex;
+        public Polygon topPoly;
 
         public Cube(Vector2 origin, Vector3 gridPos, Texture2D westTex, Texture2D southTex, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -36,36 +39,72 @@ namespace pax_infinium
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
 
-            west = new Sprite(westTex, graphics, spriteSheetInfo);
+            west = new Sprite(westTex);
             west.position = position;
             west.position.X -= west.tex.Width / 2;// - 1;
             west.position.Y += west.tex.Height / 2;//  - 1;
             west.origin = new Vector2(westTex.Width / 2, westTex.Height / 2);
             west.scale = 1f;
             west.rotation = 180;
-            //west.rotation = 25;
 
-            south = new Sprite(southTex, graphics, spriteSheetInfo);
+            // enables collision by moving the rectangle to the proper space
+            /*west.rectangle.X = (int)position.X;
+            west.rectangle.Y = (int)position.Y;
+            west.rectangle.Width = west.tex.Width;
+            west.rectangle.Height = west.tex.Height;*/
+
+            south = new Sprite(southTex);
             south.position = position;
             south.position.X += west.tex.Width / 2;// - 1;
             south.position.Y += west.tex.Height / 2;// - 1;
             south.origin = new Vector2(southTex.Width / 2, southTex.Height / 2);
             south.scale = 1f;
             south.rotation = 180;
-            //south.rotation = (float)(63.5 / 2.0);
 
-            top = new Sprite(topTex, graphics, spriteSheetInfo);
+            // enables collision by moving the rectangle to the proper space
+            /*south.rectangle.X = (int)position.X;
+            south.rectangle.Y = (int)position.Y;
+            south.rectangle.Width = south.tex.Width;
+            south.rectangle.Height = south.tex.Height;
+            south.rectangle.*/
+
+            top = new Sprite(topTex);
             top.position = position;
             top.origin = new Vector2(topTex.Width / 2, topTex.Height / 2);
             top.scale = 1f;
+
+            // enables collision by moving the rectangle to the proper space
             top.rectangle.X = (int) position.X;
             top.rectangle.Y = (int) position.Y;
+            top.rectangle.Width = top.tex.Width;
+            top.rectangle.Height = top.tex.Height;
+
+            topPoly = new Polygon();
+            /*Vector2 topOfDiamond = new Vector2(top.position.X + top.tex.Width / 2 + top.origin.X, top.position.Y + top.origin.Y);
+            Vector2 bottomOfDiamond = new Vector2(top.position.X + top.tex.Width / 2 + top.origin.X, top.position.Y + top.tex.Height + top.origin.Y);
+            Vector2 leftOfDiamond = new Vector2(top.position.X + top.origin.X, top.position.Y + top.tex.Height / 2 + top.origin.Y);
+            Vector2 rightOfDiamond = new Vector2(top.position.X + top.tex.Width + top.origin.X, top.position.Y + top.tex.Height / 2 + top.origin.Y);
+            topPoly.Lines.Add(new PolyLine(leftOfDiamond, topOfDiamond));
+            topPoly.Lines.Add(new PolyLine(topOfDiamond, rightOfDiamond));
+            topPoly.Lines.Add(new PolyLine(rightOfDiamond, bottomOfDiamond));
+            topPoly.Lines.Add(new PolyLine(bottomOfDiamond, leftOfDiamond));*/
+
             if (gridPos == new Vector3(8, 8, 1)) {
-                Console.WriteLine("cubeRect:" + top.rectangle);
+                Console.WriteLine("Cube Top Rect:" + top.rectangle + " Pos:" + top.position + " Origin:" + top.origin);
             }
 
             text = new TextItem(World.fontManager["InfoFont"], "X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z);
             text.position = position;
+
+            if (gridPos == new Vector3(8, 8, 1))
+            {
+                // add random transparent colors
+                /*rectangleTex = Game1.world.textureConverter.GenRectangle(top.rectangle.Width, top.rectangle.Height, Color.Red); // top.rectangle.Width, top.rectangle.Height, Color.Black);
+                rectangleSprite = new Sprite(rectangleTex, graphics, spriteSheetInfo);
+                rectangleSprite.position = new Vector2(top.position.X, top.position.Y);
+                rectangleSprite.origin = top.origin;
+                Console.WriteLine("pos:" + rectangleSprite.position);*/
+            }
         }
 
         public void recalcPos()
@@ -82,9 +121,32 @@ namespace pax_infinium
             south.position.Y += west.tex.Height / 2;// - 1;
 
             top.position = position;
+            top.rectangle.X = (int)position.X;
+            top.rectangle.Y = (int)position.Y;
+
+            Vector2 topOfDiamond = new Vector2(top.position.X + top.tex.Width / 2 - top.origin.X, top.position.Y - top.origin.Y);
+            Vector2 bottomOfDiamond = new Vector2(top.position.X + top.tex.Width / 2 - top.origin.X, top.position.Y + top.tex.Height - top.origin.Y);
+            Vector2 leftOfDiamond = new Vector2(top.position.X - top.origin.X, top.position.Y + top.tex.Height / 2 - top.origin.Y);
+            Vector2 rightOfDiamond = new Vector2(top.position.X + top.tex.Width - top.origin.X, top.position.Y + top.tex.Height / 2 - top.origin.Y);
+            topPoly.Lines.Clear();
+            topPoly.Lines.Add(new PolyLine(leftOfDiamond, topOfDiamond));
+            topPoly.Lines.Add(new PolyLine(topOfDiamond, rightOfDiamond));
+            topPoly.Lines.Add(new PolyLine(rightOfDiamond, bottomOfDiamond));
+            topPoly.Lines.Add(new PolyLine(bottomOfDiamond, leftOfDiamond));
+
+            if (gridPos == new Vector3(8, 8, 1))
+            {
+                // add random transparent colors
+                /*rectangleTex = Game1.world.textureConverter.GenRectangle(top.rectangle.Width, top.rectangle.Height, Color.Red); // top.rectangle.Width, top.rectangle.Height, Color.Black);
+                rectangleSprite = new Sprite(rectangleTex, graphics, spriteSheetInfo);
+                rectangleSprite.position = new Vector2(top.position.X, top.position.Y);
+                rectangleSprite.origin = top.origin;
+                Console.WriteLine("pos:" + rectangleSprite.position);*/
+            }
 
             darken();
-            text.Text = "X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z; //"[" + position.X + "," + position.Y + "]";
+            text.Text = "     (" + gridPos.X + ", " + gridPos.Y + ", " + gridPos.Z + ")";
+            //"X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z; //"[" + position.X + "," + position.Y + "]";
             text.position = position;
         }
 
@@ -99,7 +161,11 @@ namespace pax_infinium
             south.Draw(spriteBatch);
             top.Draw(spriteBatch);
             text.Draw(spriteBatch);
+            if (rectangleTex != null)
+            {
+                rectangleSprite.Draw(spriteBatch);
 
+            }
         }
 
         public void darken()
