@@ -158,5 +158,10 @@ namespace pax_infinium
             }
             return (tempPt);
         }
+
+        public int cubeDist(Vector3 a, Vector3 b)
+        {
+            return (int) (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z));
+        }
     }
 }

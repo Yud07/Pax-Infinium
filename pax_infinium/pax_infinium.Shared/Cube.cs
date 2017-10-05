@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace pax_infinium
 {
-    public class Cube
+    public class Cube : IDrawable1
     {
         public Sprite west;
         public Sprite north;
@@ -185,7 +185,11 @@ namespace pax_infinium
             {
                 Color color = mapcolors[s];
                 Color tempColor = color;
-                for (int h = 0; h < 6 - gridPos.Z + 11 - gridPos.Y + 11 - gridPos.X; h++)
+                int width, depth, height;
+                width = 11;// Game1.world.level.grid.width + 1;
+                depth = 11;// Game1.world.level.grid.depth + 1;
+                height = 6;// Game1.world.level.grid.height + 1;
+                for (int h = 0; h < width + depth + height - gridPos.Z - gridPos.Y - gridPos.X; h++) // these need to be tied to level size
                 {
                     tempColor = Color.Multiply(tempColor, .96f);
                 }
@@ -278,5 +282,15 @@ namespace pax_infinium
             return new Cube(position, westTex, southTex, topTex, graphics, spriteSheetInfo);
         }
         */
+
+        public Vector3 getGridPos()
+        {
+            return gridPos;
+        }
+
+        public int DrawOrder()
+        {
+            return (int) (gridPos.X + gridPos.Y + gridPos.Z);
+        }
     }
 }

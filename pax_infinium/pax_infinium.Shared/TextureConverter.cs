@@ -397,5 +397,23 @@ namespace pax_infinium
             return tex;
         }
 
+        public Texture2D highlightTex(Texture2D tex)
+        {
+            Texture2D tempTex = new Texture2D(graphicsDevice, tex.Width, tex.Height);
+            var size = tempTex.Width * tempTex.Height;
+            Color[] mapcolors = new Color[size];
+            tex.GetData(mapcolors);
+            for (var s = 0; s < size; s++)
+            {
+                Color color = mapcolors[s];
+                Color tempColor = color;
+                tempColor = Color.Multiply(tempColor, .75f);
+                tempColor.A = color.A;
+                mapcolors[s] = tempColor;
+            }
+            tempTex.SetData(mapcolors);
+            return tempTex;
+        }
+
     }
 }

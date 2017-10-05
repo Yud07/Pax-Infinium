@@ -92,6 +92,8 @@ namespace pax_infinium
         {
             KeyboardState keyboardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
+            Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
+            Cube exampleCube = world.level.grid.cubes[0];
 
             // press esc to exit
             if (keyboardState.IsKeyDown(Keys.Escape))
@@ -99,28 +101,42 @@ namespace pax_infinium
                 Exit();
             }
 
+            // highlight scrolled over cube
+            foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
+            {
+                if (cube.topPoly.Contains(transformedMouseState) &&
+                    world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
+                {
+                    world.level.grid.highlightTex = world.textureConverter.highlightTex(cube.topTex);
+                    world.level.grid.highlight = new Sprite(world.level.grid.highlightTex);
+                    world.level.grid.highlight.origin = cube.top.origin;
+                    world.level.grid.highlight.position = cube.top.position;
+                    world.level.grid.highlightedCube = cube;
+                }
+            }
+
             if (mouseState.LeftButton == ButtonState.Pressed &&
                 previousMouseState.LeftButton == ButtonState.Released)
-            {
-                Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
+            {                
                 //Console.WriteLine("mousePos tx:" + transformedMouseState.X + " ty:" + transformedMouseState.Y);
-                Vector2 tempMouseState;
-                foreach (Cube cube in world.level.grid.cubes)
+                foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
                 {
-                    //tempMouseState = transformedMouseState;
-                    /*if (cube.top.rectangle.Contains(tempMouseState + new Vector2(cube.top.origin.X, cube.top.origin.Y)) ||
-                        cube.west.rectangle.Contains(tempMouseState + new Vector2(cube.west.origin.X, cube.west.origin.Y)) ||
-                        cube.south.rectangle.Contains(tempMouseState + new Vector2(cube.south.origin.X, cube.south.origin.Y))) &&
-                        world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)*/
                     if (cube.topPoly.Contains(transformedMouseState) &&
                         world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
                     {
-                        cube.darken();
-                        Console.WriteLine();
+                        //cube.darken();
+                        /*Console.WriteLine();
                         Console.WriteLine("mouse ps:" + transformedMouseState);
                         Console.WriteLine("cube gridPos:" + cube.gridPos + " origin:" + cube.origin + " pos:" + cube.position);
                         Console.WriteLine("top origin:" + cube.top.origin + " pos:" + cube.top.position);
                         Console.WriteLine("top.rectangle X:" + cube.top.rectangle.X + " Y:" + cube.top.rectangle.Y + " Width:" + cube.top.rectangle.Width + " Height:" + cube.top.rectangle.Height);
+                        */
+                        Character player = world.level.characters.list[0];
+                        if (Game1.world.cubeDist(player.gridPos, cube.gridPos) < player.moveDist)
+                        {
+                            player.gridPos = cube.gridPos;
+                            player.recalcPos();
+                        }
                     }
                 }
             }

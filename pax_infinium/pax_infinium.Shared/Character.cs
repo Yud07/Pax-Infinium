@@ -6,7 +6,7 @@ using System.Text;
 
 namespace pax_infinium
 {
-    public class Character
+    public class Character : IDrawable1
     {
         public Sprite top;
         public Vector2 position;
@@ -17,6 +17,7 @@ namespace pax_infinium
         SpriteSheetInfo spriteSheetInfo;
         public int cubeWidth = 64;
         public int cubeHeight = (int)(64 * 1.5 + 1);
+        public int moveDist;
 
         public Character(Vector2 origin, Vector3 gridPos, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -27,6 +28,7 @@ namespace pax_infinium
             this.position.Y -= gridPos.Z * cubeHeight * .65F + topTex.Height/2;
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
+            this.moveDist = 5;
 
             top = new Sprite(topTex, graphics, spriteSheetInfo);
             top.position = position;
@@ -54,6 +56,16 @@ namespace pax_infinium
         public void Draw(SpriteBatch spriteBatch)
         {
             top.Draw(spriteBatch);
+        }
+
+        public Vector3 getGridPos()
+        {
+            return gridPos;
+        }
+
+        public int DrawOrder()
+        {
+            return (int)(gridPos.X + gridPos.Y + gridPos.Z);
         }
 
     }

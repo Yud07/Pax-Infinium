@@ -21,6 +21,9 @@ namespace pax_infinium
         public int width;
         public int depth;
         public int height;
+        public Cube highlightedCube;
+        public Sprite highlight;
+        public Texture2D highlightTex;
 
         public Grid(GraphicsDeviceManager graphics, string seed, Random random)
         {
@@ -275,23 +278,29 @@ namespace pax_infinium
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
             foreach (Cube cube in RenderSort(cubes))
             {
                 cube.Draw(spriteBatch);
             }
+            if (highlight != null)
+            {
+                highlight.Draw(spriteBatch);
+            }
         }
 
-        public List<Cube> RenderSort(List<Cube> cubes)
+        List<Cube> RenderSort(List<Cube> cubes)//, Characters characters)
         {
-            List<Cube> sortedCubes = cubes.OrderBy(c => (c.gridPos.X + c.gridPos.Y + c.gridPos.Z)).ToList();
+            /*List<IDrawable1> sortedObjs = new List<IDrawable1>();
+            sortedObjs.InsertRange(0, cubes);
+            sortedObjs.InsertRange(cubes.Count, characters.list);*/
+            cubes.OrderBy(o => (o.DrawOrder())).ToList();
             //sortedCubes.Reverse();
             //Console.WriteLine("\n");
             //foreach (Cube cube in sortedCubes)
             //{
-                //Console.WriteLine("gX=" + cube.gridPos.X + " gY=" + cube.gridPos.Y + " gZ=" + cube.gridPos.Z);
+            //Console.WriteLine("gX=" + cube.gridPos.X + " gY=" + cube.gridPos.Y + " gZ=" + cube.gridPos.Z);
             //}
-            return sortedCubes;
+            return cubes;
         }
     }
 }
