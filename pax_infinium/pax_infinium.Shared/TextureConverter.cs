@@ -407,7 +407,7 @@ namespace pax_infinium
             {
                 Color color = mapcolors[s];
                 Color tempColor = color;
-                tempColor = Color.Multiply(tempColor, .75f);
+                tempColor = Color.Multiply(tempColor, 1.25f);//.75f);
                 tempColor.A = color.A;
                 mapcolors[s] = tempColor;
             }

@@ -18,9 +18,14 @@ namespace pax_infinium
         public int cubeWidth = 64;
         public int cubeHeight = (int)(64 * 1.5 + 1);
         public int moveDist;
+        public string name;
+        public int health;
+        public int strength;
 
-        public Character(Vector2 origin, Vector3 gridPos, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
+
+        public Character(string name, Vector2 origin, Vector3 gridPos, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
+            this.name = name;
             this.topTex = topTex;
             this.origin = origin;
             this.gridPos = gridPos;
@@ -29,6 +34,8 @@ namespace pax_infinium
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
             this.moveDist = 5;
+            this.health = 5;
+            this.strength = 1;
 
             top = new Sprite(topTex, graphics, spriteSheetInfo);
             top.position = position;
@@ -56,11 +63,6 @@ namespace pax_infinium
         public void Draw(SpriteBatch spriteBatch)
         {
             top.Draw(spriteBatch);
-        }
-
-        public Vector3 getGridPos()
-        {
-            return gridPos;
         }
 
         public int DrawOrder()

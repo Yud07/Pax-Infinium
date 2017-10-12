@@ -89,22 +89,22 @@ namespace pax_infinium
             topPoly.Lines.Add(new PolyLine(rightOfDiamond, bottomOfDiamond));
             topPoly.Lines.Add(new PolyLine(bottomOfDiamond, leftOfDiamond));*/
 
-            if (gridPos == new Vector3(8, 8, 1)) {
+            /*if (gridPos == new Vector3(8, 8, 1)) {
                 Console.WriteLine("Cube Top Rect:" + top.rectangle + " Pos:" + top.position + " Origin:" + top.origin);
-            }
+            }*/
 
             text = new TextItem(World.fontManager["InfoFont"], "X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z);
             text.position = position;
 
-            if (gridPos == new Vector3(8, 8, 1))
+            /*if (gridPos == new Vector3(8, 8, 1))
             {
                 // add random transparent colors
-                /*rectangleTex = Game1.world.textureConverter.GenRectangle(top.rectangle.Width, top.rectangle.Height, Color.Red); // top.rectangle.Width, top.rectangle.Height, Color.Black);
+                rectangleTex = Game1.world.textureConverter.GenRectangle(top.rectangle.Width, top.rectangle.Height, Color.Red); // top.rectangle.Width, top.rectangle.Height, Color.Black);
                 rectangleSprite = new Sprite(rectangleTex, graphics, spriteSheetInfo);
                 rectangleSprite.position = new Vector2(top.position.X, top.position.Y);
                 rectangleSprite.origin = top.origin;
-                Console.WriteLine("pos:" + rectangleSprite.position);*/
-            }
+                Console.WriteLine("pos:" + rectangleSprite.position);
+            }*/
         }
 
         public void recalcPos()

@@ -21,31 +21,34 @@ namespace pax_infinium
         public int width;
         public int depth;
         public int height;
+        public int c1, c2, c3, c4;
         public Cube highlightedCube;
         public Sprite highlight;
         public Texture2D highlightTex;
 
-        public Grid(GraphicsDeviceManager graphics, string seed, Random random)
+        public Grid(GraphicsDeviceManager graphics, string seed, int width, int depth, int height, int c1, int c2, int c3, int c4, Random random)
         {
             this.graphics = graphics;
             cubes = new List<Cube>();
             origin = new Vector2(Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Width / 2,
                 Game1.world.rooms.CurrentState.cameras.CurrentState.viewport.Height / 2 - 128);
+            this.width = width;
+            this.depth = depth;
+            this.height = height;
 
             // cartesian space
-            width = 10; // random.Next(4, 20);
-            depth = 10; // random.Next(4, 20);
-            height = 5; // random.Next(1, 10);
+            //width = 10; // random.Next(4, 20);
+            //depth = 10; // random.Next(4, 20);
+            //height = 5; // random.Next(1, 10);
             //Console.WriteLine("w " + width + " d " + depth + " h " + height);
             binaryMatrix = new bool[width, depth, height];
             OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise(seed.GetHashCode());
             //(c1 * x, c2 * y, c3 * z);// + c3 * z + c4)
-            int c1, c2, c3, c4;
             //BIOMES--------------------------------------------------------------------------------------------------------
-            c1 = 1; // random.Next(1, 10);
-            c2 = 1; // random.Next(1, 10);
-            c3 = 1; // random.Next(1, 10);
-            c4 = 1; // random.Next(1, 10);
+            //c1 = 1; // random.Next(1, 10);
+            //c2 = 1; // random.Next(1, 10);
+            //c3 = 1; // random.Next(1, 10);
+            //c4 = 1; // random.Next(1, 10);
            //Console.WriteLine("c1 " + c1 + " c2 " + c2 + " c3 " + c3 + " c4 " + c4);
             Console.WriteLine("seed=" + seed + " w=" + width + " h=" + height + " d=" + depth + " c1=" + c1 + " c2=" + c2 + " c3=" + c3 + " c4=" + c4);
             for (int w = 0; w < width - 1; w++) 
