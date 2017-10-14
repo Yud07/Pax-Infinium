@@ -10,5 +10,7 @@ namespace pax_infinium
     {
         void Draw(SpriteBatch spriteBatch);
         int DrawOrder();
+
+        void SetAlpha(float alpha);
     }
 }

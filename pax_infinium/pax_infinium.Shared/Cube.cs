@@ -10,9 +10,9 @@ namespace pax_infinium
     public class Cube : IDrawable1
     {
         public Sprite west;
-        public Sprite north;
+        //public Sprite north;
         public Sprite top;
-        public Sprite east;
+       // public Sprite east;
         public Sprite south;
         public Vector2 position;
         public Vector3 gridPos;
@@ -291,6 +291,26 @@ namespace pax_infinium
         public int DrawOrder()
         {
             return (int) (gridPos.X + gridPos.Y + gridPos.Z);
+        }
+
+        public void SetAlpha(float alpha)
+        {
+            top.alpha = alpha;
+            west.alpha = alpha;
+            south.alpha = alpha;
+            text.alpha = alpha;
+        }
+
+        public void onCharacterMoved()
+        {
+            SetAlpha(1f);
+            foreach(Character character in Game1.world.level.grid.characters.list)
+            {
+                if (DrawOrder() > character.DrawOrder() && Vector2.Distance(position, character.position) < 100)
+                {
+                    SetAlpha(.5f);
+                }
+            }
         }
     }
 }

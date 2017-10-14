@@ -12,7 +12,6 @@ namespace pax_infinium
         private Random random;
         public string seed;
         public Grid grid;
-        public Characters characters;
         public int turn;
         public bool moved;
         public TextItem text;
@@ -27,12 +26,12 @@ namespace pax_infinium
             random = World.Random;
             grid = new Grid(graphics, seed, 10, 10, 5, 1, 1, 1, 1, random);
             background = new Background(World.textureManager["BG-Layer"], graphics.GraphicsDevice.Viewport);
-            characters = new Characters();
-            characters.list.Add(new Character("player", grid.origin, new Vector3(5, 5, 3), Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue), graphics, new SpriteSheetInfo(64, 128)));
-            characters.list.Add(new Character("enemy0", grid.origin, new Vector3(3, 7, 3), Game1.world.textureConverter.GenRectangle(64, 128, Color.Red), graphics, new SpriteSheetInfo(64, 128)));
-            turnOrder = new string[characters.list.Count];
-            turnOrder[0] = characters.list[0].name;
-            turnOrder[1] = characters.list[1].name;
+            grid.characters = new Characters();
+            grid.characters.list.Add(new Character("player", grid.origin, new Vector3(5, 5, 3), Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue), graphics, new SpriteSheetInfo(64, 128)));
+            grid.characters.list.Add(new Character("enemy0", grid.origin, new Vector3(3, 7, 3), Game1.world.textureConverter.GenRectangle(64, 128, Color.Red), graphics, new SpriteSheetInfo(64, 128)));
+            turnOrder = new string[grid.characters.list.Count];
+            turnOrder[0] = grid.characters.list[0].name;
+            turnOrder[1] = grid.characters.list[1].name;
             turn = 0;
             moved = false;
             text = new TextItem(World.fontManager["InfoFont"], turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString());
@@ -56,17 +55,18 @@ namespace pax_infinium
                 {
                     text.color = Color.Blue;
                 }
+                grid.onCharacterMoved();
                 moved = false;
             }
-            grid.Update(gameTime);
-            characters.Update(gameTime);
+            //grid.Update(gameTime);
+            //grid.characters.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             background.Draw(spriteBatch);
             grid.Draw(spriteBatch);
-            characters.Draw(spriteBatch);
+            //grid.characters.Draw(spriteBatch);
             text.Draw(spriteBatch);
         }
         

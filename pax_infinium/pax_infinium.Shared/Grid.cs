@@ -25,6 +25,7 @@ namespace pax_infinium
         public Cube highlightedCube;
         public Sprite highlight;
         public Texture2D highlightTex;
+        public Characters characters;
 
         public Grid(GraphicsDeviceManager graphics, string seed, int width, int depth, int height, int c1, int c2, int c3, int c4, Random random)
         {
@@ -273,37 +274,55 @@ namespace pax_infinium
 
         public void Update(GameTime gameTime)
         {
-            foreach (Cube cube in cubes)
+            /*foreach (Cube cube in cubes)
             {
                 cube.Update(gameTime);
-            }
+            }*/
+            //characters.Update(gameTime);
         }
-
+        bool printed = false;
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (Cube cube in RenderSort(cubes))
+            /*foreach (Cube cube in RenderSort(cubes))
             {
                 cube.Draw(spriteBatch);
+            }*/
+            foreach (IDrawable1 obj in RenderSort(cubes, characters.list)){
+                /*if (!printed)
+                {
+                    Console.WriteLine(obj.DrawOrder());
+                }*/
+                obj.Draw(spriteBatch);
             }
             if (highlight != null)
             {
                 highlight.Draw(spriteBatch);
             }
+            if (!printed)
+            {
+                printed = true;
+            }
+            //characters.Draw(spriteBatch);
         }
 
-        List<Cube> RenderSort(List<Cube> cubes)//, Characters characters)
+        private List<IDrawable1> RenderSort(List<Cube> cubes, List <Character> characters)
         {
-            /*List<IDrawable1> sortedObjs = new List<IDrawable1>();
+            List<IDrawable1> sortedObjs = new List<IDrawable1>();
             sortedObjs.InsertRange(0, cubes);
-            sortedObjs.InsertRange(cubes.Count, characters.list);*/
-            cubes.OrderBy(o => (o.DrawOrder())).ToList();
-            //sortedCubes.Reverse();
-            //Console.WriteLine("\n");
-            //foreach (Cube cube in sortedCubes)
-            //{
-            //Console.WriteLine("gX=" + cube.gridPos.X + " gY=" + cube.gridPos.Y + " gZ=" + cube.gridPos.Z);
-            //}
-            return cubes;
+            sortedObjs.InsertRange(cubes.Count, characters);
+            return sortedObjs.OrderBy(o => (o.DrawOrder())).ToList();
+        }
+
+        public void onCharacterMoved()
+        {
+            foreach (Cube cube in cubes)
+            {
+                cube.onCharacterMoved();
+            }
+            /*foreach (Character character in characters.list)
+            {
+                character.onCharacterMoved();
+            }*/
         }
     }
 }

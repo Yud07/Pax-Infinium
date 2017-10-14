@@ -95,7 +95,7 @@ namespace pax_infinium
             MouseState mouseState = Mouse.GetState();
             Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
             Cube exampleCube = world.level.grid.cubes[0];
-            Character player = world.level.characters.list[world.level.turn % world.level.turnOrder.Length];
+            Character player = world.level.grid.characters.list[world.level.turn % world.level.turnOrder.Length];
             //TouchPanelState touchPanelState = TouchPanel.GetState();
 
             // press esc to exit
@@ -122,7 +122,7 @@ namespace pax_infinium
                         {
                             bool vacant = true;
                             Console.WriteLine();
-                            foreach (Character character in world.level.characters.list)
+                            foreach (Character character in world.level.grid.characters.list)
                             {
                                 if (character.gridPos == cube.gridPos)
                                 {
@@ -146,7 +146,7 @@ namespace pax_infinium
             if (mouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released)
             //if (touchPanelState.)
             {
-                foreach (Character character in world.level.characters.list)
+                foreach (Character character in world.level.grid.characters.list)
                 {
                     if (character.top.rectangle.Contains(transformedMouseState) && world.cubeDist(player.gridPos, character.gridPos) == 1)
                     {

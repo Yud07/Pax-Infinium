@@ -161,7 +161,7 @@ namespace pax_infinium
 
         public int cubeDist(Vector3 a, Vector3 b)
         {
-            return (int) (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z));
+            return (int) Vector3.Distance(a, b);//(Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z));
         }
     }
 }
