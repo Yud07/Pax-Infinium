@@ -14,8 +14,10 @@ namespace pax_infinium
         public Grid grid;
         public int turn;
         public bool moved;
+        public bool attacked;
         public TextItem text;
         public string[] turnOrder;
+        
 
         
         public Background background;
@@ -34,6 +36,7 @@ namespace pax_infinium
             turnOrder[1] = grid.characters.list[1].name;
             turn = 0;
             moved = false;
+            attacked = false;
             text = new TextItem(World.fontManager["InfoFont"], turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString());
             text.position = new Vector2(175, 30);
             text.color = Color.Blue;
@@ -57,6 +60,7 @@ namespace pax_infinium
                 }
                 grid.onCharacterMoved();
                 moved = false;
+                attacked = false;
             }
             //grid.Update(gameTime);
             //grid.characters.Update(gameTime);

@@ -306,7 +306,7 @@ namespace pax_infinium
             SetAlpha(1f);
             foreach(Character character in Game1.world.level.grid.characters.list)
             {
-                if (DrawOrder() > character.DrawOrder() && Vector2.Distance(position, character.position) < 100)
+                if (DrawOrder() > character.DrawOrder() && Vector2.Distance(position, character.position) < 125 && gridPos.Z > character.gridPos.Z)
                 {
                     SetAlpha(.5f);
                 }
