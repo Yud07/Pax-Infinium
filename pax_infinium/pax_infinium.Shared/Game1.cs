@@ -96,6 +96,23 @@ namespace pax_infinium
             Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
             Cube exampleCube = world.level.grid.cubes[0];
             Character player;
+
+            // press esc to exit
+            if (keyboardState.IsKeyDown(Keys.Escape))
+            {
+                Exit();
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left))
+            {
+                world.level.grid.rotate(true);
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Right) && previousKeyboardState.IsKeyUp(Keys.Right))
+            {
+                world.level.grid.rotate(false);
+            }
+
             if (world.level.grid.characters.list.Count > 0)
             {
                 if (world.level.grid.characters.list.Count == 1)
@@ -105,14 +122,7 @@ namespace pax_infinium
                 else
                 {
                     player = world.level.grid.characters.list[world.level.turn % world.level.turnOrder.Length];
-                }
-                //TouchPanelState touchPanelState = TouchPanel.GetState();
-
-                // press esc to exit
-                if (keyboardState.IsKeyDown(Keys.Escape))
-                {
-                    Exit();
-                }
+                }                
 
                 // highlight scrolled over cube
                 foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE

@@ -70,6 +70,89 @@ namespace pax_infinium
                 }
             }
 
+            createGrid();
+        }
+
+        public int topOfColumn(Vector3 gridPos)
+        {
+            int x = (int) gridPos.X;
+            int y = (int) gridPos.Y;
+            int maxHeight = height;
+            int topZ = int.MinValue;
+            for (int z = 0; z < maxHeight; z++)
+            {
+                if (binaryMatrix[x, y, z])
+                {
+                    topZ = z;
+                }
+            }
+            return topZ;
+        }
+
+        public int topOfColumn(int x, int y, int maxHeight, bool[,,] binaryMatrix)
+        {
+            int topZ = int.MinValue;
+            for (int z = 0; z < maxHeight; z++)
+            {
+                if (binaryMatrix[x,y,z])
+                {
+                    topZ = z;
+                }
+            }
+            return topZ;
+        }       
+
+        public void Update(GameTime gameTime)
+        {
+            /*foreach (Cube cube in cubes)
+            {
+                cube.Update(gameTime);
+            }*/
+            //characters.Update(gameTime);
+        }
+
+        //bool printed = false;
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            foreach (IDrawable1 obj in RenderSort(cubes, characters.list)){
+                /*if (!printed)
+                {
+                    Console.WriteLine(obj.DrawOrder());
+                }*/
+                obj.Draw(spriteBatch);
+            }
+            if (highlight != null)
+            {
+                highlight.Draw(spriteBatch);
+            }
+            /*if (!printed)
+            {
+                printed = true;
+            }*/
+        }
+
+        private List<IDrawable1> RenderSort(List<Cube> cubes, List <Character> characters)
+        {
+            List<IDrawable1> sortedObjs = new List<IDrawable1>();
+            sortedObjs.InsertRange(0, cubes);
+            sortedObjs.InsertRange(cubes.Count, characters);
+            return sortedObjs.OrderBy(o => (o.DrawOrder())).ToList();
+        }
+
+        public void onCharacterMoved()
+        {
+            foreach (Cube cube in cubes)
+            {
+                cube.onCharacterMoved();
+            }
+            /*foreach (Character character in characters.list)
+            {
+                character.onCharacterMoved();
+            }*/
+        }
+
+        public void createGrid()
+        {
             int randomColor;
             int texWidth = 64;
             int texHeight = 64;
@@ -81,7 +164,7 @@ namespace pax_infinium
             bool borderA, borderB, borderC;
             int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
             randomColor = 2;//random.Next(0, 5); //0;
-            Console.WriteLine("randomColor " + randomColor);
+            //Console.WriteLine("randomColor " + randomColor);
             for (int x = 0; x < width - 1; x++)
             {
                 for (int y = 0; y < depth - 1; y++)
@@ -243,86 +326,72 @@ namespace pax_infinium
             }
         }
 
-        public int topOfColumn(Vector3 gridPos)
+        public void rotate(bool clockwise)
         {
-            int x = (int) gridPos.X;
-            int y = (int) gridPos.Y;
-            int maxHeight = height;
-            int topZ = int.MinValue;
-            for (int z = 0; z < maxHeight; z++)
+            cubes.Clear();
+            rotateBinaryMatrix(clockwise);
+            createGrid();
+            rotateCharacters(clockwise);
+        }
+
+        public void rotateBinaryMatrix(bool clockwise)
+        {
+            bool [,,] newBinaryMatrix = new bool[depth, width, height]; // handles different width/depth
+
+            double degrees;
+
+            if (clockwise)
             {
-                if (binaryMatrix[x, y, z])
+                degrees = 90.0;
+            }
+            else
+            {
+                degrees = -90.0;
+            }
+
+            for (int w = 0; w < width - 1; w++)
+            {
+                for (int d = 0; d < depth - 1; d++)
                 {
-                    topZ = z;
+                    for (int h = 0; h < height - 1; h++)
+                    {                        
+                        Point newCoords = Game1.world.rotate(new Point(w, d), deg2Rad(degrees), new Point((int)width/2 - 1, (int)depth/2 - 1));
+                        //Console.WriteLine("old: x:" + w + " y:" + d + " z: " + h + " new: x:" + newCoords.X + " y:" + newCoords.Y);
+                        //Console.WriteLine("newBinaryMatrix: length: " + newBinaryMatrix.Length);
+                        newBinaryMatrix[newCoords.X, newCoords.Y, h] = binaryMatrix[w, d, h];
+                    }
                 }
             }
-            return topZ;
+            width = depth;
+            depth = width;
+            binaryMatrix = newBinaryMatrix;
+        }
+        public void rotateCharacters(bool clockwise)
+        {
+            double degrees;
+
+            if (clockwise)
+            {
+                degrees = 90.0;
+            }
+            else
+            {
+                degrees = -90.0;
+            }
+
+            foreach (Character character in characters.list)
+            {
+                Point newCoords = Game1.world.rotate(new Point((int)character.gridPos.X, (int)character.gridPos.Y), deg2Rad(degrees), new Point((int)width / 2 - 1, (int)depth / 2 - 1));
+                character.gridPos.X = newCoords.X;
+                character.gridPos.Y = newCoords.Y;
+                character.recalcPos();
+            }
+            onCharacterMoved();
         }
 
-        public int topOfColumn(int x, int y, int maxHeight, bool[,,] binaryMatrix)
+        public double deg2Rad(double degrees)
         {
-            int topZ = int.MinValue;
-            for (int z = 0; z < maxHeight; z++)
-            {
-                if (binaryMatrix[x,y,z])
-                {
-                    topZ = z;
-                }
-            }
-            return topZ;
-        }       
-
-        public void Update(GameTime gameTime)
-        {
-            /*foreach (Cube cube in cubes)
-            {
-                cube.Update(gameTime);
-            }*/
-            //characters.Update(gameTime);
-        }
-        bool printed = false;
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            /*foreach (Cube cube in RenderSort(cubes))
-            {
-                cube.Draw(spriteBatch);
-            }*/
-            foreach (IDrawable1 obj in RenderSort(cubes, characters.list)){
-                /*if (!printed)
-                {
-                    Console.WriteLine(obj.DrawOrder());
-                }*/
-                obj.Draw(spriteBatch);
-            }
-            if (highlight != null)
-            {
-                highlight.Draw(spriteBatch);
-            }
-            if (!printed)
-            {
-                printed = true;
-            }
-            //characters.Draw(spriteBatch);
-        }
-
-        private List<IDrawable1> RenderSort(List<Cube> cubes, List <Character> characters)
-        {
-            List<IDrawable1> sortedObjs = new List<IDrawable1>();
-            sortedObjs.InsertRange(0, cubes);
-            sortedObjs.InsertRange(cubes.Count, characters);
-            return sortedObjs.OrderBy(o => (o.DrawOrder())).ToList();
-        }
-
-        public void onCharacterMoved()
-        {
-            foreach (Cube cube in cubes)
-            {
-                cube.onCharacterMoved();
-            }
-            /*foreach (Character character in characters.list)
-            {
-                character.onCharacterMoved();
-            }*/
+            return (Math.PI * degrees) / 180.0;
         }
     }
 }

@@ -163,5 +163,23 @@ namespace pax_infinium
         {
             return (int) Vector3.Distance(a, b);//(Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z));
         }
+
+        public Point rotate(Point p, double angle, Point origin)
+        {
+            double s = Math.Sin(angle);
+            double c = Math.Cos(angle);
+            //Console.WriteLine("sin: " + s + " cos: " + c);
+
+            // translate point back to origin:
+            p.X -= origin.X;
+            p.Y -= origin.Y;
+
+            // rotate point
+            float xnew = p.X * (float)c - p.Y * (float)s;
+            float ynew = p.X * (float)s + p.Y * (float)c;
+
+            // translate point back:
+            return new Point((int)xnew + origin.X, (int)ynew + origin.Y);
+        }
     }
 }
