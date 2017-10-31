@@ -26,6 +26,9 @@ namespace pax_infinium
         public Sprite rectangleSprite;
         public Texture2D rectangleTex;
         public Polygon topPoly;
+        public bool highLight;
+        public Sprite highlight;
+        public Texture2D highlightTex;
 
         public Cube(Vector2 origin, Vector3 gridPos, Texture2D westTex, Texture2D southTex, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -38,6 +41,7 @@ namespace pax_infinium
             this.position.Y -= gridPos.Z * westTex.Height * .65F;
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
+            this.highLight = false;
 
             west = new Sprite(westTex);
             west.position = position;
@@ -105,6 +109,11 @@ namespace pax_infinium
                 rectangleSprite.origin = top.origin;
                 Console.WriteLine("pos:" + rectangleSprite.position);
             }*/
+
+            /*highlightTex = Game1.world.textureConverter.highlightTex(topTex);
+            highlight = new Sprite(highlightTex);
+            highlight.origin = top.origin;
+            highlight.position = top.position;*/
         }
 
         public void recalcPos()
@@ -148,6 +157,11 @@ namespace pax_infinium
             text.Text = "     (" + gridPos.X + ", " + gridPos.Y + ", " + gridPos.Z + ")";
             //"X: " + gridPos.X + " Y: " + gridPos.Y + " Z: " + gridPos.Z; //"[" + position.X + "," + position.Y + "]";
             text.position = position;
+
+            highlightTex = Game1.world.textureConverter.highlightTex(topTex);
+            highlight = new Sprite(highlightTex);
+            highlight.origin = top.origin;
+            highlight.position = top.position;
         }
 
         public void Update(GameTime gameTime)
@@ -159,7 +173,14 @@ namespace pax_infinium
         {
             west.Draw(spriteBatch);
             south.Draw(spriteBatch);
-            top.Draw(spriteBatch);
+            if (highLight)
+            {
+                highlight.Draw(spriteBatch);
+            }
+            else
+            {
+                top.Draw(spriteBatch);
+            }
             text.Draw(spriteBatch);
             if (rectangleTex != null)
             {
@@ -310,6 +331,15 @@ namespace pax_infinium
                 {
                     SetAlpha(.5f);
                 }
+            }
+        }
+
+        public void onHighlightMoved(Cube c)
+        {
+            SetAlpha(1f);
+            if (DrawOrder() > c.DrawOrder() && Vector2.Distance(position, c.position) < 125 && gridPos.Z > c.gridPos.Z)
+            {
+                SetAlpha(.5f);
             }
         }
     }

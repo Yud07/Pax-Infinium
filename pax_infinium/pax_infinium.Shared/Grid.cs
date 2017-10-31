@@ -22,9 +22,9 @@ namespace pax_infinium
         public int depth;
         public int height;
         public int c1, c2, c3, c4;
-        public Cube highlightedCube;
+        /*public Cube highlightedCube;
         public Sprite highlight;
-        public Texture2D highlightTex;
+        public Texture2D highlightTex;*/
         public Characters characters;
 
         public Grid(GraphicsDeviceManager graphics, string seed, int width, int depth, int height, int c1, int c2, int c3, int c4, Random random)
@@ -104,10 +104,10 @@ namespace pax_infinium
 
         public void Update(GameTime gameTime)
         {
-            /*foreach (Cube cube in cubes)
+            foreach (Cube cube in cubes)
             {
                 cube.Update(gameTime);
-            }*/
+            }
             //characters.Update(gameTime);
         }
 
@@ -121,10 +121,10 @@ namespace pax_infinium
                 }*/
                 obj.Draw(spriteBatch);
             }
-            if (highlight != null)
+            /*if (highlight != null)
             {
                 highlight.Draw(spriteBatch);
-            }
+            }*/
             /*if (!printed)
             {
                 printed = true;
@@ -149,6 +149,14 @@ namespace pax_infinium
             {
                 character.onCharacterMoved();
             }*/
+        }
+
+        public void onHighlightMoved(Cube c)
+        {
+            foreach (Cube cube in cubes)
+            {
+                cube.onHighlightMoved(c);
+            }
         }
 
         public void createGrid()

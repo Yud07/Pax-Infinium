@@ -124,3 +124,9 @@ C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\o
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.exe
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.pdb
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.csprojResolveAssemblyReference.cache
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Black Mage.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Black Mage2.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Hunter.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Hunter2.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Soldier.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Soldier2.xnb

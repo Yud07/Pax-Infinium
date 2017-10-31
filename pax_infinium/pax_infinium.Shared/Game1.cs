@@ -56,10 +56,17 @@ namespace pax_infinium
         protected override void LoadContent()
         {
             World.textureManager.Load("BG-Layer");
-            World.textureManager.Load("m");
+            //World.textureManager.Load("m");
             World.fontManager.Load("ScoreFont");
             World.fontManager.Load("InfoFont");
             World.fontManager.Load("Impact-36");
+            World.textureManager.Load("Soldier");
+            World.textureManager.Load("Soldier2");
+            World.textureManager.Load("Hunter");
+            World.textureManager.Load("Hunter2");
+            World.textureManager.Load("Black Mage");
+            World.textureManager.Load("Black Mage2");
+
 
             // create 1x1 texture for line drawing
             world.oneByOne = new Texture2D(GraphicsDevice, 1, 1);
@@ -103,14 +110,14 @@ namespace pax_infinium
                 Exit();
             }
 
-            if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left))
-            {
-                world.level.grid.rotate(true);
-            }
-
-            if (keyboardState.IsKeyDown(Keys.Right) && previousKeyboardState.IsKeyUp(Keys.Right))
+            if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left)) // Rotate Left
             {
                 world.level.grid.rotate(false);
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Right) && previousKeyboardState.IsKeyUp(Keys.Right)) // Rotate Right
+            {
+                world.level.grid.rotate(true);
             }
 
             if (world.level.grid.characters.list.Count > 0)
@@ -121,8 +128,39 @@ namespace pax_infinium
                 }
                 else
                 {
-                    player = world.level.grid.characters.list[world.level.turn % world.level.turnOrder.Length];
-                }                
+                    player = world.level.grid.characters.list[0];//world.level.turn % world.level.turnOrder.Length];
+                }
+
+                foreach (Cube cube in world.level.grid.cubes) // clear highlights
+                {
+                    cube.highLight = false;
+                }
+
+                if (keyboardState.IsKeyDown(Keys.A) && !world.level.attacked) // WAttack highlight
+                {
+                    foreach(Cube cube in world.level.grid.cubes)
+                    {
+                        if ((world.cubeDist(cube.gridPos, player.gridPos) == 1)){
+                            cube.highLight = true;
+                        }
+                    }
+
+                }
+                else if (keyboardState.IsKeyDown(Keys.M) && !world.level.moved){ // move highlight
+                    foreach(Cube cube in world.level.grid.cubes)
+                    {
+                        int cubeDist = world.cubeDist(cube.gridPos, player.gridPos);
+                        if (cubeDist < player.move && cubeDist > 0)
+                        {
+                            cube.highLight = true;
+                        }
+                    }
+                }
+
+                if (keyboardState.IsKeyDown(Keys.E) && previousKeyboardState.IsKeyUp(Keys.E)) // end turn
+                {
+                    world.level.endTurn();
+                }
 
                 // highlight scrolled over cube
                 foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
@@ -130,15 +168,24 @@ namespace pax_infinium
                     if (cube.topPoly.Contains(transformedMouseState) &&
                         world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
                     {
-                        world.level.grid.highlightTex = world.textureConverter.highlightTex(cube.topTex);
-                        world.level.grid.highlight = new Sprite(world.level.grid.highlightTex);
-                        world.level.grid.highlight.origin = cube.top.origin;
-                        world.level.grid.highlight.position = cube.top.position;
-                        world.level.grid.highlightedCube = cube;
+                        /* world.level.grid.highlightTex = world.textureConverter.highlightTex(cube.topTex);
+                         world.level.grid.highlight = new Sprite(world.level.grid.highlightTex);
+                         world.level.grid.highlight.origin = cube.top.origin;
+                         world.level.grid.highlight.position = cube.top.position;
+                         world.level.grid.highlightedCube = cube;*/
+                        if (!cube.highLight)
+                        {
+                            cube.highLight = true;
+                        }
+                        else
+                        {
+                            cube.highLight = false;
+                        }
+                        world.level.grid.onHighlightMoved(cube);
 
                         if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
                         {
-                            if (keyboardState.IsKeyDown(Keys.A)) // Attack
+                            if (keyboardState.IsKeyDown(Keys.A) && !world.level.attacked) // Attack
                             {
                                 Character toBeKilled = null;
                                 foreach (Character character in world.level.grid.characters.list)
@@ -146,16 +193,29 @@ namespace pax_infinium
                                     if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
                                         world.cubeDist(player.gridPos, character.gridPos) == 1)
                                     {
-                                        character.health -= player.strength;
-                                        if (character.health <= 0)
-                                        {
-                                            Console.WriteLine(character.name + " has died!");
-                                            toBeKilled = character;
+                                        int chance = 100 - character.evasion;
+                                        Console.WriteLine("\nChance to hit: " + chance + "%");
+                                        if (chance >= World.Random.Next(1, 101)){
+                                            
+                                            int damage = (int)((player.WAttack - (character.WDefense / 2)) * .5);
+                                            Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                                            character.health -= damage;
+
+                                            if (character.health <= 0)
+                                            {
+                                                Console.WriteLine(character.name + " has died!");
+                                                toBeKilled = character;
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine(character.name + " health: " + character.health);
+                                            }
                                         }
                                         else
                                         {
-                                            Console.WriteLine(character.name + " health=" + character.health);
+                                            Console.WriteLine("Miss!");
                                         }
+
                                         world.level.attacked = true;
                                     }
                                 }
@@ -164,7 +224,7 @@ namespace pax_infinium
                                     world.level.grid.characters.list.Remove(toBeKilled);
                                 }
                             }
-                            else if (Game1.world.cubeDist(player.gridPos, cube.gridPos) < player.moveDist)
+                            else if (keyboardState.IsKeyDown(Keys.M) && Game1.world.cubeDist(player.gridPos, cube.gridPos) < player.move && !world.level.moved) // Move
                             {
                                 bool vacant = true;
                                 Console.WriteLine();
@@ -180,6 +240,7 @@ namespace pax_infinium
                                 {
                                     player.gridPos = cube.gridPos;
                                     player.recalcPos();
+                                    world.level.grid.onCharacterMoved();
                                     world.level.moved = true;
                                 }
                             }

@@ -16,7 +16,7 @@ namespace pax_infinium
         public bool moved;
         public bool attacked;
         public TextItem text;
-        public string[] turnOrder;
+        //public string[] turnOrder;
         
 
         
@@ -29,23 +29,29 @@ namespace pax_infinium
             grid = new Grid(graphics, seed, 10, 10, 5, 1, 1, 1, 1, random);
             background = new Background(World.textureManager["BG-Layer"], graphics.GraphicsDevice.Viewport);
             grid.characters = new Characters();
-            grid.characters.list.Add(new Character("player", grid.origin, new Vector3(5, 5, 3), Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue), graphics, new SpriteSheetInfo(64, 128)));
-            grid.characters.list.Add(new Character("enemy0", grid.origin, new Vector3(3, 7, 3), Game1.world.textureConverter.GenRectangle(64, 128, Color.Red), graphics, new SpriteSheetInfo(64, 128)));
-            turnOrder = new string[grid.characters.list.Count];
-            turnOrder[0] = grid.characters.list[0].name;
-            turnOrder[1] = grid.characters.list[1].name;
+            grid.characters.AddCharacter("Blue Soldier", 0, 0, grid.origin, new Vector3(5, 7, 3), graphics);
+            grid.characters.AddCharacter("Red Soldier", 0, 1, grid.origin, new Vector3(4, 2, 3), graphics);
+            grid.characters.AddCharacter("Blue Hunter", 1, 0, grid.origin, new Vector3(6, 7, 3), graphics);
+            grid.characters.AddCharacter("Red Hunter", 1, 1, grid.origin, new Vector3(5, 2, 3), graphics);
+            grid.characters.AddCharacter("Blue Mage", 2, 0, grid.origin, new Vector3(7, 7, 3), graphics);
+            grid.characters.AddCharacter("Red Mage", 2, 1, grid.origin, new Vector3(6, 2, 3), graphics);
+            grid.characters.list.Sort(Character.CompareBySpeed);
+            grid.characters.list.Reverse();
+            //turnOrder = new string[grid.characters.list.Count];
+            //turnOrder[0] = grid.characters.list[0].name;
+            //turnOrder[1] = grid.characters.list[1].name;
             turn = 0;
             moved = false;
             attacked = false;
-            text = new TextItem(World.fontManager["InfoFont"], turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString());
-            text.position = new Vector2(175, 30);
+            text = new TextItem(World.fontManager["InfoFont"], grid.characters.list[0].name + "'s turn:" + turn.ToString());
+            text.position = new Vector2(300, 30);
             text.color = Color.Blue;
             text.scale = 3;
         }
 
         public void Update(GameTime gameTime)
         {
-            if (moved == true)
+            /*if (moved == true)
             {
                 turn++;
                 //Console.WriteLine("turn: " + turn);
@@ -61,7 +67,7 @@ namespace pax_infinium
                 grid.onCharacterMoved();
                 moved = false;
                 attacked = false;
-            }
+            }*/
             //grid.Update(gameTime);
             //grid.characters.Update(gameTime);
         }
@@ -72,6 +78,28 @@ namespace pax_infinium
             grid.Draw(spriteBatch);
             //grid.characters.Draw(spriteBatch);
             text.Draw(spriteBatch);
+        }
+
+        public void endTurn()
+        {
+            turn++;
+            Character tempCharacter = grid.characters.list[0];
+            grid.characters.list.Remove(tempCharacter);
+            grid.characters.list.Add(tempCharacter);
+            //Console.WriteLine("turn: " + turn);
+            //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
+            text.Text = grid.characters.list[0].name + "'s turn:" + turn.ToString();
+            if (grid.characters.list[0].team == 0)
+            {
+                text.color = Color.Blue;
+            }
+            else if (grid.characters.list[0].team == 1)
+            {
+                text.color = Color.Red;
+            }
+            //grid.onCharacterMoved();
+            moved = false;
+            attacked = false;
         }
         
     }

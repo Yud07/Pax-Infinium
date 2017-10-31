@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="213424">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="215984">
       <assemblyIdentity name="pax_infinium.Windows" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>1JtVHIJTSAe/PwT6b++Kp9ma9JfTonjnW1FYxvLMqlA=</dsig:DigestValue>
+        <dsig:DigestValue>kc8hknKAsqn9XWDRq2PVIAlxPJhwpmSKKntcHiVI2RQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -171,6 +171,24 @@
       <dsig:DigestValue>vnU5HDDgCgl2yq0fJohufkonDmoKtNvUcOaiMZ+aeww=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="Content\Black Mage.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>a2NX2f9ccpQVFBsTrLXcTcngFTpkBNrVawqWB7CoonY=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Black Mage2.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>kxwOMsmer/WMeXpTuMP7ta4AEXTxqzSd2Pu8jV03bVU=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="Content\Black.xnb" size="262229">
     <hash>
       <dsig:Transforms>
@@ -196,6 +214,24 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>WXkWqojczoVfVmbmwReCYlK4geU39CeePV5RAZQFzDE=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Hunter.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>bwHniC4/VRcT79qmCVlsYLLf2qcuHINGi4wG+7qwQpA=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Hunter2.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>73BUyDSXcIZVJ4kJQgghL1EBJ1ky74JK6cigIYJCmJM=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\Impact-36.xnb" size="136212">
@@ -241,6 +277,24 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>A0wpUipk21iWM6T0sCpLgdUB/jMcwWvsrv+rhREBYPA=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Soldier.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>hV/cARFmolIBIvbwmKf0QpsMtctkum/VERQWbaf5Gcc=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Soldier2.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>ibhb8EPDzUhZ3p7UBs3VPnA02uNXucGzK+eklbUA8Sw=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\top-border.xnb" size="8294485">
