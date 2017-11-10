@@ -8,11 +8,14 @@ namespace pax_infinium
 {
     public class Character : IDrawable1
     {
-        public Sprite top;
+        public Sprite sprite;
         public Vector2 position;
         public Vector3 gridPos;
         public Vector2 origin;
-        public Texture2D topTex;
+        public Texture2D nwTex;
+        public Texture2D neTex;
+        public Texture2D swTex;
+        public Texture2D seTex;
         GraphicsDeviceManager graphics;
         SpriteSheetInfo spriteSheetInfo;
         public int cubeWidth = 64;
@@ -28,18 +31,26 @@ namespace pax_infinium
         public int jump;
         public int evasion;
         public int speed;
-        TextItem text;
+        public TextItem text;
+        public TimeSpan textTime;
         public int team;
+        public int weaponRange;
+        public int magicRange;
+        public int job;
+        public string direction;
 
 
-        public Character(string name, int team, Vector2 origin, Vector3 gridPos, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
+        public Character(string name, int team, Vector2 origin, Vector3 gridPos, String direction, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
             this.name = name;
-            this.topTex = topTex;
+            this.nwTex = nwTex;
+            this.neTex = neTex;
+            this.swTex = swTex;
+            this.seTex = seTex;
             this.origin = origin;
             this.gridPos = gridPos;
             this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * cubeWidth), (int)(gridPos.Y * cubeHeight * .65f))).ToVector2();
-            this.position.Y -= gridPos.Z * cubeHeight * .65F + topTex.Height / 2;
+            this.position.Y -= gridPos.Z * cubeHeight * .65F + nwTex.Height / 2;
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
             //this.move = World.Random.Next(3, 6);
@@ -51,14 +62,26 @@ namespace pax_infinium
             //this.evasion = World.Random.Next(0, 6);
             //this.speed = World.Random.Next(75, 100);
             this.team = team;
+            this.direction = direction;
 
-            top = new Sprite(topTex, graphics, spriteSheetInfo);
-            top.position = position;
-            top.origin = new Vector2(topTex.Width / 2, topTex.Height / 2);
-            top.scale = 1f;
+            Texture2D tex;
+            if (direction == "nw")
+                tex = nwTex;
+            else if (direction == "ne")
+                tex = neTex;
+            else if (direction == "sw")
+                tex = swTex;
+            else
+                tex = seTex;
 
-            text = new TextItem(World.fontManager["InfoFont"], DrawOrder().ToString());
-            text.position = position;
+            sprite = new Sprite(tex, graphics, spriteSheetInfo);
+            sprite.position = position;
+            sprite.origin = new Vector2(tex.Width / 2, tex.Height / 2);
+            sprite.scale = 1f;
+
+            text = new TextItem(World.fontManager["ScoreFont"], " ");
+            text.position = position + new Vector2(0, -25);
+            text.color = Color.Red;
 
             //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
         }
@@ -66,12 +89,12 @@ namespace pax_infinium
         public void recalcPos()
         {
             this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * cubeWidth), (int)(gridPos.Y * cubeHeight * .65f))).ToVector2();
-            this.position.Y -= gridPos.Z * cubeHeight * .65F + topTex.Height / 2;
+            this.position.Y -= gridPos.Z * cubeHeight * .65F + nwTex.Height / 2;
 
-            top.position = position;
+            sprite.position = position;
 
-            text.Text = DrawOrder().ToString();
-            text.position = position;
+            //text.Text = DrawOrder().ToString();
+            text.position = position + new Vector2(0, -25);
 
             //darken();
         }
@@ -79,12 +102,19 @@ namespace pax_infinium
         public void Update(GameTime gameTime)
         {
             //recalcPos();
+            if (textTime < gameTime.TotalGameTime)
+            {
+                text.Text = " ";
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            top.Draw(spriteBatch);
-            //text.Draw(spriteBatch);
+            sprite.Draw(spriteBatch);
+            if (text.Text != " ")
+            {
+                text.Draw(spriteBatch);
+            }
         }
 
         public int DrawOrder()
@@ -94,8 +124,8 @@ namespace pax_infinium
 
         public void SetAlpha(float alpha)
         {
-            top.alpha = alpha;
-            text.alpha = alpha;
+            sprite.alpha = alpha;
+            //text.alpha = alpha;
         }
 
         public void onCharacterMoved()

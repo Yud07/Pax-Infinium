@@ -9,16 +9,16 @@ namespace pax_infinium
 {
     public class Cube : IDrawable1
     {
-        public Sprite west;
+        public Sprite southwest;
         //public Sprite north;
         public Sprite top;
        // public Sprite east;
-        public Sprite south;
+        public Sprite southeast;
         public Vector2 position;
         public Vector3 gridPos;
         public Vector2 origin;
-        public Texture2D westTex;
-        public Texture2D southTex;
+        public Texture2D southwestTex;
+        public Texture2D southeastTex;
         public Texture2D topTex;
         GraphicsDeviceManager graphics;
         SpriteSheetInfo spriteSheetInfo;
@@ -29,48 +29,52 @@ namespace pax_infinium
         public bool highLight;
         public Sprite highlight;
         public Texture2D highlightTex;
+        public bool invert;
+        public Sprite invertSprite;
+        public Texture2D invertTex;
 
-        public Cube(Vector2 origin, Vector3 gridPos, Texture2D westTex, Texture2D southTex, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
+        public Cube(Vector2 origin, Vector3 gridPos, Texture2D southwestTex, Texture2D southeastTex, Texture2D topTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
-            this.westTex = westTex;
-            this.southTex = southTex;
+            this.southwestTex = southwestTex;
+            this.southeastTex = southeastTex;
             this.topTex = topTex;
             this.origin = origin;
             this.gridPos = gridPos;
-            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * westTex.Width), (int)(gridPos.Y * westTex.Height * .65f))).ToVector2();
-            this.position.Y -= gridPos.Z * westTex.Height * .65F;
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * southwestTex.Width), (int)(gridPos.Y * southwestTex.Height * .65f))).ToVector2();
+            this.position.Y -= gridPos.Z * southwestTex.Height * .65F;
             this.graphics = graphics;
             this.spriteSheetInfo = spriteSheetInfo;
             this.highLight = false;
+            this.invert = false;
 
-            west = new Sprite(westTex);
-            west.position = position;
-            west.position.X -= west.tex.Width / 2;// - 1;
-            west.position.Y += west.tex.Height / 2;//  - 1;
-            west.origin = new Vector2(westTex.Width / 2, westTex.Height / 2);
-            west.scale = 1f;
-            west.rotation = 180;
-
-            // enables collision by moving the rectangle to the proper space
-            /*west.rectangle.X = (int)position.X;
-            west.rectangle.Y = (int)position.Y;
-            west.rectangle.Width = west.tex.Width;
-            west.rectangle.Height = west.tex.Height;*/
-
-            south = new Sprite(southTex);
-            south.position = position;
-            south.position.X += west.tex.Width / 2;// - 1;
-            south.position.Y += west.tex.Height / 2;// - 1;
-            south.origin = new Vector2(southTex.Width / 2, southTex.Height / 2);
-            south.scale = 1f;
-            south.rotation = 180;
+            southwest = new Sprite(southwestTex);
+            southwest.position = position;
+            southwest.position.X -= southwest.tex.Width / 2;// - 1;
+            southwest.position.Y += southwest.tex.Height / 2;//  - 1;
+            southwest.origin = new Vector2(southwestTex.Width / 2, southwestTex.Height / 2);
+            southwest.scale = 1f;
+            southwest.rotation = 180;
 
             // enables collision by moving the rectangle to the proper space
-            /*south.rectangle.X = (int)position.X;
-            south.rectangle.Y = (int)position.Y;
-            south.rectangle.Width = south.tex.Width;
-            south.rectangle.Height = south.tex.Height;
-            south.rectangle.*/
+            /*southwest.rectangle.X = (int)position.X;
+            southwest.rectangle.Y = (int)position.Y;
+            southwest.rectangle.Width = southwest.tex.Width;
+            southwest.rectangle.Height = southwest.tex.Height;*/
+
+            southeast = new Sprite(southeastTex);
+            southeast.position = position;
+            southeast.position.X += southwest.tex.Width / 2;// - 1;
+            southeast.position.Y += southwest.tex.Height / 2;// - 1;
+            southeast.origin = new Vector2(southeastTex.Width / 2, southeastTex.Height / 2);
+            southeast.scale = 1f;
+            southeast.rotation = 180;
+
+            // enables collision by moving the rectangle to the proper space
+            /*southeast.rectangle.X = (int)position.X;
+            southeast.rectangle.Y = (int)position.Y;
+            southeast.rectangle.Width = southeast.tex.Width;
+            southeast.rectangle.Height = southeast.tex.Height;
+            southeast.rectangle.*/
 
             top = new Sprite(topTex);
             top.position = position;
@@ -118,16 +122,16 @@ namespace pax_infinium
 
         public void recalcPos()
         {
-            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * westTex.Width), (int)(gridPos.Y * westTex.Height * .65f))).ToVector2();
-            this.position.Y -= gridPos.Z * westTex.Height * .65F;
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * southwestTex.Width), (int)(gridPos.Y * southwestTex.Height * .65f))).ToVector2();
+            this.position.Y -= gridPos.Z * southwestTex.Height * .65F;
 
-            west.position = position;
-            west.position.X -= west.tex.Width / 2;// - 1;
-            west.position.Y += west.tex.Height / 2;
+            southwest.position = position;
+            southwest.position.X -= southwest.tex.Width / 2;// - 1;
+            southwest.position.Y += southwest.tex.Height / 2;
 
-            south.position = position;
-            south.position.X += west.tex.Width / 2;// - 1;
-            south.position.Y += west.tex.Height / 2;// - 1;
+            southeast.position = position;
+            southeast.position.X += southwest.tex.Width / 2;// - 1;
+            southeast.position.Y += southwest.tex.Height / 2;// - 1;
 
             top.position = position;
             top.rectangle.X = (int)position.X;
@@ -162,6 +166,11 @@ namespace pax_infinium
             highlight = new Sprite(highlightTex);
             highlight.origin = top.origin;
             highlight.position = top.position;
+
+            invertTex = Game1.world.textureConverter.invertTex(topTex);
+            invertSprite = new Sprite(invertTex);
+            invertSprite.origin = top.origin;
+            invertSprite.position = top.position;
         }
 
         public void Update(GameTime gameTime)
@@ -171,9 +180,13 @@ namespace pax_infinium
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            west.Draw(spriteBatch);
-            south.Draw(spriteBatch);
-            if (highLight)
+            southwest.Draw(spriteBatch);
+            southeast.Draw(spriteBatch);
+            if (invert)
+            {
+                invertSprite.Draw(spriteBatch);
+            }
+            else if (highLight)
             {
                 highlight.Draw(spriteBatch);
             }
@@ -181,7 +194,7 @@ namespace pax_infinium
             {
                 top.Draw(spriteBatch);
             }
-            text.Draw(spriteBatch);
+            //text.Draw(spriteBatch);
             if (rectangleTex != null)
             {
                 rectangleSprite.Draw(spriteBatch);
@@ -191,8 +204,8 @@ namespace pax_infinium
 
         public void darken()
         {
-            westTex = darkenTex(westTex);
-            southTex = darkenTex(southTex);
+            southwestTex = darkenTex(southwestTex);
+            southeastTex = darkenTex(southeastTex);
             topTex = darkenTex(topTex);
         }
 
@@ -274,7 +287,7 @@ namespace pax_infinium
                                 break;
                         case 1:
                             if (((h == mins[w] || h == mins[w] + 1 && mins[w] != 0) || (h == maxes[w] || h == maxes[w] - 1 && maxes[w] != 63)) &&
-                                w < westTex.Width / 2) { trigger = true; }
+                                w < southwestTex.Width / 2) { trigger = true; }
                             break;
                         case 2:
                             Point rotated = new Point(0, 0);
@@ -300,7 +313,7 @@ namespace pax_infinium
         /*
         public Cube copy()
         {
-            return new Cube(position, westTex, southTex, topTex, graphics, spriteSheetInfo);
+            return new Cube(position, southwestTex, southeastTex, topTex, graphics, spriteSheetInfo);
         }
         */
 
@@ -317,15 +330,15 @@ namespace pax_infinium
         public void SetAlpha(float alpha)
         {
             top.alpha = alpha;
-            west.alpha = alpha;
-            south.alpha = alpha;
+            southwest.alpha = alpha;
+            southeast.alpha = alpha;
             text.alpha = alpha;
         }
 
         public void onCharacterMoved()
         {
-            SetAlpha(1f);
-            foreach(Character character in Game1.world.level.grid.characters.list)
+            //SetAlpha(1f);
+            foreach (Character character in Game1.world.level.grid.characters.list)
             {
                 if (DrawOrder() > character.DrawOrder() && Vector2.Distance(position, character.position) < 125 && gridPos.Z > character.gridPos.Z)
                 {

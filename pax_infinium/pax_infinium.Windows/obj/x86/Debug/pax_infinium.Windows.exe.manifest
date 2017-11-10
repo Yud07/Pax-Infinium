@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="215984">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="223664">
       <assemblyIdentity name="pax_infinium.Windows" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>kc8hknKAsqn9XWDRq2PVIAlxPJhwpmSKKntcHiVI2RQ=</dsig:DigestValue>
+        <dsig:DigestValue>pXSrt9V9gzbKc3RGKPDol45gXbCFgJuw9NCE1RuK7Yg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -171,24 +171,6 @@
       <dsig:DigestValue>vnU5HDDgCgl2yq0fJohufkonDmoKtNvUcOaiMZ+aeww=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Content\Black Mage.xnb" size="32853">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>a2NX2f9ccpQVFBsTrLXcTcngFTpkBNrVawqWB7CoonY=</dsig:DigestValue>
-    </hash>
-  </file>
-  <file name="Content\Black Mage2.xnb" size="32853">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>kxwOMsmer/WMeXpTuMP7ta4AEXTxqzSd2Pu8jV03bVU=</dsig:DigestValue>
-    </hash>
-  </file>
   <file name="Content\Black.xnb" size="262229">
     <hash>
       <dsig:Transforms>
@@ -196,6 +178,186 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>bolr0glfBVpC7UNjYUFZkGP++0FrC6tIs1TCzVtx+Gk=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Healer\Blue Healer NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>QhFCWrxCJ/L6pEb0rAfjq+gLskSBX0Eg9Iqu7RAIaLo=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Healer\Blue Healer NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>zgoLz/FaSNTB0iq7y13x81QyJ5pyJUb6Ei/fcTEcLYI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Healer\Blue Healer SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>ZFJ6OYC6+Q+Ia/0qRCLsP8ru/+pUHjOoVK76QSHgP9k=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Healer\Blue Healer SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>3QU53XaKqEeRbIdMa3rf6VhDaUE171kmN8uZ5q69NhU=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Hunter\Blue Hunter NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>ZK20dLKV4T+K5ZZ4mUi7wn+gB5hWZQSDjNYbz9E63QU=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Hunter\Blue Hunter NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>klEL3RDUMHipPJWRRLxD+melYesuBlRfu4NFKR4OMx0=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Hunter\Blue Hunter SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>5Kt86sq8TZLhFo9ujFlrAtN4usExtXeTCja+ubf/VQg=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Hunter\Blue Hunter SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>El8zwvA6jBOWCEMSTOscP/kPpZB3Wh8EX6Ptf7doItA=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Mage\Blue Mage NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>B3VbGRglCDLI/Cs/x+KaOg6SIrEeWtnteK6UnbL9fho=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Mage\Blue Mage NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>pdj1bwz8PeLDBr5VMh1XuRndlhsVkvj/FVxuagvVnjg=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Mage\Blue Mage SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>/0AlklVgDFJwD14sJ+fU5gGoJmAMtzWW4XHAEeZrQQM=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Mage\Blue Mage SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>HHuq1krRphF8t3uHGIyDItTCvljy3iDlw0zfN6sv88w=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Soldier\Blue Soldier NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>nCql0VkDaJS9f5nGMUqKALoza56Dw4Q01OOuAqeFUoI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Soldier\Blue Soldier NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>MAdqpS5Bcq2zAkO0kZCOpSG8bttXl4itKZushXFqMMc=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Soldier\Blue Soldier SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>6SGx1d314a6kFeEj28ls1CQ+g+1JF1IuaeI/8mFtl8w=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Soldier\Blue Soldier SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>PsKE/6mD/1zLRo6LsxO+A0pKMHB3hwIbLhNQ6+MZZz8=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Thief\Blue Thief NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>LJxMSBSoGmLwLqCX0PzvJq7dRNRpsoZdLVh+V0kl/XQ=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Thief\Blue Thief NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>h2F20Mz/f8QKVg6tD+YRn3oPsK7kApkAtk/kr5vqFRw=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Thief\Blue Thief SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>/ZA2D3N1PE2XaJ5Kf6Xz/Jv8ye42Bzoqln99BQtBut4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Blue Thief\Blue Thief SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>LiDfxkJMSe7r5HDXhlV1+wrUI90b4Ly5utKPBdLLlyE=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\Cell.xnb" size="16469">
@@ -214,24 +376,6 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>WXkWqojczoVfVmbmwReCYlK4geU39CeePV5RAZQFzDE=</dsig:DigestValue>
-    </hash>
-  </file>
-  <file name="Content\Hunter.xnb" size="32853">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>bwHniC4/VRcT79qmCVlsYLLf2qcuHINGi4wG+7qwQpA=</dsig:DigestValue>
-    </hash>
-  </file>
-  <file name="Content\Hunter2.xnb" size="32853">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>73BUyDSXcIZVJ4kJQgghL1EBJ1ky74JK6cigIYJCmJM=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\Impact-36.xnb" size="136212">
@@ -270,6 +414,186 @@
       <dsig:DigestValue>Qb3IJocaOjYxdjzflpYK91Z2AuVNCw3B6HoxTzLH3N4=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="Content\Red Healer\Red Healer NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>BOU9O+FxSp8FwaORBeUB3ROz3ZI2TmjvBMB7cKK//v4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Healer\Red Healer NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>zIwUVJ7S5xx631d+QDrIHZT7T0PwjrQeqAB02MWHwoI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Healer\Red Healer SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>eTfNwewvICPmP90UGb3HIdg6ppFXhVj5BxDC69ZVZ5U=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Healer\Red Healer SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>BcKUWOavSm2ji9zRbM+1gnTs9XW75Ypyzvc4DHBivvk=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Hunter\Red Hunter NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>0O+wYYwGBk3zmWxiPjxxnCWd4GW/MSEspn/v/U2Fprs=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Hunter\Red Hunter NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>NtTBFL2q2dNVwZTQusr49ZT5g9TvF1OOMdVCwhiRes4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Hunter\Red Hunter SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>+78u+sdPeqJVui363dkSiYdsT0uNJmCsLYJCFksJ90Q=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Hunter\Red Hunter SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>9aVZmpM+q5NOEpv8VUoCNxgb69eD7tFiAaJrS52FfWk=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Mage\Red Mage NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>l8/GGIDg2o+7v8KL6eH43BD2hxOUmwBlNTBKBYsItrY=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Mage\Red Mage NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>w57PcHkPqbcxpmq2oS+GFas/vqqVwodu+Hw34R5tXXw=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Mage\Red Mage SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>MrcNBB/yZLaIVgqmi3Xb30fyDNhvxiYkBra1CeMRUEs=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Mage\Red Mage SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>/GkxejetWmW95wUoHynrRpY4ALjp6vQtR8ejwE9A6/c=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Soldier\Red Soldier NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>QUqTgB1hP6UDKc5+10AfUY+CeVQRpw6LrPQy2Z9Gxf4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Soldier\Red Soldier NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>qsOyK8FG7h24fI+6QCaRDvxsET18Hlqjw9W7e22O/js=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Soldier\Red Soldier SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>e/kX5eFUGT7GI9qXMDI2DRLQRgsQD3XZ62tkjn4fD6U=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Soldier\Red Soldier SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>EFVl+zbIOiu2F5fO4ZS6eT+r1/LlS68HSByh7tlwWGU=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Thief\Red Thief NE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>R94mrgxsVayAdfWpbnz+1TNFMhv1SUC/PII/sHNkLD4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Thief\Red Thief NW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>H+J+hJVieCCjMXK7+xSMem/BQ8hKBMBatabmtPufBag=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Thief\Red Thief SE.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>bDS2PxB3/iPyefr0o1xLUCkPk8DVZ8gH1FNZv/nIuoY=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Red Thief\Red Thief SW.xnb" size="32853">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>V+hxU+qwbuVELVMOofLJUDu9p7w6UVnY1WxbAv4rn7s=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="Content\ScoreFont.xnb" size="70676">
     <hash>
       <dsig:Transforms>
@@ -277,24 +601,6 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>A0wpUipk21iWM6T0sCpLgdUB/jMcwWvsrv+rhREBYPA=</dsig:DigestValue>
-    </hash>
-  </file>
-  <file name="Content\Soldier.xnb" size="32853">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>hV/cARFmolIBIvbwmKf0QpsMtctkum/VERQWbaf5Gcc=</dsig:DigestValue>
-    </hash>
-  </file>
-  <file name="Content\Soldier2.xnb" size="32853">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>ibhb8EPDzUhZ3p7UBs3VPnA02uNXucGzK+eklbUA8Sw=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\top-border.xnb" size="8294485">

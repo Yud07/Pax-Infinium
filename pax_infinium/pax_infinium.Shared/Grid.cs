@@ -12,8 +12,8 @@ namespace pax_infinium
     public class Grid
     {
         //private Texture2D topTex;
-        //private Texture2D westTex;
-        //private Texture2D southTex;
+        //private Texture2D southwestTex;
+        //private Texture2D southeastTex;
         private GraphicsDeviceManager graphics;
         public List<Cube> cubes;
         public Vector2 origin;
@@ -181,7 +181,7 @@ namespace pax_infinium
                     {
                         if (binaryMatrix[x, y, z])
                         {
-                            //a = west, b= south, c = top
+                            //a = southwest, b= southeast, c = top
                             bool a = false, b = false, c = false;
                             // a0 = bottom left, a1 = left, a2 = borth left
                             // b0 = bottom right, b1 = right, b2 = both right
@@ -216,7 +216,7 @@ namespace pax_infinium
                             bool right = false;//, bottomRight;
                             if (x + 1 < width && y > 0)
                             {
-                                //                 no east cube same level and no south east cube same level
+                                //                 no east cube same level and no southeast east cube same level
                                 //right = isoarray[x][y - 1].Count - 1 < z && isoarray[x + 1][y - 1].Count - 1 < z;
                                 right = !binaryMatrix[x, y - 1, z] && !binaryMatrix[x + 1, y - 1, z];
                             }
@@ -236,7 +236,7 @@ namespace pax_infinium
                             bool left = false;//, bottomRight;
                             if (x > 0 && y + 1 < height)
                             {
-                                //                 no north cube same level and no north west cube same level
+                                //                 no north cube same level and no north southwest cube same level
                                 //left = isoarray[x - 1][y].Count - 1 < z && isoarray[x - 1][y + 1].Count - 1 < z;
                                 left = !binaryMatrix[x - 1, y, z] && !binaryMatrix[x - 1, y + 1, z];
                             }
@@ -374,6 +374,7 @@ namespace pax_infinium
             depth = width;
             binaryMatrix = newBinaryMatrix;
         }
+        
         public void rotateCharacters(bool clockwise)
         {
             double degrees;
@@ -393,6 +394,53 @@ namespace pax_infinium
                 character.gridPos.X = newCoords.X;
                 character.gridPos.Y = newCoords.Y;
                 character.recalcPos();
+
+                if (clockwise)
+                {
+                    if (character.direction == "nw")
+                    {
+                        character.direction = "ne";
+                        character.sprite.tex = character.neTex;
+                    }
+                    else if (character.direction == "ne")
+                    {
+                        character.direction = "se";
+                        character.sprite.tex = character.seTex;
+                    }
+                    else if (character.direction == "se")
+                    {
+                        character.direction = "sw";
+                        character.sprite.tex = character.swTex;
+                    }
+                    else
+                    {
+                        character.direction = "nw";
+                        character.sprite.tex = character.nwTex;
+                    }
+                }
+                else
+                {
+                    if (character.direction == "nw")
+                    {
+                        character.direction = "sw";
+                        character.sprite.tex = character.swTex;
+                    }
+                    else if (character.direction == "sw")
+                    {
+                        character.direction = "se";
+                        character.sprite.tex = character.seTex;
+                    }
+                    else if (character.direction == "se")
+                    {
+                        character.direction = "ne";
+                        character.sprite.tex = character.neTex;
+                    }
+                    else
+                    {
+                        character.direction = "nw";
+                        character.sprite.tex = character.nwTex;
+                    }
+                }
             }
             onCharacterMoved();
         }
@@ -400,6 +448,19 @@ namespace pax_infinium
         public double deg2Rad(double degrees)
         {
             return (Math.PI * degrees) / 180.0;
+        }
+
+        public Cube getCube(int x, int y, int z)
+        {
+            Vector3 temp = new Vector3(x, y, z);
+            foreach (Cube cube in cubes)
+            {
+                if (cube.gridPos == temp)
+                {
+                    return cube;
+                }
+            }
+            return null;
         }
     }
 }

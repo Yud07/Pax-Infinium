@@ -318,7 +318,7 @@ namespace pax_infinium
             Point rotated;
             int highest = int.MinValue;
             int rightest = int.MinValue;
-            int lowest = int.MaxValue;
+            int losouthwest = int.MaxValue;
             int leftest = int.MaxValue;
             foreach (Point p in points)
             {
@@ -338,14 +338,14 @@ namespace pax_infinium
                 {
                     highest = rotated.Y;
                 }
-                if (rotated.Y < lowest)
+                if (rotated.Y < losouthwest)
                 {
-                    lowest = rotated.Y;
+                    losouthwest = rotated.Y;
                 }
 
             }
             int rotW = rightest - leftest;
-            int rotH = highest - lowest;
+            int rotH = highest - losouthwest;
             //Console.WriteLine("rotW: " + rotW + " rotH: " + rotH);
             //Console.WriteLine("64,0: " + Game1.world.twoDToIso(new Point(64, 0)) + " 64,64: " + Game1.world.twoDToIso(new Point(64, 64)) + " 0,64: " + Game1.world.twoDToIso(new Point(0, 64)) +
             //" 0,0: " + Game1.world.twoDToIso(new Point(0, 0)));
@@ -410,6 +410,25 @@ namespace pax_infinium
                 tempColor = Color.Multiply(tempColor, 1.25f);//.75f);
                 tempColor.A = color.A;
                 mapcolors[s] = tempColor;
+            }
+            tempTex.SetData(mapcolors);
+            return tempTex;
+        }
+
+        public Texture2D invertTex(Texture2D tex)
+        {
+            Texture2D tempTex = new Texture2D(graphicsDevice, tex.Width, tex.Height);
+            var size = tempTex.Width * tempTex.Height;
+            Color[] mapcolors = new Color[size];
+            tex.GetData(mapcolors);
+            for (var s = 0; s < size; s++)
+            {
+                Color color = mapcolors[s];
+                if (color.A > 0)
+                {
+                    Color tempColor = new Color(byte.MaxValue - color.R, byte.MaxValue - color.G, byte.MaxValue - color.B, color.A);
+                    mapcolors[s] = tempColor;
+                }
             }
             tempTex.SetData(mapcolors);
             return tempTex;

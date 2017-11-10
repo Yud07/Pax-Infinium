@@ -31,48 +31,102 @@ namespace pax_infinium
             }
         }
 
-        public void AddCharacter(string name, int job, int team, Vector2 origin, Vector3 position, GraphicsDeviceManager graphics)
+        public void AddCharacter(string name, int job, int team, Vector2 origin, Vector3 position, String direction, GraphicsDeviceManager graphics)
         {
-            Texture2D image;
+            Texture2D nw;
+            Texture2D ne;
+            Texture2D sw;
+            Texture2D se;
             switch (job)
             {
                 case 0: // Soldier
                     if (team == 0)
                     {
-                        image = World.textureManager["Soldier"];
+                        nw = World.textureManager["Blue Soldier\\Blue Soldier NW"];
+                        ne = World.textureManager["Blue Soldier\\Blue Soldier NE"];
+                        sw = World.textureManager["Blue Soldier\\Blue Soldier SW"];
+                        se = World.textureManager["Blue Soldier\\Blue Soldier SE"];
                     }
                     else
                     {
-                        image = World.textureManager["Soldier2"];
+                        nw = World.textureManager["Red Soldier\\Red Soldier NW"];
+                        ne = World.textureManager["Red Soldier\\Red Soldier NE"];
+                        sw = World.textureManager["Red Soldier\\Red Soldier SW"];
+                        se = World.textureManager["Red Soldier\\Red Soldier SE"];
                     }
                     break;
                 case 1: // Hunter
                     if (team == 0)
                     {
-                        image = World.textureManager["Hunter"];
+                        nw = World.textureManager["Blue Hunter\\Blue Hunter NW"];
+                        ne = World.textureManager["Blue Hunter\\Blue Hunter NE"];
+                        sw = World.textureManager["Blue Hunter\\Blue Hunter SW"];
+                        se = World.textureManager["Blue Hunter\\Blue Hunter SE"];
                     }
                     else
                     {
-                        image = World.textureManager["Hunter2"];
+                        nw = World.textureManager["Red Hunter\\Red Hunter NW"];
+                        ne = World.textureManager["Red Hunter\\Red Hunter NE"];
+                        sw = World.textureManager["Red Hunter\\Red Hunter SW"];
+                        se = World.textureManager["Red Hunter\\Red Hunter SE"];
                     }
                     break;
-                case 2: // Black Mage
+                case 2: // (Black Mage) Mage
                     if (team == 0)
                     {
-                        image = World.textureManager["Black Mage"];
+                        nw = World.textureManager["Blue Mage\\Blue Mage NW"];
+                        ne = World.textureManager["Blue Mage\\Blue Mage NE"];
+                        sw = World.textureManager["Blue Mage\\Blue Mage SW"];
+                        se = World.textureManager["Blue Mage\\Blue Mage SE"];
                     }
                     else
                     {
-                        image = World.textureManager["Black Mage2"];
+                        nw = World.textureManager["Red Mage\\Red Mage NW"];
+                        ne = World.textureManager["Red Mage\\Red Mage NE"];
+                        sw = World.textureManager["Red Mage\\Red Mage SW"];
+                        se = World.textureManager["Red Mage\\Red Mage SE"];
+                    }
+                    break;
+                case 3: // (White Mage) Healer
+                    if (team == 0)
+                    {
+                        nw = World.textureManager["Blue Healer\\Blue Healer NW"];
+                        ne = World.textureManager["Blue Healer\\Blue Healer NE"];
+                        sw = World.textureManager["Blue Healer\\Blue Healer SW"];
+                        se = World.textureManager["Blue Healer\\Blue Healer SE"];
+                    }
+                    else
+                    {
+                        nw = World.textureManager["Red Healer\\Red Healer NW"];
+                        ne = World.textureManager["Red Healer\\Red Healer NE"];
+                        sw = World.textureManager["Red Healer\\Red Healer SW"];
+                        se = World.textureManager["Red Healer\\Red Healer SE"];
+                    }
+                    break;
+                case 4: // Thief
+                    if (team == 0)
+                    {
+                        nw = World.textureManager["Blue Thief\\Blue Thief NW"];
+                        ne = World.textureManager["Blue Thief\\Blue Thief NE"];
+                        sw = World.textureManager["Blue Thief\\Blue Thief SW"];
+                        se = World.textureManager["Blue Thief\\Blue Thief SE"];
+                    }
+                    else
+                    {
+                        nw = World.textureManager["Red Thief\\Red Thief NW"];
+                        ne = World.textureManager["Red Thief\\Red Thief NE"];
+                        sw = World.textureManager["Red Thief\\Red Thief SW"];
+                        se = World.textureManager["Red Thief\\Red Thief SE"];
                     }
                     break;
                 default:
-                    image = Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue);
+                    nw = ne = sw = se = Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue);
                     break;
             }
-            list.Add(new Character(name, team, origin, position, image, graphics, new SpriteSheetInfo(64, 128)));
+            list.Add(new Character(name, team, origin, position, direction, nw, ne, sw, se, graphics, new SpriteSheetInfo(64, 128)));
 
             Character newCharacter = list[list.Count - 1];
+            newCharacter.job = job;
 
             switch (job)
             {
@@ -87,6 +141,7 @@ namespace pax_infinium
                     newCharacter.jump = 2;
                     newCharacter.evasion = 0;
                     newCharacter.speed = 72;
+                    newCharacter.weaponRange = 1;
                     break;
                 case 1: // Hunter
                     newCharacter.move = 4;
@@ -99,6 +154,7 @@ namespace pax_infinium
                     newCharacter.jump = 2;
                     newCharacter.evasion = 5;
                     newCharacter.speed = 80;
+                    newCharacter.weaponRange = 5;
                     break;
                 case 2: // Black Mage
                     newCharacter.move = 3;
@@ -111,6 +167,35 @@ namespace pax_infinium
                     newCharacter.jump = 2;
                     newCharacter.evasion = 0;
                     newCharacter.speed = 69;
+                    newCharacter.weaponRange = 1;
+                    newCharacter.magicRange = 3;
+                    break;
+                case 3: // White Mage/Healer
+                    newCharacter.move = 3;
+                    newCharacter.health = 258;
+                    newCharacter.mp = 152;
+                    newCharacter.WAttack = 78;
+                    newCharacter.WDefense = 86;
+                    newCharacter.MAttack = 79;
+                    newCharacter.MDefense = 110;
+                    newCharacter.jump = 2;
+                    newCharacter.evasion = 0;
+                    newCharacter.speed = 73;
+                    newCharacter.weaponRange = 1;
+                    newCharacter.magicRange = 3;
+                    break;
+                case 4: // Thief
+                    newCharacter.move = 4;
+                    newCharacter.health = 257;
+                    newCharacter.mp = 44;
+                    newCharacter.WAttack = 97;
+                    newCharacter.WDefense = 93;
+                    newCharacter.MAttack = 70;
+                    newCharacter.MDefense = 64;
+                    newCharacter.jump = 3;
+                    newCharacter.evasion = 5;
+                    newCharacter.speed = 80;
+                    newCharacter.weaponRange = 1;
                     break;
                 default:
 
