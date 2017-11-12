@@ -240,14 +240,24 @@ namespace pax_infinium
                 // highlight scrolled over cube
                 foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
                 {
-                    if (cube.topPoly.Contains(transformedMouseState) &&
-                        world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
+                    bool topVisible = true;
+                    foreach (Cube c in world.level.grid.cubes)
                     {
-                        /* world.level.grid.highlightTex = world.textureConverter.highlightTex(cube.topTex);
-                         world.level.grid.highlight = new Sprite(world.level.grid.highlightTex);
-                         world.level.grid.highlight.origin = cube.top.origin;
-                         world.level.grid.highlight.position = cube.top.position;
-                         world.level.grid.highlightedCube = cube;*/
+                        if (c != cube)
+                        {
+                            if (c.topPoly.Contains(transformedMouseState))
+                            {
+                                if (cube.DrawOrder() < c.DrawOrder())
+                                {
+                                    topVisible = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (cube.topPoly.Contains(transformedMouseState) &&
+                        world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z && topVisible)
+                    {
                         if (!cube.highLight)
                         {
                             cube.highLight = true;
@@ -308,7 +318,7 @@ namespace pax_infinium
                                             if (player.job == 2)
                                             {
                                                 int chance = 100 - character.evasion;
-                                                Console.WriteLine("\nChance to hit: " + chance + "%");
+                                                Console.WriteLine("Chance to hit: " + chance + "%");
                                                 if (chance >= World.Random.Next(1, 101))
                                                 {
                                                     int spellModifier = 0;
@@ -332,6 +342,9 @@ namespace pax_infinium
                                                 else
                                                 {
                                                     Console.WriteLine("Miss!");
+                                                    character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                                    character.text.Text = "Miss";
+                                                    character.text.color = Color.OrangeRed;
                                                 }
                                             }
                                             else // healer
@@ -365,8 +378,8 @@ namespace pax_infinium
                                             if (character.direction.Contains(player.direction[1]))
                                                 angleModifier++;
 
-                                            int chance = 100 - character.evasion + angleModifier*5;
-                                            Console.WriteLine("\nChance to hit: " + chance + "%");
+                                            int chance = 90 - character.evasion + angleModifier*5;
+                                            Console.WriteLine("Chance to hit: " + chance + "%");
                                             if (chance >= World.Random.Next(1, 101))
                                             {
 
@@ -390,6 +403,9 @@ namespace pax_infinium
                                             else
                                             {
                                                 Console.WriteLine("Miss!");
+                                                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                                character.text.Text = "Miss";
+                                                character.text.color = Color.OrangeRed;
                                             }
 
                                             world.level.attacked = true;

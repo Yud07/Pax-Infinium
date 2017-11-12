@@ -38,6 +38,7 @@ namespace pax_infinium
         public int magicRange;
         public int job;
         public string direction;
+        public TextItem statusText;
 
 
         public Character(string name, int team, Vector2 origin, Vector3 gridPos, String direction, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
@@ -80,8 +81,20 @@ namespace pax_infinium
             sprite.scale = 1f;
 
             text = new TextItem(World.fontManager["ScoreFont"], " ");
-            text.position = position + new Vector2(0, -25);
+            text.position = position + new Vector2(0, -60);
             text.color = Color.Red;
+
+            statusText = new TextItem(World.fontManager["InfoFont"], " ");
+            statusText.scale = 1.5f;
+            statusText.position = position + new Vector2(-25, -25);
+            if (team == 0)
+            {
+                statusText.color = Color.Blue;
+            }
+            else if (team == 1)
+            {
+                statusText.color = Color.Red;
+            }
 
             //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
         }
@@ -94,7 +107,9 @@ namespace pax_infinium
             sprite.position = position;
 
             //text.Text = DrawOrder().ToString();
-            text.position = position + new Vector2(0, -25);
+            text.position = position + new Vector2(0, -60);
+
+            statusText.position = position + new Vector2(-25, -25);
 
             //darken();
         }
@@ -111,6 +126,8 @@ namespace pax_infinium
         public void Draw(SpriteBatch spriteBatch)
         {
             sprite.Draw(spriteBatch);
+            statusText.Text = health + "/" + mp;
+            statusText.Draw(spriteBatch);
             if (text.Text != " ")
             {
                 text.Draw(spriteBatch);

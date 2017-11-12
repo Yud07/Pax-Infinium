@@ -39,7 +39,7 @@ namespace pax_infinium
             grid.characters.AddCharacter("Blue Healer", 3, 0, grid.origin, new Vector3(4, 7, 3), "nw", graphics);
             grid.characters.AddCharacter("Red Healer", 3, 1, grid.origin, new Vector3(3, 2, 3), "ne", graphics);
             grid.characters.AddCharacter("Blue Thief", 4, 0, grid.origin, new Vector3(3, 7, 3), "nw", graphics);
-            grid.characters.AddCharacter("Red Thief", 4, 1, grid.origin, new Vector3(2, 2, 3), "ne", graphics);
+            grid.characters.AddCharacter("Red Thief", 4, 1, grid.origin, new Vector3(4, 1, 3), "ne", graphics);
             grid.characters.list.Sort(Character.CompareBySpeed);
             grid.characters.list.Reverse();
             /*foreach (Cube cube in grid.cubes)
