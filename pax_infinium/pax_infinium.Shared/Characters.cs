@@ -133,7 +133,7 @@ namespace pax_infinium
                 case 0: // Soldier
                     newCharacter.move = 4;
                     newCharacter.health = 322;
-                    newCharacter.mp = 44;
+                    newCharacter.mp = newCharacter.maxMP = 44;
                     newCharacter.WAttack = 112;                    
                     newCharacter.WDefense = 107;
                     newCharacter.MAttack = 59;
@@ -146,7 +146,7 @@ namespace pax_infinium
                 case 1: // Hunter
                     newCharacter.move = 4;
                     newCharacter.health = 258;                    
-                    newCharacter.mp = 113;
+                    newCharacter.mp = newCharacter.maxMP = 113;
                     newCharacter.WAttack = 102;
                     newCharacter.WDefense = 84;
                     newCharacter.MAttack = 68;
@@ -159,7 +159,7 @@ namespace pax_infinium
                 case 2: // Black Mage
                     newCharacter.move = 3;
                     newCharacter.health = 224;
-                    newCharacter.mp = 183;
+                    newCharacter.mp = newCharacter.maxMP = 183;
                     newCharacter.WAttack = 77;
                     newCharacter.WDefense = 78;
                     newCharacter.MAttack = 97;
@@ -173,7 +173,7 @@ namespace pax_infinium
                 case 3: // White Mage/Healer
                     newCharacter.move = 3;
                     newCharacter.health = 258;
-                    newCharacter.mp = 152;
+                    newCharacter.mp = newCharacter.maxMP = 152;
                     newCharacter.WAttack = 78;
                     newCharacter.WDefense = 86;
                     newCharacter.MAttack = 79;
@@ -187,7 +187,7 @@ namespace pax_infinium
                 case 4: // Thief
                     newCharacter.move = 4;
                     newCharacter.health = 257;
-                    newCharacter.mp = 44;
+                    newCharacter.mp = newCharacter.maxMP = 44;
                     newCharacter.WAttack = 97;
                     newCharacter.WDefense = 93;
                     newCharacter.MAttack = 70;
@@ -196,6 +196,7 @@ namespace pax_infinium
                     newCharacter.evasion = 5;
                     newCharacter.speed = 80;
                     newCharacter.weaponRange = 1;
+                    newCharacter.magicRange = 1;
                     break;
                 default:
 

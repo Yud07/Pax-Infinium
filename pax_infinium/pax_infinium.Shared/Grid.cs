@@ -16,8 +16,15 @@ namespace pax_infinium
         //private Texture2D southeastTex;
         private GraphicsDeviceManager graphics;
         public List<Cube> cubes;
+        public List<Cube> cubesA;
+        public List<Cube> cubesB;
+        public List<Cube> cubesC;
+        public List<Cube> cubesD;
         public Vector2 origin;
         public bool[,,] binaryMatrix;
+        public bool[,,] binaryMatrixB;
+        public bool[,,] binaryMatrixC;
+        public bool[,,] binaryMatrixD;
         public int width;
         public int depth;
         public int height;
@@ -26,6 +33,8 @@ namespace pax_infinium
         public Sprite highlight;
         public Texture2D highlightTex;*/
         public Characters characters;
+        public String seed;
+        public int activeView;
 
         public Grid(GraphicsDeviceManager graphics, string seed, int width, int depth, int height, int c1, int c2, int c3, int c4, Random random)
         {
@@ -36,6 +45,7 @@ namespace pax_infinium
             this.width = width;
             this.depth = depth;
             this.height = height;
+            this.seed = seed;
 
             // cartesian space
             //width = 10; // random.Next(4, 20);
@@ -70,7 +80,19 @@ namespace pax_infinium
                 }
             }
 
-            createGrid();
+
+            binaryMatrixB = rotateBM(binaryMatrix, true, width, depth);
+            binaryMatrixC = rotateBM(binaryMatrixB, true, depth, width);
+            binaryMatrixD = rotateBM(binaryMatrixC, true, width, depth);
+
+            cubesA = createGrid(binaryMatrix);
+            cubesB = createGrid(binaryMatrixB);
+            cubesC = createGrid(binaryMatrixC);
+            cubesD = createGrid(binaryMatrixD);
+
+            cubes = cubesA;
+
+            //createGrid();
         }
 
         public int topOfColumn(Vector3 gridPos)
@@ -161,6 +183,11 @@ namespace pax_infinium
 
         public void createGrid()
         {
+            cubes = createGrid(binaryMatrix);
+        }
+
+        public List<Cube> createGrid(bool [,,] binMatrix)
+        {
             int randomColor;
             int texWidth = 64;
             int texHeight = 64;
@@ -173,13 +200,14 @@ namespace pax_infinium
             int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
             randomColor = 2;//random.Next(0, 5); //0;
             //Console.WriteLine("randomColor " + randomColor);
+            List<Cube> tempCubes = new List<Cube>();
             for (int x = 0; x < width - 1; x++)
             {
                 for (int y = 0; y < depth - 1; y++)
                 {
                     for (int z = 0; z < height - 1; z++)
                     {
-                        if (binaryMatrix[x, y, z])
+                        if (binMatrix[x, y, z])
                         {
                             //a = southwest, b= southeast, c = top
                             bool a = false, b = false, c = false;
@@ -327,18 +355,57 @@ namespace pax_infinium
                                 Game1.world.textureConverter.GenTex(texWidth, texHeight, colorC, vect, topC, mirroredC, borderC, topOrWestOrSouthC, lineNumC),
                                 graphics, new SpriteSheetInfo(64, 96));
                             tempCube.recalcPos();
-                            cubes.Add(tempCube);
+                            tempCubes.Add(tempCube);
                         }
                     }
                 }
             }
+            return tempCubes;
         }
 
-        public void rotate(bool clockwise)
+        /*public void rotate(bool clockwise)
         {
             cubes.Clear();
             rotateBinaryMatrix(clockwise);
             createGrid();
+            rotateCharacters(clockwise);
+        }*/
+
+        public void rotate(bool clockwise)
+        {
+            if (clockwise)
+            {
+                activeView++;
+            }
+            else
+            {
+                activeView--;
+            }
+
+            if (activeView > 3)
+            {
+                activeView = 0;
+            }
+            if (activeView < 0)
+            {
+                activeView = 3;
+            }
+
+            switch (activeView)
+            {
+                case 0:
+                    cubes = cubesA;
+                    break;
+                case 1:
+                    cubes = cubesB;
+                    break;
+                case 2:
+                    cubes = cubesC;
+                    break;
+                case 3:
+                    cubes = cubesD;
+                    break;
+            }
             rotateCharacters(clockwise);
         }
 
@@ -374,7 +441,41 @@ namespace pax_infinium
             depth = width;
             binaryMatrix = newBinaryMatrix;
         }
-        
+
+        public bool [,,] rotateBM(bool [,,] oldBinaryMatrix, bool clockwise, int wid, int dep)
+        {
+            bool[,,] newBinaryMatrix = new bool[depth, width, height]; // handles different width/depth
+
+            double degrees;
+
+            if (clockwise)
+            {
+                degrees = 90.0;
+            }
+            else
+            {
+                degrees = -90.0;
+            }
+
+            for (int w = 0; w < wid - 1; w++)
+            {
+                for (int d = 0; d < dep - 1; d++)
+                {
+                    for (int h = 0; h < height - 1; h++)
+                    {
+                        Point newCoords = Game1.world.rotate(new Point(w, d), deg2Rad(degrees), new Point((int)width / 2 - 1, (int)depth / 2 - 1));
+                        //Console.WriteLine("old: x:" + w + " y:" + d + " z: " + h + " new: x:" + newCoords.X + " y:" + newCoords.Y);
+                        //Console.WriteLine("newBinaryMatrix: length: " + newBinaryMatrix.Length);
+                        newBinaryMatrix[newCoords.X, newCoords.Y, h] = oldBinaryMatrix[w, d, h];
+                    }
+                }
+            }
+            /*width = depth;
+            depth = width;
+            binaryMatrix = newBinaryMatrix;*/
+            return newBinaryMatrix;
+        }
+
         public void rotateCharacters(bool clockwise)
         {
             double degrees;

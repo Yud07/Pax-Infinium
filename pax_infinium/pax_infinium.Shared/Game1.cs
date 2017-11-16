@@ -190,7 +190,7 @@ namespace pax_infinium
                     }
                 }
 
-                if ((player.job == 2 || player.job == 3) && keyboardState.IsKeyDown(Keys.S) && !world.level.attacked){ // Black Mage
+                if ((player.job == 2 || player.job == 3) && keyboardState.IsKeyDown(Keys.S) && !world.level.attacked){ // Black Mage or healer or thief
                     foreach (Cube cube in world.level.grid.cubes)
                     {
                         if ((world.cubeDist(cube.gridPos, player.gridPos) <= player.magicRange))
@@ -225,7 +225,17 @@ namespace pax_infinium
                     foreach(Cube cube in world.level.grid.cubes)
                     {
                         int cubeDist = world.cubeDist(cube.gridPos, player.gridPos);
-                        if (cubeDist < player.move && cubeDist > 0)
+                        if (cubeDist < player.move && cubeDist > 0 && world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
+                        {
+                            cube.highLight = true;
+                        }
+                    }
+                }
+                else if (player.job == 4 && keyboardState.IsKeyDown(Keys.S) && !world.level.attacked) //thief special
+                {
+                    foreach (Cube cube in world.level.grid.cubes)
+                    {
+                        if ((world.cubeDist(cube.gridPos, player.gridPos) <= player.magicRange))
                         {
                             cube.highLight = true;
                         }
@@ -240,7 +250,7 @@ namespace pax_infinium
                 // highlight scrolled over cube
                 foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
                 {
-                    bool topVisible = true;
+                    /*bool topVisible = true;
                     foreach (Cube c in world.level.grid.cubes)
                     {
                         if (c != cube)
@@ -253,10 +263,10 @@ namespace pax_infinium
                                 }
                             }
                         }
-                    }
+                    }*/
 
                     if (cube.topPoly.Contains(transformedMouseState) &&
-                        world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z && topVisible)
+                        world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)// && topVisible)
                     {
                         if (!cube.highLight)
                         {
@@ -305,63 +315,129 @@ namespace pax_infinium
 
                         if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
                         {
-                            if ((((player.job == 2 || player.job == 3) && keyboardState.IsKeyDown(Keys.S)) || keyboardState.IsKeyDown(Keys.A)) && !world.level.attacked) // Attack
+                            if ((((player.job == 2 || player.job == 3 || player.job == 4) && keyboardState.IsKeyDown(Keys.S)) || keyboardState.IsKeyDown(Keys.A)) && !world.level.attacked) // Attack
                             {
                                 if (keyboardState.IsKeyDown(Keys.S))
                                 {
-                                    List<Character> toBeKilled = new List<Character>();
-                                    foreach (Character character in world.level.grid.characters.list)
+                                    if (player.mp >= 8)
                                     {
-                                        if (!world.level.attacked && world.cubeDist(cube.gridPos, character.gridPos) <= 1 &&
-                                            world.cubeDist(player.gridPos, cube.gridPos) <= player.magicRange)
+                                        /*if (player.job == 2)
                                         {
-                                            if (player.job == 2)
+                                            player.mp -= 8;
+                                            player.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                            player.text.Text = "-8";
+                                            player.text.color = Color.LightBlue;
+                                        }
+                                        else if (player.job == 3)
+                                        {*/
+                                            player.mp -= 8;
+                                            player.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                            player.text.Text = "-8";
+                                            player.text.color = Color.LightBlue;
+                                        //}
+                                        if (player.job != 4)
+                                        {
+                                            List<Character> toSkipTurn = new List<Character>();
+                                            List<Character> toBeKilled = new List<Character>();
+                                            foreach (Character character in world.level.grid.characters.list)
                                             {
-                                                int chance = 100 - character.evasion;
-                                                Console.WriteLine("Chance to hit: " + chance + "%");
-                                                if (chance >= World.Random.Next(1, 101))
+                                                if (!world.level.attacked && world.cubeDist(cube.gridPos, character.gridPos) <= 1 &&
+                                                    world.cubeDist(player.gridPos, cube.gridPos) <= player.magicRange)
                                                 {
-                                                    int spellModifier = 0;
-                                                    int damage = (int)((player.MAttack + spellModifier - (character.MDefense / 2)) * .75);
-                                                    Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
-                                                    character.health -= damage;
-                                                    character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                    character.text.Text = "-" + damage;
-                                                    character.text.color = Color.OrangeRed;
-
-                                                    if (character.health <= 0)
+                                                    if (player.job == 2)
                                                     {
-                                                        Console.WriteLine(character.name + " has died!");
-                                                        toBeKilled.Add(character);
+                                                        int chance = 100 - character.evasion;
+                                                        Console.WriteLine("Chance to hit: " + chance + "%");
+                                                        if (chance >= World.Random.Next(1, 101))
+                                                        {
+                                                            int spellModifier = 0;
+                                                            int damage = (int)((player.MAttack + spellModifier - (character.MDefense / 2)) * .75);
+                                                            Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                                                            character.health -= damage;
+                                                            character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                                            character.text.Text = "-" + damage;
+                                                            character.text.color = Color.OrangeRed;
+
+                                                            if (character.health <= 0)
+                                                            {
+                                                                Console.WriteLine(character.name + " has died!");
+                                                                toBeKilled.Add(character);
+                                                            }
+                                                            else
+                                                            {
+                                                                Console.WriteLine(character.name + " health: " + character.health);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            Console.WriteLine("Miss!");
+                                                            character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                                            character.text.Text = "Miss";
+                                                            character.text.color = Color.Green;
+                                                        }
+                                                    }
+                                                    else if (player.job == 3)// healer
+                                                    {
+                                                        int health = 40;
+                                                        Console.WriteLine(character.name + " heals " + health + " points!");
+                                                        character.health += health;
+                                                        character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                                        character.text.Text = "+" + health;
+                                                        character.text.color = Color.Green;
+                                                    }
+                                                }
+                                            }
+                                            world.level.attacked = true;
+                                            foreach (Character character in toBeKilled)
+                                            {
+                                                world.level.grid.characters.list.Remove(character);
+                                            }
+                                        }
+                                        else // thief special
+                                        {
+                                            Character toSkipTurn = null;
+                                            foreach (Character character in world.level.grid.characters.list)
+                                            {
+                                                if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
+                                                    world.cubeDist(player.gridPos, character.gridPos) <= player.magicRange)
+                                                {
+                                                    int angleModifier = 0;
+                                                    if (character.direction.Contains(player.direction[0]))
+                                                        angleModifier++;
+                                                    if (character.direction.Contains(player.direction[1]))
+                                                        angleModifier++;
+
+                                                    int chance = 45 - character.evasion + angleModifier * 5;
+                                                    Console.WriteLine("Chance to hit: " + chance + "%");
+                                                    if (chance >= World.Random.Next(1, 101))
+                                                    {
+                                                        toSkipTurn = character;
+                                                        Console.WriteLine(character.name + " had their next turn stolen!");
+                                                        character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                                        character.text.Text = "Skipped!";
+                                                        character.text.color = Color.OrangeRed;
                                                     }
                                                     else
                                                     {
-                                                        Console.WriteLine(character.name + " health: " + character.health);
+                                                        Console.WriteLine("Miss!");
+                                                        character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                                        character.text.Text = "Miss";
+                                                        character.text.color = Color.Green;
                                                     }
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine("Miss!");
-                                                    character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                    character.text.Text = "Miss";
-                                                    character.text.color = Color.OrangeRed;
+
+                                                    world.level.attacked = true;
                                                 }
                                             }
-                                            else // healer
+                                            if (toSkipTurn != null)
                                             {
-                                                int health = 40;
-                                                Console.WriteLine(character.name + " heals " + health + " points!");
-                                                character.health += health;
-                                                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                character.text.Text = "+" + health;
-                                                character.text.color = Color.LightBlue;
+                                                world.level.grid.characters.list.Remove(toSkipTurn);
+                                                world.level.grid.characters.list.Add(toSkipTurn);
                                             }
                                         }
                                     }
-                                    world.level.attacked = true;
-                                    foreach (Character character in toBeKilled)
+                                    else
                                     {
-                                        world.level.grid.characters.list.Remove(character);
+                                        Console.WriteLine("Not enough mp to cast!");
                                     }
                                 }
                                 else
@@ -405,7 +481,7 @@ namespace pax_infinium
                                                 Console.WriteLine("Miss!");
                                                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                                                 character.text.Text = "Miss";
-                                                character.text.color = Color.OrangeRed;
+                                                character.text.color = Color.Green;
                                             }
 
                                             world.level.attacked = true;

@@ -18,9 +18,7 @@ namespace pax_infinium
         public bool rotated;
         public TextItem text;
         //public string[] turnOrder;
-        
 
-        
         public Background background;
         public int perspective;
 
@@ -110,11 +108,19 @@ namespace pax_infinium
             {
                 text.color = Color.Red;
             }
+            int mpGain = 10;
+            if (grid.characters.list[0].mp + mpGain <= grid.characters.list[0].maxMP)
+            {
+                grid.characters.list[0].mp += mpGain;
+            }
+            else if (grid.characters.list[0].mp + mpGain > grid.characters.list[0].maxMP)
+            {
+                grid.characters.list[0].mp = grid.characters.list[0].maxMP;
+            }
             //grid.onCharacterMoved();
             moved = false;
             attacked = false;
             rotated = false;
-        }
-        
+        }        
     }
 }

@@ -39,6 +39,7 @@ namespace pax_infinium
         public int job;
         public string direction;
         public TextItem statusText;
+        public int maxMP;
 
 
         public Character(string name, int team, Vector2 origin, Vector3 gridPos, String direction, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
