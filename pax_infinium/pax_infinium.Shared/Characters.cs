@@ -37,6 +37,8 @@ namespace pax_infinium
             Texture2D ne;
             Texture2D sw;
             Texture2D se;
+            Texture2D fl;
+            Texture2D fr;
             switch (job)
             {
                 case 0: // Soldier
@@ -46,6 +48,8 @@ namespace pax_infinium
                         ne = World.textureManager["Blue Soldier\\Blue Soldier NE"];
                         sw = World.textureManager["Blue Soldier\\Blue Soldier SW"];
                         se = World.textureManager["Blue Soldier\\Blue Soldier SE"];
+                        fl = World.textureManager["Blue Soldier\\Blue Soldier FL"];
+                        fr = World.textureManager["Blue Soldier\\Blue Soldier FR"];
                     }
                     else
                     {
@@ -53,6 +57,8 @@ namespace pax_infinium
                         ne = World.textureManager["Red Soldier\\Red Soldier NE"];
                         sw = World.textureManager["Red Soldier\\Red Soldier SW"];
                         se = World.textureManager["Red Soldier\\Red Soldier SE"];
+                        fl = World.textureManager["Red Soldier\\Red Soldier FL"];
+                        fr = World.textureManager["Red Soldier\\Red Soldier FR"];
                     }
                     break;
                 case 1: // Hunter
@@ -62,6 +68,8 @@ namespace pax_infinium
                         ne = World.textureManager["Blue Hunter\\Blue Hunter NE"];
                         sw = World.textureManager["Blue Hunter\\Blue Hunter SW"];
                         se = World.textureManager["Blue Hunter\\Blue Hunter SE"];
+                        fl = World.textureManager["Blue Hunter\\Blue Hunter FL"];
+                        fr = World.textureManager["Blue Hunter\\Blue Hunter FR"];
                     }
                     else
                     {
@@ -69,6 +77,8 @@ namespace pax_infinium
                         ne = World.textureManager["Red Hunter\\Red Hunter NE"];
                         sw = World.textureManager["Red Hunter\\Red Hunter SW"];
                         se = World.textureManager["Red Hunter\\Red Hunter SE"];
+                        fl = World.textureManager["Red Hunter\\Red Hunter FL"];
+                        fr = World.textureManager["Red Hunter\\Red Hunter FR"];
                     }
                     break;
                 case 2: // (Black Mage) Mage
@@ -78,6 +88,8 @@ namespace pax_infinium
                         ne = World.textureManager["Blue Mage\\Blue Mage NE"];
                         sw = World.textureManager["Blue Mage\\Blue Mage SW"];
                         se = World.textureManager["Blue Mage\\Blue Mage SE"];
+                        fl = World.textureManager["Blue Mage\\Blue Mage FL"];
+                        fr = World.textureManager["Blue Mage\\Blue Mage FR"];
                     }
                     else
                     {
@@ -85,6 +97,8 @@ namespace pax_infinium
                         ne = World.textureManager["Red Mage\\Red Mage NE"];
                         sw = World.textureManager["Red Mage\\Red Mage SW"];
                         se = World.textureManager["Red Mage\\Red Mage SE"];
+                        fl = World.textureManager["Red Mage\\Red Mage FL"];
+                        fr = World.textureManager["Red Mage\\Red Mage FR"];
                     }
                     break;
                 case 3: // (White Mage) Healer
@@ -94,6 +108,8 @@ namespace pax_infinium
                         ne = World.textureManager["Blue Healer\\Blue Healer NE"];
                         sw = World.textureManager["Blue Healer\\Blue Healer SW"];
                         se = World.textureManager["Blue Healer\\Blue Healer SE"];
+                        fl = World.textureManager["Blue Healer\\Blue Healer FL"];
+                        fr = World.textureManager["Blue Healer\\Blue Healer FR"];
                     }
                     else
                     {
@@ -101,6 +117,8 @@ namespace pax_infinium
                         ne = World.textureManager["Red Healer\\Red Healer NE"];
                         sw = World.textureManager["Red Healer\\Red Healer SW"];
                         se = World.textureManager["Red Healer\\Red Healer SE"];
+                        fl = World.textureManager["Red Healer\\Red Healer FL"];
+                        fr = World.textureManager["Red Healer\\Red Healer FR"];
                     }
                     break;
                 case 4: // Thief
@@ -110,6 +128,8 @@ namespace pax_infinium
                         ne = World.textureManager["Blue Thief\\Blue Thief NE"];
                         sw = World.textureManager["Blue Thief\\Blue Thief SW"];
                         se = World.textureManager["Blue Thief\\Blue Thief SE"];
+                        fl = World.textureManager["Blue Thief\\Blue Thief FL"];
+                        fr = World.textureManager["Blue Thief\\Blue Thief FR"];
                     }
                     else
                     {
@@ -117,13 +137,15 @@ namespace pax_infinium
                         ne = World.textureManager["Red Thief\\Red Thief NE"];
                         sw = World.textureManager["Red Thief\\Red Thief SW"];
                         se = World.textureManager["Red Thief\\Red Thief SE"];
+                        fl = World.textureManager["Red Thief\\Red Thief FL"];
+                        fr = World.textureManager["Red Thief\\Red Thief FR"];
                     }
                     break;
                 default:
-                    nw = ne = sw = se = Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue);
+                    nw = ne = sw = se = fl = fr = Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue);
                     break;
             }
-            list.Add(new Character(name, team, origin, position, direction, nw, ne, sw, se, graphics, new SpriteSheetInfo(64, 128)));
+            list.Add(new Character(name, team, origin, position, direction, nw, ne, sw, se, fl, fr, graphics, new SpriteSheetInfo(64, 128)));
 
             Character newCharacter = list[list.Count - 1];
             newCharacter.job = job;
@@ -142,6 +164,7 @@ namespace pax_infinium
                     newCharacter.evasion = 0;
                     newCharacter.speed = 72;
                     newCharacter.weaponRange = 1;
+                    newCharacter.magicRange = 1;
                     break;
                 case 1: // Hunter
                     newCharacter.move = 4;

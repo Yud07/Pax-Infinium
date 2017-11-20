@@ -13,45 +13,66 @@
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/ScoreFont.spritefont</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Impact-36.spritefont</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/InfoFont.spritefont</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter NE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter NW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter SE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter SW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage NE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage NW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage SE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage SW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier NE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier NW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier SE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Hunter/Red Hunter FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Hunter/Red Hunter FR.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Hunter/Red Hunter NE.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Hunter/Red Hunter NW.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Hunter/Red Hunter SE.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Hunter/Red Hunter SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Mage/Red Mage FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Mage/Red Mage FR.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Mage/Red Mage NE.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Mage/Red Mage NW.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Mage/Red Mage SE.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Mage/Red Mage SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Soldier/Red Soldier FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Soldier/Red Soldier FR.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Soldier/Red Soldier NE.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Soldier/Red Soldier NW.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Soldier/Red Soldier SE.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Soldier/Red Soldier SW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer NE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer NW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer SE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer SW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer NE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer NW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer SE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer SW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief NE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief NW.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief SE.png</File>
-    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Thief/Red Thief FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Thief/Red Thief FR.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Thief/Red Thief NE.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Thief/Red Thief NW.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Thief/Red Thief SE.png</File>
     <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Thief/Red Thief SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer FR.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer NE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer NW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer SE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Healer/Blue Healer SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter FR.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter NE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter NW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter SE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Hunter/Blue Hunter SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage FR.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage NE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage NW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage SE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Mage/Blue Mage SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier FR.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier NE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier NW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier SE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Soldier/Blue Soldier SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief FR.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief NE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief NW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief SE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Blue Thief/Blue Thief SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer FL.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer FR.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer NE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer NW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer SE.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Red Healer/Red Healer SW.png</File>
+    <File>C:/Users/myudy/Documents/GitHub/Pax-Infinium/pax_infinium/pax_infinium.Shared/Content/Status Icons.png</File>
   </SourceFiles>
 </SourceFileCollection>

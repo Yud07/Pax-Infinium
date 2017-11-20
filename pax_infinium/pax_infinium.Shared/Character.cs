@@ -40,9 +40,11 @@ namespace pax_infinium
         public string direction;
         public TextItem statusText;
         public int maxMP;
+        public Texture2D faceLeft;
+        public Texture2D faceRight;
 
 
-        public Character(string name, int team, Vector2 origin, Vector3 gridPos, String direction, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
+        public Character(string name, int team, Vector2 origin, Vector3 gridPos, String direction, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
             this.name = name;
             this.nwTex = nwTex;
@@ -65,6 +67,8 @@ namespace pax_infinium
             //this.speed = World.Random.Next(75, 100);
             this.team = team;
             this.direction = direction;
+            this.faceLeft = faceL;
+            this.faceRight = faceR;
 
             Texture2D tex;
             if (direction == "nw")
@@ -127,7 +131,7 @@ namespace pax_infinium
         public void Draw(SpriteBatch spriteBatch)
         {
             sprite.Draw(spriteBatch);
-            statusText.Text = health + "/" + mp;
+            statusText.Text = health.ToString();
             statusText.Draw(spriteBatch);
             if (text.Text != " ")
             {

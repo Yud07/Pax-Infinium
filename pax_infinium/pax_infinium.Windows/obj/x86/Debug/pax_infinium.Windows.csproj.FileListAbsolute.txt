@@ -164,3 +164,24 @@ C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\b
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Thief\Red Thief NW.xnb
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Thief\Red Thief SE.xnb
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Thief\Red Thief SW.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Healer\Blue Healer FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Healer\Blue Healer FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Hunter\Blue Hunter FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Hunter\Blue Hunter FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Mage\Blue Mage FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Mage\Blue Mage FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Soldier\Blue Soldier FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Soldier\Blue Soldier FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Thief\Blue Thief FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Thief\Blue Thief FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Healer\Red Healer FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Healer\Red Healer FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Hunter\Red Hunter FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Hunter\Red Hunter FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Mage\Red Mage FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Mage\Red Mage FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Soldier\Red Soldier FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Soldier\Red Soldier FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Thief\Red Thief FL.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Thief\Red Thief FR.xnb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Status Icons.xnb

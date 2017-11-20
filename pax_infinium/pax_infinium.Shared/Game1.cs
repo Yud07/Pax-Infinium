@@ -66,53 +66,73 @@ namespace pax_infinium
             World.textureManager.Load("Blue Soldier\\Blue Soldier NE");
             World.textureManager.Load("Blue Soldier\\Blue Soldier SW");
             World.textureManager.Load("Blue Soldier\\Blue Soldier SE");
+            World.textureManager.Load("Blue Soldier\\Blue Soldier FL");
+            World.textureManager.Load("Blue Soldier\\Blue Soldier FR");
 
             World.textureManager.Load("Red Soldier\\Red Soldier NW");
             World.textureManager.Load("Red Soldier\\Red Soldier NE");
             World.textureManager.Load("Red Soldier\\Red Soldier SW");
             World.textureManager.Load("Red Soldier\\Red Soldier SE");
+            World.textureManager.Load("Red Soldier\\Red Soldier FL");
+            World.textureManager.Load("Red Soldier\\Red Soldier FR");
 
             World.textureManager.Load("Blue Hunter\\Blue Hunter NW");
             World.textureManager.Load("Blue Hunter\\Blue Hunter NE");
             World.textureManager.Load("Blue Hunter\\Blue Hunter SW");
             World.textureManager.Load("Blue Hunter\\Blue Hunter SE");
+            World.textureManager.Load("Blue Hunter\\Blue Hunter FL");
+            World.textureManager.Load("Blue Hunter\\Blue Hunter FR");
 
             World.textureManager.Load("Red Hunter\\Red Hunter NW");
             World.textureManager.Load("Red Hunter\\Red Hunter NE");
             World.textureManager.Load("Red Hunter\\Red Hunter SW");
             World.textureManager.Load("Red Hunter\\Red Hunter SE");
+            World.textureManager.Load("Red Hunter\\Red Hunter FL");
+            World.textureManager.Load("Red Hunter\\Red Hunter FR");
 
             World.textureManager.Load("Blue Mage\\Blue Mage NW");
             World.textureManager.Load("Blue Mage\\Blue Mage NE");
             World.textureManager.Load("Blue Mage\\Blue Mage SW");
             World.textureManager.Load("Blue Mage\\Blue Mage SE");
+            World.textureManager.Load("Blue Mage\\Blue Mage FL");
+            World.textureManager.Load("Blue Mage\\Blue Mage FR");
 
             World.textureManager.Load("Red Mage\\Red Mage NW");
             World.textureManager.Load("Red Mage\\Red Mage NE");
             World.textureManager.Load("Red Mage\\Red Mage SW");
             World.textureManager.Load("Red Mage\\Red Mage SE");
+            World.textureManager.Load("Red Mage\\Red Mage FL");
+            World.textureManager.Load("Red Mage\\Red Mage FR");
 
             World.textureManager.Load("Blue Healer\\Blue Healer NW");
             World.textureManager.Load("Blue Healer\\Blue Healer NE");
             World.textureManager.Load("Blue Healer\\Blue Healer SW");
             World.textureManager.Load("Blue Healer\\Blue Healer SE");
+            World.textureManager.Load("Blue Healer\\Blue Healer FL");
+            World.textureManager.Load("Blue Healer\\Blue Healer FR");
 
             World.textureManager.Load("Red Healer\\Red Healer NW");
             World.textureManager.Load("Red Healer\\Red Healer NE");
             World.textureManager.Load("Red Healer\\Red Healer SW");
             World.textureManager.Load("Red Healer\\Red Healer SE");
+            World.textureManager.Load("Red Healer\\Red Healer FL");
+            World.textureManager.Load("Red Healer\\Red Healer FR");
 
             World.textureManager.Load("Blue Thief\\Blue Thief NW");
             World.textureManager.Load("Blue Thief\\Blue Thief NE");
             World.textureManager.Load("Blue Thief\\Blue Thief SW");
             World.textureManager.Load("Blue Thief\\Blue Thief SE");
+            World.textureManager.Load("Blue Thief\\Blue Thief FL");
+            World.textureManager.Load("Blue Thief\\Blue Thief FR");
 
             World.textureManager.Load("Red Thief\\Red Thief NW");
             World.textureManager.Load("Red Thief\\Red Thief NE");
             World.textureManager.Load("Red Thief\\Red Thief SW");
             World.textureManager.Load("Red Thief\\Red Thief SE");
+            World.textureManager.Load("Red Thief\\Red Thief FL");
+            World.textureManager.Load("Red Thief\\Red Thief FR");
 
-
+            World.textureManager.Load("Status Icons");
 
             // create 1x1 texture for line drawing
             world.oneByOne = new Texture2D(GraphicsDevice, 1, 1);
@@ -149,6 +169,7 @@ namespace pax_infinium
             Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
             Cube exampleCube = world.level.grid.cubes[0];
             Character player;
+            List<Cube> highlightedCubes = new List<Cube>();
 
             // press esc to exit
             if (keyboardState.IsKeyDown(Keys.Escape))
@@ -196,6 +217,8 @@ namespace pax_infinium
                         if ((world.cubeDist(cube.gridPos, player.gridPos) <= player.magicRange))
                         {
                             cube.highLight = true;
+                            highlightedCubes.Add(cube);
+
                         }
                         
                         if (world.cubeDist(player.gridPos, cube.gridPos) <= player.magicRange && cube.topPoly.Contains(transformedMouseState) &&
@@ -217,6 +240,7 @@ namespace pax_infinium
                     {
                         if ((world.cubeDist(cube.gridPos, player.gridPos) <= player.weaponRange)){
                             cube.highLight = true;
+                            highlightedCubes.Add(cube);
                         }
                     }
 
@@ -228,16 +252,18 @@ namespace pax_infinium
                         if (cubeDist < player.move && cubeDist > 0 && world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
                         {
                             cube.highLight = true;
+                            highlightedCubes.Add(cube);
                         }
                     }
                 }
-                else if (player.job == 4 && keyboardState.IsKeyDown(Keys.S) && !world.level.attacked) //thief special
+                else if ((player.job == 0 || player.job == 4) && keyboardState.IsKeyDown(Keys.S) && !world.level.attacked) //thief special
                 {
                     foreach (Cube cube in world.level.grid.cubes)
                     {
                         if ((world.cubeDist(cube.gridPos, player.gridPos) <= player.magicRange))
                         {
                             cube.highLight = true;
+                            highlightedCubes.Add(cube);
                         }
                     }
                 }
@@ -247,10 +273,12 @@ namespace pax_infinium
                     world.level.endTurn();
                 }
 
+                bool mouseInBounds = false;
+
                 // highlight scrolled over cube
                 foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
                 {
-                    /*bool topVisible = true;
+                    bool topVisible = true;
                     foreach (Cube c in world.level.grid.cubes)
                     {
                         if (c != cube)
@@ -263,11 +291,12 @@ namespace pax_infinium
                                 }
                             }
                         }
-                    }*/
+                    }
 
                     if (cube.topPoly.Contains(transformedMouseState) &&
-                        world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)// && topVisible)
+                        world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z && topVisible)
                     {
+                        mouseInBounds = true;
                         if (!cube.highLight)
                         {
                             cube.highLight = true;
@@ -279,6 +308,16 @@ namespace pax_infinium
 
                         world.level.grid.onHighlightMoved(cube);
                         world.level.grid.onCharacterMoved();
+
+                        world.level.clearCharacter();
+                        foreach (Character c in world.level.grid.characters.list)
+                        {
+                            if (cube.gridPos == c.gridPos)
+                            {
+                                world.level.setCharacter(c);
+                            }
+                        }
+                        
 
                         if (!world.level.rotated)
                         {
@@ -315,7 +354,7 @@ namespace pax_infinium
 
                         if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
                         {
-                            if ((((player.job == 2 || player.job == 3 || player.job == 4) && keyboardState.IsKeyDown(Keys.S)) || keyboardState.IsKeyDown(Keys.A)) && !world.level.attacked) // Attack
+                            if ((((player.job == 2 || player.job == 3 || player.job == 4 || player.job == 0) && keyboardState.IsKeyDown(Keys.S)) || keyboardState.IsKeyDown(Keys.A)) && !world.level.attacked) // Attack
                             {
                                 if (keyboardState.IsKeyDown(Keys.S))
                                 {
@@ -335,7 +374,7 @@ namespace pax_infinium
                                             player.text.Text = "-8";
                                             player.text.color = Color.LightBlue;
                                         //}
-                                        if (player.job != 4)
+                                        if (player.job == 2 || player.job == 3)
                                         {
                                             List<Character> toSkipTurn = new List<Character>();
                                             List<Character> toBeKilled = new List<Character>();
@@ -393,7 +432,7 @@ namespace pax_infinium
                                                 world.level.grid.characters.list.Remove(character);
                                             }
                                         }
-                                        else // thief special
+                                        else if (player.job == 4)// thief special
                                         {
                                             Character toSkipTurn = null;
                                             foreach (Character character in world.level.grid.characters.list)
@@ -432,6 +471,24 @@ namespace pax_infinium
                                             {
                                                 world.level.grid.characters.list.Remove(toSkipTurn);
                                                 world.level.grid.characters.list.Add(toSkipTurn);
+                                            }
+                                        }
+                                        else if (player.job == 0)// soldier special
+                                        { 
+                                            foreach (Character character in world.level.grid.characters.list)
+                                            {
+                                                if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
+                                                    world.cubeDist(player.gridPos, character.gridPos) <= player.magicRange)
+                                                {
+                                                    int defenseBoost = 20;
+                                                    Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
+                                                    character.MDefense += defenseBoost;
+                                                    character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                                                    character.text.Text = "+" + defenseBoost;
+                                                    character.text.color = Color.Yellow;
+
+                                                    world.level.attacked = true;
+                                                }
                                             }
                                         }
                                     }
@@ -493,10 +550,10 @@ namespace pax_infinium
                                     }
                                 }
                             }
-                            else if (keyboardState.IsKeyDown(Keys.M) && Game1.world.cubeDist(player.gridPos, cube.gridPos) < player.move && !world.level.moved) // Move
+                            else if (keyboardState.IsKeyDown(Keys.M) && Game1.world.cubeDist(player.gridPos, cube.gridPos) < player.move && world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z && !world.level.moved) // Move
                             {
                                 bool vacant = true;
-                                Console.WriteLine();
+                                //Console.WriteLine();
                                 foreach (Character character in world.level.grid.characters.list)
                                 {
                                     if (character.gridPos == cube.gridPos)
@@ -518,6 +575,10 @@ namespace pax_infinium
 
 
                     }
+                }
+                if (!mouseInBounds)
+                {
+                    world.level.grid.clearTransparencies();
                 }
             }
 

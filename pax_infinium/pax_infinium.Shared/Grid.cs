@@ -101,9 +101,28 @@ namespace pax_infinium
             int y = (int) gridPos.Y;
             int maxHeight = height;
             int topZ = int.MinValue;
+            bool[,,] binMat;
+            switch (activeView)
+            {
+                case 0:
+                    binMat = binaryMatrix;
+                    break;
+                case 1:
+                    binMat = binaryMatrixB;
+                    break;
+                case 2:
+                    binMat = binaryMatrixC;
+                    break;
+                case 3:
+                    binMat = binaryMatrixD;
+                    break;
+                default:
+                    binMat = binaryMatrix;
+                    break;
+            }
             for (int z = 0; z < maxHeight; z++)
             {
-                if (binaryMatrix[x, y, z])
+                if (binMat[x, y, z])
                 {
                     topZ = z;
                 }
@@ -198,7 +217,7 @@ namespace pax_infinium
             bool mirroredA, mirroredB, mirroredC;
             bool borderA, borderB, borderC;
             int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
-            randomColor = 2;//random.Next(0, 5); //0;
+            randomColor = 0;// 2;//random.Next(0, 5); //0;
             //Console.WriteLine("randomColor " + randomColor);
             List<Cube> tempCubes = new List<Cube>();
             for (int x = 0; x < width - 1; x++)
@@ -562,6 +581,14 @@ namespace pax_infinium
                 }
             }
             return null;
+        }
+
+        public void clearTransparencies()
+        {
+            foreach (Cube c in cubes)
+            {
+                c.SetAlpha(1);
+            }
         }
     }
 }
