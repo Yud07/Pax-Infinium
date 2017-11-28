@@ -34,6 +34,11 @@ namespace pax_infinium
         public Sprite playerStatusIcons;
         public Sprite characterStatusIcons;
 
+        public List<Sprite> turnOrderIcons;
+        public List<Sprite> turnOrderTeamIcons;
+
+        public TextItem confirmationText;
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
             random = World.Random;
@@ -125,6 +130,16 @@ namespace pax_infinium
             characterStatusIcons = new Sprite(World.textureManager["Status Icons"]);
             characterStatusIcons.position = new Vector2(characterStatusIcons.tex.Width * 1.45f, characterStatusIcons.tex.Height / 5.1f);
             characterStatusIcons.scale = .2f;
+
+            turnOrderIcons = new List<Sprite>();
+            turnOrderTeamIcons = new List<Sprite>();
+            setupTurnOrderIcons();
+
+            confirmationText = new TextItem(World.fontManager["InfoFont"], "Chance: 95% Damage: 43HP Confirm: Y/N");
+            confirmationText.Text = "";
+            confirmationText.position = new Vector2(950, 1050);
+            confirmationText.scale = 2;
+            confirmationText.color = Color.Black;
         }
 
         /*
@@ -174,15 +189,27 @@ namespace pax_infinium
             //grid.characters.Draw(spriteBatch);
             text.Draw(spriteBatch);
             playerName.Draw(spriteBatch);
-            playerStatus.Draw(spriteBatch);
             playerFace.Draw(spriteBatch);
+            playerStatus.Draw(spriteBatch);
             playerStatusIcons.Draw(spriteBatch);
             if (characterName.Text != "")
             {
                 characterName.Draw(spriteBatch);
-                characterStatus.Draw(spriteBatch);
                 characterFace.Draw(spriteBatch);
+                characterStatus.Draw(spriteBatch);
                 characterStatusIcons.Draw(spriteBatch);
+            }
+            foreach (Sprite sp in turnOrderTeamIcons)
+            {
+                sp.Draw(spriteBatch);
+            }
+            foreach (Sprite s in turnOrderIcons)
+            {
+                s.Draw(spriteBatch);
+            }
+            if (confirmationText.Text != "")
+            {
+                confirmationText.Draw(spriteBatch);
             }
         }
 
@@ -192,37 +219,84 @@ namespace pax_infinium
             Character tempCharacter = grid.characters.list[0];
             grid.characters.list.Remove(tempCharacter);
             grid.characters.list.Add(tempCharacter);
+
+            setupTurnOrderIcons();
+
+            Character player = grid.characters.list[0];
+
+            float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
+            float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, 0, player.gridPos.Z));
+            float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, grid.depth, player.gridPos.Z));
+            float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, grid.depth, player.gridPos.Z));
+
+            List<float> distancesToCorners = new List<float>();
+            //East right once
+            //North right twice
+            //West right 3 times
+
+            
+            distancesToCorners.Add(distanceToEast);
+            distancesToCorners.Add(distanceToNorth);
+            distancesToCorners.Add(distanceToWest);
+            distancesToCorners.Add(distanceToSouth);
+
+            float min = distancesToCorners.Min();
+            //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
+            if (min != distanceToSouth)
+            {
+                if (distanceToEast == min)
+                {
+                    //Console.WriteLine("east");
+                    grid.rotate(true);
+                }
+                else if (distanceToWest == min)
+                {
+                    //Console.WriteLine("west");
+                    grid.rotate(false);
+                }
+                else
+                {
+                    //Console.WriteLine("north");
+                    grid.rotate(true);
+                    grid.rotate(true);
+                }
+            }
+            /*else
+            {
+                Console.WriteLine("south");
+            }*/
+
             //Console.WriteLine("turn: " + turn);
             //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
             text.Text = "Turn:" + turn.ToString();
-            playerName.Text = grid.characters.list[0].name;
-            String t = grid.characters.list[0].health + "              " + grid.characters.list[0].mp;
-            t += "\n\n\n" + grid.characters.list[0].move + "                 " + grid.characters.list[0].jump;
-            t += "\n\n\n" + grid.characters.list[0].speed + "              " + grid.characters.list[0].evasion;
-            t += "\n\n\n" + grid.characters.list[0].WAttack + "              " + grid.characters.list[0].MAttack;
-            t += "\n\n\n" + grid.characters.list[0].WDefense + "              " + grid.characters.list[0].MDefense;
-            t += "\n\n\n" + grid.characters.list[0].weaponRange + "                 " + grid.characters.list[0].magicRange;
+            playerName.Text = player.name;
+            String t = player.health + "              " + player.mp;
+            t += "\n\n\n" + player.move + "                 " + player.jump;
+            t += "\n\n\n" + player.speed + "              " + player.evasion;
+            t += "\n\n\n" + player.WAttack + "              " + player.MAttack;
+            t += "\n\n\n" + player.WDefense + "              " + player.MDefense;
+            t += "\n\n\n" + player.weaponRange + "                 " + player.magicRange;
             playerStatus.Text = t;
-            playerFace.tex = grid.characters.list[0].faceLeft;
-            if (grid.characters.list[0].team == 0)
+            playerFace.tex = player.faceLeft;
+            if (player.team == 0)
             {
                 playerName.color = Color.Blue;
                 playerStatus.color = Color.Blue;
 
             }
-            else if (grid.characters.list[0].team == 1)
+            else if (player.team == 1)
             {
                 playerName.color = Color.Red;
                 playerStatus.color = Color.Red;
             }
             int mpGain = 10;
-            if (grid.characters.list[0].mp + mpGain <= grid.characters.list[0].maxMP)
+            if (player.mp + mpGain <= player.maxMP)
             {
-                grid.characters.list[0].mp += mpGain;
+                player.mp += mpGain;
             }
-            else if (grid.characters.list[0].mp + mpGain > grid.characters.list[0].maxMP)
+            else if (player.mp + mpGain > player.maxMP)
             {
-                grid.characters.list[0].mp = grid.characters.list[0].maxMP;
+                player.mp = player.maxMP;
             }
             //grid.onCharacterMoved();
             moved = false;
@@ -265,6 +339,52 @@ namespace pax_infinium
             characterStatus.Text = "";
             //characterFace.tex = null;
 
+        }
+
+        public void setupTurnOrderIcons()
+        {
+            turnOrderIcons.Clear();
+            turnOrderTeamIcons.Clear();
+            int index = 0;
+            float offset = 1970 - 50 * grid.characters.list.Count;
+            Texture2D redTex = Game1.world.textureConverter.GenRectangle(50, grid.characters.list[0].faceLeft.Height, Color.Red);
+            Texture2D blueTex = Game1.world.textureConverter.GenRectangle(50, grid.characters.list[0].faceLeft.Height, Color.Blue);
+            foreach (Character c in grid.characters.list)
+            {
+                if (c.team == 0)
+                {
+                    turnOrderTeamIcons.Add(new Sprite(blueTex));
+                }
+                else if (c.team == 1)
+                {
+                    turnOrderTeamIcons.Add(new Sprite(redTex));
+                }
+                turnOrderTeamIcons[index].position = new Vector2(offset - 25 + index * 50, 0);
+
+                /*if (index % 2 == 0)
+                {*/
+                    turnOrderIcons.Add(new Sprite(c.faceLeft));
+                    turnOrderIcons[index].position = new Vector2(offset + index * 50, 0);
+
+                /*}
+                else
+                {
+                    turnOrderIcons.Add(new Sprite(c.faceRight));
+                    turnOrderIcons[index].position = new Vector2(offset + (index-1) * 50, 0);
+                }*/
+                index++;
+            }
+            turnOrderIcons.Reverse();
+        }
+
+        public void SetConfirmationText(int chance, int damage)
+        {
+            confirmationText.Text = "Chance: " + chance + " % Damage: " + damage + "HP Confirm: Y / N";
+        }
+
+        public void SetConfirmationText(String text)
+        {
+            confirmationText.Text = text;
         }
     }
 }

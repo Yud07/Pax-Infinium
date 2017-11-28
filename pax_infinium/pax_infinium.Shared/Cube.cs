@@ -355,5 +355,13 @@ namespace pax_infinium
                 SetAlpha(.5f);
             }
         }
+
+        public bool isAdjacent(Vector3 v)
+        {
+            Vector3 diff = gridPos - v;
+
+            
+            return Game1.world.cubeDist(gridPos, v) == 1 && (diff.X == 0 || diff.Y == 0);
+        }
     }
 }

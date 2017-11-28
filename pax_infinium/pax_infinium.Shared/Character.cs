@@ -180,5 +180,13 @@ namespace pax_infinium
             }
     
         }
+
+        public void onHighlightMoved(Cube c)
+        {
+            if (gridPos != c.gridPos && DrawOrder() > c.DrawOrder() && Math.Abs(Game1.world.cubeDist(gridPos, c.gridPos)) < 5)
+            {
+                SetAlpha(.5f);
+            }
+        }
     }
 }

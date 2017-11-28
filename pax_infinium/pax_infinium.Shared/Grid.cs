@@ -198,6 +198,10 @@ namespace pax_infinium
             {
                 cube.onHighlightMoved(c);
             }
+            /*foreach (Character character in characters.list)
+            {
+                character.onHighlightMoved(c);
+            }*/
         }
 
         public void createGrid()
@@ -236,20 +240,20 @@ namespace pax_infinium
                             int lineNumA = 0, lineNumB = 0, lineNumC = 0;
 
                             // if it is the top of a column
-                            if (topOfColumn(x, y, height, binaryMatrix) == z) // May want to remove this if --------------------------------------------------------------
+                            if (topOfColumn(x, y, height, binMatrix) == z) // May want to remove this if --------------------------------------------------------------
                             {
                                 bool topLeft = false, topRight = false;
                                 if (x > 0)
                                 {
                                     //topLeft = isoarray[x - 1][y].Count - 1 < z;
-                                    topLeft = !binaryMatrix[x - 1, y, z];
+                                    topLeft = !binMatrix[x - 1, y, z];
 
                                 }
 
                                 if (y > 0)
                                 {
                                     //topRight = isoarray[x][y - 1].Count - 1 < z;
-                                    topRight = !binaryMatrix[x, y - 1, z];
+                                    topRight = !binMatrix[x, y - 1, z];
                                 }
 
                                 // draw lines for each of the top 2 sides that lacks a neighbor
@@ -265,12 +269,12 @@ namespace pax_infinium
                             {
                                 //                 no east cube same level and no southeast east cube same level
                                 //right = isoarray[x][y - 1].Count - 1 < z && isoarray[x + 1][y - 1].Count - 1 < z;
-                                right = !binaryMatrix[x, y - 1, z] && !binaryMatrix[x + 1, y - 1, z];
+                                right = !binMatrix[x, y - 1, z] && !binMatrix[x + 1, y - 1, z];
                             }
                             else if (y > 0)
                             {
                                 //right = isoarray[x][y - 1].Count - 1 < z;
-                                right = !binaryMatrix[x, y - 1, z];
+                                right = !binMatrix[x, y - 1, z];
                             }
 
                             // draw lines for each of the top 2 sides that lacks a neighbor
@@ -285,12 +289,12 @@ namespace pax_infinium
                             {
                                 //                 no north cube same level and no north southwest cube same level
                                 //left = isoarray[x - 1][y].Count - 1 < z && isoarray[x - 1][y + 1].Count - 1 < z;
-                                left = !binaryMatrix[x - 1, y, z] && !binaryMatrix[x - 1, y + 1, z];
+                                left = !binMatrix[x - 1, y, z] && !binMatrix[x - 1, y + 1, z];
                             }
                             else if (x > 0)
                             {
                                 //left = isoarray[x - 1][y].Count - 1 < z;
-                                left = !binaryMatrix[x - 1, y, z];
+                                left = !binMatrix[x - 1, y, z];
                             }
                             if (left) { a = true; lineNumA = 1; }
 
@@ -589,6 +593,10 @@ namespace pax_infinium
             {
                 c.SetAlpha(1);
             }
+            /*foreach (Character character in characters.list)
+            {
+                character.SetAlpha(1);
+            }*/
         }
     }
 }
