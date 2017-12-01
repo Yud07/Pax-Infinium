@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Cube.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DebugRectangle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GameState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Grid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDrawable1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Level.cs" />

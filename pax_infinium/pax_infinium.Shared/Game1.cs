@@ -336,9 +336,7 @@ namespace pax_infinium
                     { // move highlight
                         foreach (Cube cube in world.level.grid.cubes)
                         {
-                            int cubeDist = world.cubeDist(cube.gridPos, player.gridPos);
-                            if (cubeDist < player.move && cubeDist > 0 && world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z
-                                && Math.Abs(cube.gridPos.Z - player.gridPos.Z) <= player.jump)
+                            if (player.inMoveRange(cube.gridPos))
                             {
                                 cube.highLight = true;
                                 highlightedCubes.Add(cube);
@@ -361,6 +359,7 @@ namespace pax_infinium
                 if (keyboardState.IsKeyDown(Keys.E) && previousKeyboardState.IsKeyUp(Keys.E)) // end turn
                 {
                     world.level.endTurn();
+                    selectedAction = "";
                 }
 
                 bool mouseInBounds = false;
@@ -459,10 +458,9 @@ namespace pax_infinium
                                                 {
                                                     if (player.job == 2)
                                                     {
-                                                        int chance = 100 - character.evasion;
-                                                        int spellModifier = 0;
-                                                        int damage = (int)((player.MAttack + spellModifier - (character.MDefense / 2)) * .75);
-                                                        world.level.SetConfirmationText(chance, damage);
+                                                        int[] chanceDamage;
+                                                        chanceDamage = player.calculateMageSpecial(character);
+                                                        world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
                                                     }
                                                     else if (player.job == 3)// healer
                                                     {
@@ -479,13 +477,7 @@ namespace pax_infinium
                                                 if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
                                                     world.cubeDist(player.gridPos, character.gridPos) <= player.magicRange)
                                                 {
-                                                    int angleModifier = 0;
-                                                    if (character.direction.Contains(player.direction[0]))
-                                                        angleModifier++;
-                                                    if (character.direction.Contains(player.direction[1]))
-                                                        angleModifier++;
-
-                                                    int chance = 45 - character.evasion + angleModifier * 5;
+                                                    int chance = player.CalculateThiefSpecial(character);
 
                                                     world.level.SetConfirmationText("Chance " + chance + "% Confirm Y / N");
                                                 }
@@ -509,55 +501,23 @@ namespace pax_infinium
                                         Console.WriteLine("Not enough mp to cast!");
                                     }
                                 }
-                                else
+                                else // attack
                                 {
+                                    int[] chanceDamage;
                                     foreach (Character character in world.level.grid.characters.list)
                                     {
-                                        bool canAttack;
-
-                                        canAttack = character != player && !world.level.attacked && cube.gridPos == character.gridPos;
-
-                                        if (player.job != 1)
-                                        {
-                                            canAttack = canAttack && cube.isAdjacent(player.gridPos);
-                                        }
-                                        else
-                                        {
-                                            canAttack = canAttack && world.cubeDist(player.gridPos, character.gridPos) <= player.weaponRange;
-                                        }
-
-                                        if (canAttack)
-                                        {
-                                            int angleModifier = 0;
-                                            if (character.direction.Contains(player.direction[0]))
-                                                angleModifier++;
-                                            if (character.direction.Contains(player.direction[1]))
-                                                angleModifier++;
-
-                                            int chance = 90 - character.evasion + angleModifier*5;
-                                            int damage = (int)((player.WAttack + player.WAttack * angleModifier/2 - (character.WDefense / 2)) * .5);
-                                            world.level.SetConfirmationText(chance, damage);
+                                        if (cube.gridPos == character.gridPos) {
+                                            
+                                            chanceDamage = player.calculateAttack(character);
+                                            world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
                                         }
                                     }
                                 }
                             }
-                            else if (selectedAction == "move" &&
-                                Game1.world.cubeDist(player.gridPos, cube.gridPos) < player.move &&
-                                world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z &&
-                                Math.Abs(cube.gridPos.Z - player.gridPos.Z) <= player.jump &&
+                            else if (selectedAction == "move" && player.inMoveRange(cube.gridPos) &&
                                 !world.level.moved) // Move
                             {
-                                bool vacant = true;
-                                //Console.WriteLine();
-                                foreach (Character character in world.level.grid.characters.list)
-                                {
-                                    if (character.gridPos == cube.gridPos)
-                                    {
-                                        vacant = false;
-                                        break;
-                                    }
-                                }
-                                if (vacant)
+                                if (Game1.world.level.grid.isVacant(cube.gridPos))
                                 {
                                     world.level.SetConfirmationText("Move? Confirm Y / N");
                                 }
@@ -569,12 +529,9 @@ namespace pax_infinium
                             {
                                 if (selectedAction == "special")
                                 {
-                                    if (player.mp >= 8)
-                                    {                                        
-                                        player.mp -= 8;
-                                        player.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                        player.text.Text = "-8";
-                                        player.text.color = Color.LightBlue;
+                                    if (player.CanCast(8))
+                                    {
+                                        player.payForCast(8, gameTime);
 
                                         if (player.job == 2 || player.job == 3)
                                         {
@@ -587,43 +544,15 @@ namespace pax_infinium
                                                 {
                                                     if (player.job == 2)
                                                     {
-                                                        int chance = 100 - character.evasion;
-                                                        if (chance >= World.Random.Next(1, 101))
+                                                        Character result = player.MageSpecial(character, gameTime);
+                                                        if (result != null)
                                                         {
-                                                            int spellModifier = 0;
-                                                            int damage = (int)((player.MAttack + spellModifier - (character.MDefense / 2)) * .75);
-                                                            Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
-                                                            character.health -= damage;
-                                                            character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                            character.text.Text = "-" + damage;
-                                                            character.text.color = Color.OrangeRed;
-
-                                                            if (character.health <= 0)
-                                                            {
-                                                                Console.WriteLine(character.name + " has died!");
-                                                                toBeKilled.Add(character);
-                                                            }
-                                                            else
-                                                            {
-                                                                Console.WriteLine(character.name + " health: " + character.health);
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            Console.WriteLine("Miss!");
-                                                            character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                            character.text.Text = "Miss";
-                                                            character.text.color = Color.Green;
+                                                            toBeKilled.Add(result);
                                                         }
                                                     }
                                                     else if (player.job == 3)// healer
                                                     {
-                                                        int health = 40;
-                                                        Console.WriteLine(character.name + " heals " + health + " points!");
-                                                        character.health += health;
-                                                        character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                        character.text.Text = "+" + health;
-                                                        character.text.color = Color.Green;
+                                                        player.HealerSpecial(character, gameTime);
                                                     }
                                                 }
                                             }
@@ -644,29 +573,7 @@ namespace pax_infinium
                                                 if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
                                                     world.cubeDist(player.gridPos, character.gridPos) <= player.magicRange)
                                                 {
-                                                    int angleModifier = 0;
-                                                    if (character.direction.Contains(player.direction[0]))
-                                                        angleModifier++;
-                                                    if (character.direction.Contains(player.direction[1]))
-                                                        angleModifier++;
-
-                                                    int chance = 45 - character.evasion + angleModifier * 5;
-                                                    Console.WriteLine("Chance to hit: " + chance + "%");
-                                                    if (chance >= World.Random.Next(1, 101))
-                                                    {
-                                                        toSkipTurn = character;
-                                                        Console.WriteLine(character.name + " had their next turn stolen!");
-                                                        character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                        character.text.Text = "Skipped!";
-                                                        character.text.color = Color.OrangeRed;
-                                                    }
-                                                    else
-                                                    {
-                                                        Console.WriteLine("Miss!");
-                                                        character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                        character.text.Text = "Miss";
-                                                        character.text.color = Color.Green;
-                                                    }
+                                                    toSkipTurn = player.ThiefSpecial(character, gameTime);
 
                                                     world.level.attacked = true;
                                                     confirmAction = false;
@@ -713,56 +620,9 @@ namespace pax_infinium
                                     Character toBeKilled = null;
                                     foreach (Character character in world.level.grid.characters.list)
                                     {
-                                        bool canAttack;
+                                        if (cube.gridPos == character.gridPos) {
 
-                                        canAttack = character != player && !world.level.attacked && cube.gridPos == character.gridPos;
-
-                                        if (player.job != 1)
-                                        {
-                                            canAttack = canAttack && cube.isAdjacent(player.gridPos);
-                                        }
-                                        else
-                                        {
-                                            canAttack = canAttack && world.cubeDist(player.gridPos, character.gridPos) <= player.weaponRange;
-                                        }
-
-                                        if (canAttack)
-                                        {
-                                            int angleModifier = 0;
-                                            if (character.direction.Contains(player.direction[0]))
-                                                angleModifier++;
-                                            if (character.direction.Contains(player.direction[1]))
-                                                angleModifier++;
-
-                                            int chance = 90 - character.evasion + angleModifier * 5;
-                                            Console.WriteLine("Chance to hit: " + chance + "%");
-                                            if (chance >= World.Random.Next(1, 101))
-                                            {
-
-                                                int damage = (int)((player.WAttack + player.WAttack * angleModifier / 2 - (character.WDefense / 2)) * .5);
-                                                Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
-                                                character.health -= damage;
-                                                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                character.text.Text = "-" + damage;
-                                                character.text.color = Color.OrangeRed;
-
-                                                if (character.health <= 0)
-                                                {
-                                                    Console.WriteLine(character.name + " has died!");
-                                                    toBeKilled = character;
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine(character.name + " health: " + character.health);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("Miss!");
-                                                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                character.text.Text = "Miss";
-                                                character.text.color = Color.Green;
-                                            }
+                                            toBeKilled = player.attack(character, gameTime);
 
                                             world.level.attacked = true;
                                             confirmAction = false;
@@ -776,26 +636,12 @@ namespace pax_infinium
                                     }
                                 }
                             }
-                            else if (selectedAction == "move" &&
-                                Game1.world.cubeDist(player.gridPos, cube.gridPos) < player.move &&
-                                world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z &&
-                                Math.Abs(cube.gridPos.Z - player.gridPos.Z) <= player.jump &&
+                            else if (selectedAction == "move" && player.inMoveRange(cube.gridPos) &&
                                 !world.level.moved) // Move
                             {
-                                bool vacant = true;
-                                //Console.WriteLine();
-                                foreach (Character character in world.level.grid.characters.list)
+                                if (Game1.world.level.grid.isVacant(cube.gridPos))
                                 {
-                                    if (character.gridPos == cube.gridPos)
-                                    {
-                                        vacant = false;
-                                        break;
-                                    }
-                                }
-                                if (vacant)
-                                {
-                                    player.gridPos = cube.gridPos;
-                                    player.recalcPos();
+                                    player.Move(cube.gridPos);
                                     //world.level.grid.onCharacterMoved();
                                     world.level.moved = true;
                                     confirmAction = false;

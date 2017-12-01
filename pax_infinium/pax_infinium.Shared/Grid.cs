@@ -598,5 +598,20 @@ namespace pax_infinium
                 character.SetAlpha(1);
             }*/
         }
+
+        public bool isVacant(Vector3 pos)
+        {
+            bool vacant = true;
+            //Console.WriteLine();
+            foreach (Character character in characters.list)
+            {
+                if (character.gridPos == pos)
+                {
+                    vacant = false;
+                    break;
+                }
+            }
+            return vacant;
+        }
     }
 }

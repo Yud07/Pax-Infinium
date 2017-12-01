@@ -188,5 +188,196 @@ namespace pax_infinium
                 SetAlpha(.5f);
             }
         }
+
+        public bool isAdjacent(Vector3 v)
+        {
+            Vector3 diff = gridPos - v;
+
+
+            return Game1.world.cubeDist(gridPos, v) == 1 && (diff.X == 0 || diff.Y == 0);
+        }
+
+        public int[] calculateAttack(Character character)
+        {
+            bool canAttack;
+
+            canAttack = character != this;
+
+            if (job != 1)
+            {
+                canAttack = canAttack && character.isAdjacent(gridPos);
+            }
+            else
+            {
+                canAttack = canAttack && Game1.world.cubeDist(gridPos, character.gridPos) <= weaponRange;
+            }
+
+            if (canAttack)
+            {
+                int angleModifier = 0;
+                if (character.direction.Contains(direction[0].ToString()))
+                    angleModifier++;
+                if (character.direction.Contains(direction[1].ToString()))
+                    angleModifier++;
+
+                int chance = 90 - character.evasion + angleModifier * 5;
+                int damage = (int)((WAttack + WAttack * angleModifier / 2 - (character.WDefense / 2)) * .5);
+                return new int[] { chance, damage };
+            }
+            else
+            {
+                return new int[] { 0, 0};
+            }
+        }
+
+        public Character attack(Character character, GameTime gameTime)
+        {
+            int[] chanceDamage = calculateAttack(character);
+            int chance = chanceDamage[0];
+            int damage = chanceDamage[1];
+
+            Console.WriteLine("Chance to hit: " + chance + "%");
+            if (chance >= World.Random.Next(1, 101))
+            {
+                Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                character.health -= damage;
+                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                character.text.Text = "-" + damage;
+                character.text.color = Color.OrangeRed;
+
+                if (character.health <= 0)
+                {
+                    Console.WriteLine(character.name + " has died!");
+                    return character;
+                }
+                else
+                {
+                    Console.WriteLine(character.name + " health: " + character.health);
+                    return null;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Miss!");
+                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                character.text.Text = "Miss";
+                character.text.color = Color.Green;
+                return null;
+            }
+        }
+
+        public bool inMoveRange(Vector3 pos)
+        {
+            return Game1.world.cubeDist(gridPos, pos) < move &&
+                    Game1.world.level.grid.topOfColumn(pos) == pos.Z &&
+                    Math.Abs(pos.Z - gridPos.Z) <= jump;
+        }
+
+        public void Move(Vector3 pos)
+        {
+            gridPos = pos;
+            recalcPos();
+        }
+
+        public int[] calculateMageSpecial(Character character)
+        {
+            int chance = 100 - character.evasion;
+            int spellModifier = 0;
+            int damage = (int)((MAttack + spellModifier - (character.MDefense / 2)) * .75);
+            return new int[] { chance, damage };
+        }
+
+        public Character MageSpecial(Character character, GameTime gameTime)
+        {
+            int[] chanceDamage;
+            chanceDamage = calculateMageSpecial(character);
+            int chance = chanceDamage[0];
+            if (chance >= World.Random.Next(1, 101))
+            {
+                int damage = chanceDamage[1];
+                Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                character.health -= damage;
+                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                character.text.Text = "-" + damage;
+                character.text.color = Color.OrangeRed;
+
+                if (character.health <= 0)
+                {
+                    Console.WriteLine(character.name + " has died!");
+                    return character;
+                }
+                else
+                {
+                    Console.WriteLine(character.name + " health: " + character.health);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Miss!");
+                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                character.text.Text = "Miss";
+                character.text.color = Color.Green;
+            }
+            return null;
+        }
+
+        public void HealerSpecial(Character character, GameTime gameTime)
+        {
+            int health = 40;
+            Console.WriteLine(character.name + " heals " + health + " points!");
+            character.health += health;
+            character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            character.text.Text = "+" + health;
+            character.text.color = Color.Green;
+        }
+
+        public int CalculateThiefSpecial(Character character)
+        {
+            int angleModifier = 0;
+            if (character.direction.Contains(direction[0].ToString()))
+                angleModifier++;
+            if (character.direction.Contains(direction[1].ToString()))
+                angleModifier++;
+
+            int chance = 45 - character.evasion + angleModifier * 5;
+
+            return chance;
+        }
+
+        public Character ThiefSpecial(Character character, GameTime gameTime)
+        {
+            int chance = CalculateThiefSpecial(character);
+            Console.WriteLine("Chance to hit: " + chance + "%");
+            if (chance >= World.Random.Next(1, 101))
+            {
+                
+                Console.WriteLine(character.name + " had their next turn stolen!");
+                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                character.text.Text = "Skipped!";
+                character.text.color = Color.OrangeRed;
+                return character;
+            }
+            else
+            {
+                Console.WriteLine("Miss!");
+                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                character.text.Text = "Miss";
+                character.text.color = Color.Green;
+                return null;
+            }
+        }
+
+        public bool CanCast(int cost)
+        {
+            return mp >= cost;
+        }
+
+        public void payForCast(int cost, GameTime gameTime)
+        {
+            mp -= cost;
+            textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            text.Text = "-" + cost;
+            text.color = Color.LightBlue;
+        }
     }
 }
