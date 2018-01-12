@@ -84,12 +84,6 @@
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\MCTS\MCTS\MCTS.csproj">
-      <Project>{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}</Project>
-      <Name>MCTS</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="..\pax_infinium.Shared\pax_infinium.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

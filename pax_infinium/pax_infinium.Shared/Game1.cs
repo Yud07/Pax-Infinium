@@ -176,13 +176,15 @@ namespace pax_infinium
             Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
             Cube exampleCube = world.level.grid.cubes[0];
             Character player;
-            List<Cube> highlightedCubes = new List<Cube>();
+            //List<Cube> highlightedCubes = new List<Cube>();
 
+            // saves last click state
             if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
                 lastClickMouseState = transformedMouseState;
             }
 
+            // if last mouse state is not arbitrary (0,0), make it the active mouse state
             if (lastClickMouseState != Vector2.Zero)
             {
                 activeMouseState = lastClickMouseState;
@@ -198,73 +200,66 @@ namespace pax_infinium
                 Exit();
             }
 
-            if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left)) // Rotate Left
+            // left arrow rotates left
+            if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left))
             {
-                world.level.grid.rotate(false);
+                world.level.grid.rotate(false, world.level);
             }
 
-            if (keyboardState.IsKeyDown(Keys.Right) && previousKeyboardState.IsKeyUp(Keys.Right)) // Rotate Right
+            // right arrow rotates right
+            if (keyboardState.IsKeyDown(Keys.Right) && previousKeyboardState.IsKeyUp(Keys.Right))
             {
-                world.level.grid.rotate(true);
+                world.level.grid.rotate(true, world.level);
             }
 
-            if (world.level.grid.characters.list.Count > 0) //if there are characters
+            // if there are characters
+            if (world.level.grid.characters.list.Count > 0)
             {
-                /*if (world.level.grid.characters.list.Count == 1)
-                {*/
-                    player = world.level.grid.characters.list[0];
-                /*}
-                else
-                {
-                    player = world.level.grid.characters.list[0];//world.level.turn % world.level.turnOrder.Length];
-                }*/
+                player = world.level.grid.characters.list[0];
 
+                // Attack key w/ confirmation
                 if (keyboardState.IsKeyDown(Keys.A) && previousKeyboardState.IsKeyUp(Keys.A))
                 {
                     if (selectedAction != "")
                     {
-                        selectedAction = "";
-                        lastClickMouseState = Vector2.Zero;
-                        world.level.SetConfirmationText("");
+                        resetConfirmation();
                     }
                     else
                     {
                         selectedAction = "attack";
                     }
                 }
+                // Special key w/ confirmation
                 else if (keyboardState.IsKeyDown(Keys.S) && previousKeyboardState.IsKeyUp(Keys.S)) {
                     if (selectedAction != "")
                     {
-                        selectedAction = "";
-                        lastClickMouseState = Vector2.Zero;
-                        world.level.SetConfirmationText("");
+                        resetConfirmation();
                     }
                     else
                     {
                         selectedAction = "special";
                     }
                 }
+                // Move key w/ confirmation
                 else if (keyboardState.IsKeyDown(Keys.M) && previousKeyboardState.IsKeyUp(Keys.M))
                 {
                     if (selectedAction != "")
                     {
-                        selectedAction = "";
-                        lastClickMouseState = Vector2.Zero;
-                        world.level.SetConfirmationText("");
+                        resetConfirmation();
                     }
                     else
                     {
                         selectedAction = "move";
                     }
                 }
+                // Confirm key
                 else if (keyboardState.IsKeyDown(Keys.Y) && previousKeyboardState.IsKeyUp(Keys.Y)){
                     confirmAction = true;
                 }
+                // Cancel key
                 else if (keyboardState.IsKeyDown(Keys.N) && previousKeyboardState.IsKeyUp(Keys.N))
                 {
-                    selectedAction = "";
-                    lastClickMouseState = Vector2.Zero;
-                    world.level.SetConfirmationText("");
+                    resetConfirmation();
                 }
 
                 foreach (Cube cube in world.level.grid.cubes) // clear highlights
@@ -286,19 +281,20 @@ namespace pax_infinium
                     { // Black Mage or healer or thief
                         foreach (Cube cube in world.level.grid.cubes)
                         {
-                            if ((world.cubeDist(cube.gridPos, player.gridPos) <= player.magicRange))
+                            if (player.InMagicRange(cube.gridPos))
                             {
                                 cube.highLight = true;
-                                highlightedCubes.Add(cube);
-
+                                //highlightedCubes.Add(cube);
                             }
 
-                            if (world.cubeDist(player.gridPos, cube.gridPos) <= player.magicRange && cube.topPoly.Contains(activeMouseState) &&
+                            // if the player is in magic range and the standing on a cube the mouse is over
+                            // and the cube is on the surface
+                            if (player.InMagicRange(cube.gridPos) && cube.topPoly.Contains(activeMouseState) &&
                             world.level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
                             {
                                 foreach (Cube c in world.level.grid.cubes)
                                 {
-                                    if (world.cubeDist(c.gridPos, cube.gridPos) <= 1)
+                                    if ((c.isAdjacent(cube.gridPos) || c.gridPos == cube.gridPos))
                                     {
                                         c.invert = true;
                                     }
@@ -308,38 +304,37 @@ namespace pax_infinium
                     }
                     else if (selectedAction == "attack" && !world.level.attacked) // WAttack highlight
                     {
-                        if (player.job == 1)
+                        if (player.job == 1) // Hunter
                         {
                             foreach (Cube cube in world.level.grid.cubes)
                             {
-                                if (world.cubeDist(cube.gridPos, player.gridPos) <= player.weaponRange)
+                                if (player.InWeaponRange(cube.gridPos))
                                 {
                                     cube.highLight = true;
-                                    highlightedCubes.Add(cube);
+                                    //highlightedCubes.Add(cube);
                                 }
                             }
                         }
-                        else
+                        else // Everyone Else
                         {
                             foreach (Cube cube in world.level.grid.cubes)
                             {
                                 if (cube.isAdjacent(player.gridPos))
                                 {
                                     cube.highLight = true;
-                                    highlightedCubes.Add(cube);
+                                    //highlightedCubes.Add(cube);
                                 }
                             }
                         }
-
                     }
                     else if (selectedAction == "move" && !world.level.moved)
                     { // move highlight
                         foreach (Cube cube in world.level.grid.cubes)
                         {
-                            if (player.inMoveRange(cube.gridPos))
+                            if (player.inMoveRange(cube.gridPos, world.level))
                             {
                                 cube.highLight = true;
-                                highlightedCubes.Add(cube);
+                                //highlightedCubes.Add(cube);
                             }
                         }
                     }
@@ -347,10 +342,10 @@ namespace pax_infinium
                     {
                         foreach (Cube cube in world.level.grid.cubes)
                         {
-                            if ((world.cubeDist(cube.gridPos, player.gridPos) <= player.magicRange))
+                            if (player.InMagicRange(cube.gridPos))
                             {
                                 cube.highLight = true;
-                                highlightedCubes.Add(cube);
+                                //highlightedCubes.Add(cube);
                             }
                         }
                     }
@@ -359,7 +354,6 @@ namespace pax_infinium
                 if (keyboardState.IsKeyDown(Keys.E) && previousKeyboardState.IsKeyUp(Keys.E)) // end turn
                 {
                     world.level.endTurn();
-                    selectedAction = "";
                 }
 
                 bool mouseInBounds = false;
@@ -396,7 +390,7 @@ namespace pax_infinium
                         }
 
                         world.level.grid.onHighlightMoved(cube);
-                        world.level.grid.onCharacterMoved();
+                        world.level.grid.onCharacterMoved(world.level);
 
                         world.level.clearCharacter();
                         foreach (Character c in world.level.grid.characters.list)
@@ -405,40 +399,11 @@ namespace pax_infinium
                             {
                                 world.level.setCharacter(c);
                             }
-                        }
-                        
+                        }                        
 
                         if (!world.level.rotated)
                         {
-                            float x = player.gridPos.X - cube.gridPos.X;
-                            float y = player.gridPos.Y - cube.gridPos.Y;
-                            
-                            if (Math.Abs(x) > Math.Abs(y))
-                            {
-                                if (x > 0)
-                                {
-                                    player.direction = "nw";
-                                    player.sprite.tex = player.nwTex;
-                                }
-                                else
-                                {
-                                    player.direction = "se";
-                                    player.sprite.tex = player.seTex;
-                                }
-                            }
-                            else
-                            {
-                                if (y > 0)
-                                {
-                                    player.direction = "ne";
-                                    player.sprite.tex = player.neTex;
-                                }
-                                else
-                                {
-                                    player.direction = "sw";
-                                    player.sprite.tex = player.swTex;
-                                }
-                            }
+                            player.Rotate(cube.gridPos);
                         }
 
                         if (!confirmAction && selectedAction != "" && lastClickMouseState != Vector2.Zero)
@@ -447,14 +412,14 @@ namespace pax_infinium
                             {
                                 if (selectedAction == "special")
                                 {
-                                    if (player.mp >= 8)
+                                    if (player.CanCast(8))
                                     {
                                         if (player.job == 2 || player.job == 3)
                                         {
                                             foreach (Character character in world.level.grid.characters.list)
                                             {
-                                                if (!world.level.attacked && world.cubeDist(cube.gridPos, character.gridPos) <= 1 &&
-                                                    world.cubeDist(player.gridPos, cube.gridPos) <= player.magicRange)
+                                                if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
+                                                    player.InMagicRange(cube.gridPos))
                                                 {
                                                     if (player.job == 2)
                                                     {
@@ -475,7 +440,7 @@ namespace pax_infinium
                                             foreach (Character character in world.level.grid.characters.list)
                                             {
                                                 if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
-                                                    world.cubeDist(player.gridPos, character.gridPos) <= player.magicRange)
+                                                    player.InMagicRange(character.gridPos))
                                                 {
                                                     int chance = player.CalculateThiefSpecial(character);
 
@@ -488,7 +453,7 @@ namespace pax_infinium
                                             foreach (Character character in world.level.grid.characters.list)
                                             {
                                                 if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
-                                                    world.cubeDist(player.gridPos, character.gridPos) <= player.magicRange)
+                                                    player.InMagicRange(character.gridPos))
                                                 {
                                                     int defenseBoost = 20;
                                                     world.level.SetConfirmationText("+" + defenseBoost + "WD Confirm Y / N");
@@ -514,10 +479,10 @@ namespace pax_infinium
                                     }
                                 }
                             }
-                            else if (selectedAction == "move" && player.inMoveRange(cube.gridPos) &&
+                            else if (selectedAction == "move" && player.inMoveRange(cube.gridPos, world.level) &&
                                 !world.level.moved) // Move
                             {
-                                if (Game1.world.level.grid.isVacant(cube.gridPos))
+                                if (world.level.grid.isVacant(cube.gridPos))
                                 {
                                     world.level.SetConfirmationText("Move? Confirm Y / N");
                                 }
@@ -535,12 +500,11 @@ namespace pax_infinium
 
                                         if (player.job == 2 || player.job == 3)
                                         {
-                                            //List<Character> toSkipTurn = new List<Character>();
                                             List<Character> toBeKilled = new List<Character>();
                                             foreach (Character character in world.level.grid.characters.list)
                                             {
-                                                if (!world.level.attacked && world.cubeDist(cube.gridPos, character.gridPos) <= 1 &&
-                                                    world.cubeDist(player.gridPos, cube.gridPos) <= player.magicRange)
+                                                if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
+                                                    player.InMagicRange(cube.gridPos))
                                                 {
                                                     if (player.job == 2)
                                                     {
@@ -557,9 +521,7 @@ namespace pax_infinium
                                                 }
                                             }
                                             world.level.attacked = true;
-                                            confirmAction = false;
-                                            lastClickMouseState = Vector2.Zero;
-                                            world.level.SetConfirmationText("");
+                                            resetConfirmation();
                                             foreach (Character character in toBeKilled)
                                             {
                                                 world.level.grid.characters.list.Remove(character);
@@ -571,21 +533,19 @@ namespace pax_infinium
                                             foreach (Character character in world.level.grid.characters.list)
                                             {
                                                 if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
-                                                    world.cubeDist(player.gridPos, character.gridPos) <= player.magicRange)
+                                                    player.InMagicRange(character.gridPos))
                                                 {
                                                     toSkipTurn = player.ThiefSpecial(character, gameTime);
 
                                                     world.level.attacked = true;
-                                                    confirmAction = false;
-                                                    lastClickMouseState = Vector2.Zero;
-                                                    world.level.SetConfirmationText("");
+                                                    resetConfirmation();
                                                 }
                                             }
                                             if (toSkipTurn != null)
                                             {
                                                 world.level.grid.characters.list.Remove(toSkipTurn);
                                                 world.level.grid.characters.list.Add(toSkipTurn);
-                                                Game1.world.level.setupTurnOrderIcons();
+                                                world.level.setupTurnOrderIcons();
                                             }
                                         }
                                         else if (player.job == 0)// soldier special
@@ -593,19 +553,12 @@ namespace pax_infinium
                                             foreach (Character character in world.level.grid.characters.list)
                                             {
                                                 if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
-                                                    world.cubeDist(player.gridPos, character.gridPos) <= player.magicRange)
+                                                    player.InMagicRange(character.gridPos))
                                                 {
-                                                    int defenseBoost = 20;
-                                                    Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
-                                                    character.MDefense += defenseBoost;
-                                                    character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                                                    character.text.Text = "+" + defenseBoost;
-                                                    character.text.color = Color.Yellow;
+                                                    player.SoldierSpecial(character, gameTime);
 
                                                     world.level.attacked = true;
-                                                    confirmAction = false;
-                                                    lastClickMouseState = Vector2.Zero;
-                                                    world.level.SetConfirmationText("");
+                                                    resetConfirmation();
                                                 }
                                             }
                                         }
@@ -625,9 +578,7 @@ namespace pax_infinium
                                             toBeKilled = player.attack(character, gameTime);
 
                                             world.level.attacked = true;
-                                            confirmAction = false;
-                                            lastClickMouseState = Vector2.Zero;
-                                            world.level.SetConfirmationText("");
+                                            resetConfirmation();
                                         }
                                     }
                                     if (toBeKilled != null)
@@ -636,18 +587,16 @@ namespace pax_infinium
                                     }
                                 }
                             }
-                            else if (selectedAction == "move" && player.inMoveRange(cube.gridPos) &&
+                            else if (selectedAction == "move" && player.inMoveRange(cube.gridPos, world.level) &&
                                 !world.level.moved) // Move
                             {
-                                if (Game1.world.level.grid.isVacant(cube.gridPos))
+                                if (world.level.grid.isVacant(cube.gridPos))
                                 {
                                     player.Move(cube.gridPos);
                                     //world.level.grid.onCharacterMoved();
                                     world.level.moved = true;
-                                    confirmAction = false;
-                                    lastClickMouseState = Vector2.Zero;
                                     world.level.rotated = false;
-                                    world.level.SetConfirmationText("");
+                                    resetConfirmation();
                                 }
                             }
                         }
@@ -682,6 +631,14 @@ namespace pax_infinium
             world.EndDraw();
 
             base.Draw(gameTime);
+        }
+
+        public void resetConfirmation()
+        {
+            selectedAction = "";
+            confirmAction = false;
+            lastClickMouseState = Vector2.Zero;
+            world.level.SetConfirmationText("");
         }
     }
 }

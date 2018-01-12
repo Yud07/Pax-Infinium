@@ -123,7 +123,6 @@ C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\o
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.application
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.exe
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.pdb
-C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.csprojResolveAssemblyReference.cache
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Hunter\Blue Hunter NE.xnb
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Hunter\Blue Hunter NW.xnb
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Blue Hunter\Blue Hunter SE.xnb
@@ -185,5 +184,4 @@ C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\b
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Thief\Red Thief FL.xnb
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Red Thief\Red Thief FR.xnb
 C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\Content\Status Icons.xnb
-C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\MCTS.dll
-C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\bin\Windows\x86\Debug\MCTS.pdb
+C:\Users\myudy\Documents\GitHub\Pax-Infinium\pax_infinium\pax_infinium.Windows\obj\x86\Debug\pax_infinium.Windows.csprojResolveAssemblyReference.cache

@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pax_infinium.Android", "pax
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "pax_infinium.Shared", "pax_infinium.Shared\pax_infinium.Shared.shproj", "{74235492-CAB3-43AF-A532-8956358A280C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTS", "..\..\MCTS\MCTS\MCTS.csproj", "{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		pax_infinium.Shared\pax_infinium.Shared.projitems*{63117aca-f37f-4a77-824e-2a145770e72d}*SharedItemsImports = 4
@@ -41,14 +39,6 @@ Global
 		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|x86.ActiveCfg = Release|Any CPU
 		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|x86.Build.0 = Release|Any CPU
 		{8C629D9F-1049-4834-B549-1E001C67B8AC}.Release|x86.Deploy.0 = Release|Any CPU
-		{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}.Debug|x86.Build.0 = Debug|Any CPU
-		{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}.Release|x86.ActiveCfg = Release|Any CPU
-		{9AACF0AA-E46F-49D2-B195-2DCD73F6C4CF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

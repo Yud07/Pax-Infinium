@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MCTS.V2.UCT;
+using MCTS.V2.Interfaces;
 
 namespace pax_infinium
 {
@@ -180,6 +182,16 @@ namespace pax_infinium
 
             // translate point back:
             return new Point((int)xnew + origin.X, (int)ynew + origin.Y);
+        }
+
+        public void triggerAI()
+        {
+            Action<string> print = s => Console.WriteLine(s);
+            var game = level.Clone() as IGameState;
+            print(game.ToString());
+            IMove move = SingleThreaded.ComputeSingleThreadedUCT(game, 2, true, print, 0.7F);//1000, true, print, 0.7F);
+            print(move.Name);
+            level = move.DoMove() as Level; // Add boolean so that this animates and only prints this move
         }
     }
 }

@@ -194,7 +194,7 @@ namespace pax_infinium
             {
                 top.Draw(spriteBatch);
             }
-            //text.Draw(spriteBatch);
+            text.Draw(spriteBatch);
             if (rectangleTex != null)
             {
                 rectangleSprite.Draw(spriteBatch);
@@ -335,10 +335,10 @@ namespace pax_infinium
             text.alpha = alpha;
         }
 
-        public void onCharacterMoved()
+        public void onCharacterMoved(Level level)
         {
             //SetAlpha(1f);
-            foreach (Character character in Game1.world.level.grid.characters.list)
+            foreach (Character character in level.grid.characters.list)
             {
                 if (DrawOrder() > character.DrawOrder() && Vector2.Distance(position, character.position) < 125 && gridPos.Z > character.gridPos.Z)
                 {

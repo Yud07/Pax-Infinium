@@ -180,11 +180,11 @@ namespace pax_infinium
             return sortedObjs.OrderBy(o => (o.DrawOrder())).ToList();
         }
 
-        public void onCharacterMoved()
+        public void onCharacterMoved(Level level)
         {
             foreach (Cube cube in cubes)
             {
-                cube.onCharacterMoved();
+                cube.onCharacterMoved(level);
             }
             /*foreach (Character character in characters.list)
             {
@@ -394,7 +394,7 @@ namespace pax_infinium
             rotateCharacters(clockwise);
         }*/
 
-        public void rotate(bool clockwise)
+        public void rotate(bool clockwise, Level level)
         {
             if (clockwise)
             {
@@ -429,7 +429,7 @@ namespace pax_infinium
                     cubes = cubesD;
                     break;
             }
-            rotateCharacters(clockwise);
+            rotateCharacters(clockwise, level);
         }
 
         public void rotateBinaryMatrix(bool clockwise)
@@ -499,7 +499,7 @@ namespace pax_infinium
             return newBinaryMatrix;
         }
 
-        public void rotateCharacters(bool clockwise)
+        public void rotateCharacters(bool clockwise, Level level)
         {
             double degrees;
 
@@ -566,12 +566,17 @@ namespace pax_infinium
                     }
                 }
             }
-            onCharacterMoved();
+            onCharacterMoved(level);
         }
 
         public double deg2Rad(double degrees)
         {
             return (Math.PI * degrees) / 180.0;
+        }
+        
+        public Cube getCube(Vector3 pos)
+        {
+            return getCube((int)pos.X, (int)pos.Y, (int)pos.Z);
         }
 
         public Cube getCube(int x, int y, int z)
@@ -612,6 +617,18 @@ namespace pax_infinium
                 }
             }
             return vacant;
+        }
+
+        public Character CharacterAtPos(Vector3 pos)
+        {
+            foreach (Character character in characters.list)
+            {
+                if (character.gridPos == pos)
+                {
+                    return character;
+                }
+            }
+            return null;
         }
     }
 }

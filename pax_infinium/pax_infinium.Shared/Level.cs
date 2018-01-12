@@ -4,10 +4,13 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Linq;
+using MCTS.V2.Interfaces;
+using MCTS.V2.UCT;
+using MCTS.Enum;
 
 namespace pax_infinium
 {
-    public class Level
+    public class Level : IGameState
     {
         private Random random;
         public string seed;
@@ -39,12 +42,19 @@ namespace pax_infinium
 
         public TextItem confirmationText;
 
+        public List<Player> players = new List<Player>();
+
+        public String name = "Level";
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
             random = World.Random;
             grid = new Grid(graphics, seed, 10, 10, 5, 1, 1, 1, 1, random);
             //background = new Background(World.textureManager["BG-Layer"], graphics.GraphicsDevice.Viewport);
             background = new Background(Game1.world.textureConverter.GenRectangle(1600, 900, Color.SkyBlue), graphics.GraphicsDevice.Viewport);
+            //players.Add(new Player("Human"));
+            players.Add(new Player("AI"));
+            players.Add(new Player("Human"));
             grid.characters = new Characters();
             grid.characters.AddCharacter("Blue Soldier", 0, 0, grid.origin, new Vector3(5, 7, 3), "nw", graphics);
             grid.characters.AddCharacter("Red Soldier", 0, 1, grid.origin, new Vector3(4, 2, 3), "ne", graphics);
@@ -247,18 +257,18 @@ namespace pax_infinium
                 if (distanceToEast == min)
                 {
                     //Console.WriteLine("east");
-                    grid.rotate(true);
+                    grid.rotate(true, this);
                 }
                 else if (distanceToWest == min)
                 {
                     //Console.WriteLine("west");
-                    grid.rotate(false);
+                    grid.rotate(false, this);
                 }
                 else
                 {
                     //Console.WriteLine("north");
-                    grid.rotate(true);
-                    grid.rotate(true);
+                    grid.rotate(true, this);
+                    grid.rotate(true, this);
                 }
             }
             /*else
@@ -302,6 +312,8 @@ namespace pax_infinium
             moved = false;
             attacked = false;
             rotated = false;
+
+            Game1.world.triggerAI();
         }
         
         public void setCharacter(Character c)
@@ -375,7 +387,7 @@ namespace pax_infinium
                 index++;
             }
             turnOrderIcons.Reverse();
-        }
+        }        
 
         public void SetConfirmationText(int chance, int damage)
         {
@@ -386,5 +398,90 @@ namespace pax_infinium
         {
             confirmationText.Text = text;
         }
+        
+        public bool OneTeamRemaining()
+        {
+            int team = -1;
+            foreach (Character c in grid.characters.list)
+            {
+                if (team == -1)
+                {
+                    team = c.team;
+                }
+                else
+                {
+                    if (c.team != team)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // ---  MCTS ----
+        public object Clone()
+        {
+            Level clone = (Level) this.MemberwiseClone();
+            clone.grid.characters.list = grid.characters.list.Select(item => (Character)item.Clone()).ToList();
+            String[] words = clone.name.Split(' ');
+            if (words.Length > 1)
+            {
+                String number = words[words.Length - 1];
+                int num = Int32.Parse(number);
+                num++;
+                clone.name = words[0] + " " + num;
+            }
+            else
+            {
+                clone.name += " 1";
+            }
+            return clone;
+        }
+
+        public IPlayer PlayerJustMoved => players[grid.characters.list.Last().team]; // thief special will break this on success
+
+        public IEnumerable<IMove> GetMoves() // need to add character rotation
+        {
+            return grid.characters.list.First().GetMoves(this);
+        }
+
+        public IGameState PlayRandomlyUntilTheEnd()
+        {
+            Console.WriteLine("PlayingRandomlyUntilEnd");
+            int i = 0;
+            Level clone = (Level) Clone();
+            while (!clone.OneTeamRemaining())
+            {
+                Console.WriteLine("Turn " + i);
+                List<Move> moves = (List<Move>) clone.GetMoves();
+                int random = World.Random.Next(moves.Count);
+                clone = (Level) moves[random].DoMove();
+                i++;
+            }
+            return clone;
+        }
+
+        public EGameFinalStatus GetResult(IPlayer player)
+        {
+            int goal;
+            if (player.Name == "Human")
+            {
+                goal = 1;                
+            }
+            else
+            {
+                goal = 0;
+            }
+            if (grid.characters.list[0].team == goal)
+            {
+                return EGameFinalStatus.GameWon;
+            }
+            else
+            {
+                return EGameFinalStatus.GameLost;
+            }
+        }
+
     }
 }

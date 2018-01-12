@@ -19,14 +19,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Characters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Cube.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DebugRectangle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\Enum\EGameFinalStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game1.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GameState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Grid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDrawable1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Level.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Line.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Move.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenSimplexNoise.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PermanantStates.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Polygon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Room.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sprite.cs" />
@@ -35,6 +37,19 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContentManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextureConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\Utils\Shuffle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\InterfacesV2\IGameState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\InterfacesV2\IMove.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\InterfacesV2\INode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\InterfacesV2\IPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\Node\MultiThreadedNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\Node\NodeBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\Node\SingleThreadedNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\UCT\RootParrelization.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MCTS\V2\UCT\SingleThreaded.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)World.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)MCTS\" />
   </ItemGroup>
 </Project>

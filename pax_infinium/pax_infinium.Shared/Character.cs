@@ -150,10 +150,10 @@ namespace pax_infinium
             //text.alpha = alpha;
         }
 
-        public void onCharacterMoved()
+        public void onCharacterMoved(Level level)
         {
             SetAlpha(1f);
-            foreach (Character character in Game1.world.level.grid.characters.list)
+            foreach (Character character in level.grid.characters.list)
             {
                 if (character != this && DrawOrder() > character.DrawOrder() && Math.Abs(Game1.world.cubeDist(gridPos, character.gridPos)) < 5)
                 {
@@ -230,6 +230,36 @@ namespace pax_infinium
             }
         }
 
+        public Character attack(Character character)
+        {
+            int[] chanceDamage = calculateAttack(character);
+            int chance = chanceDamage[0];
+            int damage = chanceDamage[1];
+
+            Console.WriteLine("Chance to hit: " + chance + "%");
+            if (chance >= World.Random.Next(1, 101))
+            {
+                Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                character.health -= damage;
+                
+                if (character.health <= 0)
+                {
+                    Console.WriteLine(character.name + " has died!");
+                    return character;
+                }
+                else
+                {
+                    Console.WriteLine(character.name + " health: " + character.health);
+                    return null;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Miss!");
+                return null;
+            }
+        }
+
         public Character attack(Character character, GameTime gameTime)
         {
             int[] chanceDamage = calculateAttack(character);
@@ -266,10 +296,10 @@ namespace pax_infinium
             }
         }
 
-        public bool inMoveRange(Vector3 pos)
+        public bool inMoveRange(Vector3 pos, Level level)
         {
             return Game1.world.cubeDist(gridPos, pos) < move &&
-                    Game1.world.level.grid.topOfColumn(pos) == pos.Z &&
+                    level.grid.topOfColumn(pos) == pos.Z &&
                     Math.Abs(pos.Z - gridPos.Z) <= jump;
         }
 
@@ -285,6 +315,34 @@ namespace pax_infinium
             int spellModifier = 0;
             int damage = (int)((MAttack + spellModifier - (character.MDefense / 2)) * .75);
             return new int[] { chance, damage };
+        }
+
+        public Character MageSpecial(Character character)
+        {
+            int[] chanceDamage;
+            chanceDamage = calculateMageSpecial(character);
+            int chance = chanceDamage[0];
+            if (chance >= World.Random.Next(1, 101))
+            {
+                int damage = chanceDamage[1];
+                //Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                character.health -= damage;
+                
+                if (character.health <= 0)
+                {
+                    //Console.WriteLine(character.name + " has died!");
+                    return character;
+                }
+                else
+                {
+                    //Console.WriteLine(character.name + " health: " + character.health);
+                }
+            }
+            else
+            {
+                //Console.WriteLine("Miss!");
+            }
+            return null;
         }
 
         public Character MageSpecial(Character character, GameTime gameTime)
@@ -321,6 +379,13 @@ namespace pax_infinium
             return null;
         }
 
+        public void HealerSpecial(Character character)
+        {
+            int health = 40;
+            //Console.WriteLine(character.name + " heals " + health + " points!");
+            character.health += health;
+        }
+
         public void HealerSpecial(Character character, GameTime gameTime)
         {
             int health = 40;
@@ -342,6 +407,23 @@ namespace pax_infinium
             int chance = 45 - character.evasion + angleModifier * 5;
 
             return chance;
+        }
+
+        public Character ThiefSpecial(Character character)
+        {
+            int chance = CalculateThiefSpecial(character);
+            //Console.WriteLine("Chance to hit: " + chance + "%");
+            if (chance >= World.Random.Next(1, 101))
+            {
+
+                //Console.WriteLine(character.name + " had their next turn stolen!");
+                return character;
+            }
+            else
+            {
+                //Console.WriteLine("Miss!");
+                return null;
+            }
         }
 
         public Character ThiefSpecial(Character character, GameTime gameTime)
@@ -372,12 +454,221 @@ namespace pax_infinium
             return mp >= cost;
         }
 
+        public void payForCast(int cost)
+        {
+            mp -= cost;
+        }
+
         public void payForCast(int cost, GameTime gameTime)
         {
             mp -= cost;
             textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
             text.Text = "-" + cost;
             text.color = Color.LightBlue;
+        }
+
+        public void SoldierSpecial(Character character)
+        {
+            int defenseBoost = 20;
+            //Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
+            character.MDefense += defenseBoost;
+        }
+
+        public void SoldierSpecial(Character character, GameTime gameTime)
+        {
+            int defenseBoost = 20;
+            Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
+            character.MDefense += defenseBoost;
+            character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            character.text.Text = "+" + defenseBoost;
+            character.text.color = Color.Yellow;
+        }
+
+        public void Rotate(Vector3 pos)
+        {
+            float x = gridPos.X - pos.X;
+            float y = gridPos.Y - pos.Y;
+
+            if (Math.Abs(x) > Math.Abs(y))
+            {
+                if (x > 0)
+                {
+                    direction = "nw";
+                    sprite.tex = nwTex;
+                }
+                else
+                {
+                    direction = "se";
+                    sprite.tex = seTex;
+                }
+            }
+            else
+            {
+                if (y > 0)
+                {
+                    direction = "ne";
+                    sprite.tex = neTex;
+                }
+                else
+                {
+                    direction = "sw";
+                    sprite.tex = swTex;
+                }
+            }
+        }
+
+        public bool InMagicRange(Vector3 pos)
+        {
+            return Game1.world.cubeDist(pos, gridPos) <= magicRange;
+        }
+
+        public bool InWeaponRange(Vector3 pos)
+        {
+            return Game1.world.cubeDist(pos, gridPos) <= weaponRange;
+        }
+
+        public List<Cube> GetMovePositions(Level level)
+        {
+            List<Cube> results = new List<Cube>();
+            foreach (Cube cube in level.grid.cubes)
+            {
+                if (((inMoveRange(cube.gridPos, level) && level.grid.isVacant(cube.gridPos)) || cube.gridPos == gridPos) && level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
+                {
+                    results.Add(cube);
+                }
+            }
+            return results;
+        }
+
+        public List<Move> GetMoves(Level level)
+        {
+            /*
+                int noneMoveBeforeMoveAfter; // 0-2
+                Vector3 movePos; // irrelevant if no movement
+                int nothingAttackSpecial; // 0-2
+                Vector3 attackSpecialPos; // irrelevant if nothingAttackSpecial is 0
+
+                public Move(Level level, int noneMoveBeforeMoveAfter, Vector3 movement, int nothingAttackSpecial, Vector3 attackSpecialPos)
+            */
+            List<Move> moves = new List<Move>();
+            List<Cube> movePositions = GetMovePositions(level);
+            foreach (Cube cube in movePositions)
+            {
+                if (cube.gridPos == gridPos)
+                {
+                    moves.Add(new Move(level, 0, gridPos, 0, Vector3.Zero)); // Do nothing at all
+                    foreach (Character character in level.grid.characters.list)
+                    {
+                        if (character != this && InWeaponRange(character.gridPos))
+                        {
+                            moves.Add(new Move(level, 0, gridPos, 1, character.gridPos)); // Don't move, Attack character
+                        }
+                    }
+                    /*if (CanCast(8) && job != 1)
+                    {
+                        foreach (Cube cu in level.grid.cubes)
+                        {
+                            if (InMagicRange(cu.gridPos) && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
+                            {                                
+                                if (job != 2 || job != 3)
+                                {
+                                    if (level.grid.CharacterAtPos(cu.gridPos) != null)
+                                    {
+                                        moves.Add(new Move(level, 0, gridPos, 2, cu.gridPos)); // Don't move, use special on character
+                                    }
+                                }
+                                else
+                                {
+                                    moves.Add(new Move(level, 0, gridPos, 2, cu.gridPos)); // Don't move, use special at cube
+                                }
+                            }
+                        }
+                    }*/
+                }
+                else
+                {
+                    moves.Add(new Move(level, 1, cube.gridPos, 0, Vector3.Zero)); // Move before to cube, do nothing
+                    moves.Add(new Move(level, 2, cube.gridPos, 0, Vector3.Zero)); // Move after to cube, do nothing
+
+                    /*//move before
+                    foreach (Character character in level.grid.characters.list)
+                    {
+                        if (character != this && Game1.world.cubeDist(character.gridPos, cube.gridPos) <= weaponRange)
+                        {
+                            moves.Add(new Move(level, 1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
+                        }
+                    }
+                    if (CanCast(8) && job != 1)
+                    {
+                        foreach (Cube cu in level.grid.cubes)
+                        {
+                            if (Game1.world.cubeDist(cu.gridPos, cube.gridPos) <= magicRange && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
+                            {
+                                if (job != 2 || job != 3)
+                                {
+                                    if (level.grid.CharacterAtPos(cu.gridPos) != null || (job == 0 && cu.gridPos == cube.gridPos))
+                                    {
+                                        moves.Add(new Move(level, 1, cube.gridPos, 2, cu.gridPos)); // Move first, use special on character
+                                    }
+                                }
+                                else
+                                {
+                                    moves.Add(new Move(level, 1, cube.gridPos, 2, cu.gridPos)); // Move first, use special at cube
+                                }
+                            }
+                        }
+                    }*/
+
+                    //move after
+                    foreach (Character character in level.grid.characters.list)
+                    {
+                        if (character != this && InWeaponRange(character.gridPos))
+                        {
+                            moves.Add(new Move(level, 2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
+                        }
+                    }
+                    /*if (CanCast(8) && job != 1)
+                    {
+                        foreach (Cube cu in level.grid.cubes)
+                        {
+                            if (InMagicRange(cu.gridPos) && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
+                            {
+                               if (job != 2 || job != 3)
+                                {
+                                    if (level.grid.CharacterAtPos(cu.gridPos) != null)
+                                    {
+                                        moves.Add(new Move(level, 2, cube.gridPos, 2, cu.gridPos)); // Move after, use special on character
+                                    }
+                                }
+                                else
+                                {
+                                    moves.Add(new Move(level, 2, cube.gridPos, 2, cu.gridPos)); // Move after, use special at cube
+                                }
+                            }
+                        }
+                    }*/
+                }
+            }
+
+            return moves;
+        }
+
+        public object Clone()
+        {
+            Character clone = (Character)this.MemberwiseClone();
+            String[] words = clone.name.Split(' ');
+            if (words.Length > 2)
+            {
+                String number = words[words.Length - 1];
+                int num = Int32.Parse(number);
+                num++;
+                clone.name = words[0] + " " + words[1] + " clone " + num;
+            }
+            else
+            {
+                clone.name += " clone 1";
+            }
+            return clone;
         }
     }
 }
