@@ -6,7 +6,7 @@ using System.Text;
 
 namespace pax_infinium
 {
-    public class Characters
+    public class Characters : ICloneable
     {
         public List<Character> list;
         public Character selectedCharacter;
@@ -225,6 +225,13 @@ namespace pax_infinium
 
                     break;
             }
+        }
+        public object Clone()
+        {
+            Characters clone = (Characters) this.MemberwiseClone();
+            clone.list = new List<Character>();
+            this.list.ForEach(a => clone.list.Add((Character)a.Clone()));
+            return clone;
         }
     }
 }

@@ -4,8 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Linq;
-using MCTS.V2.Interfaces;
-using MCTS.V2.UCT;
+using MCTS.Interfaces;
 using MCTS.Enum;
 
 namespace pax_infinium
@@ -299,7 +298,7 @@ namespace pax_infinium
                 playerName.color = Color.Red;
                 playerStatus.color = Color.Red;
             }
-            int mpGain = 10;
+            /*int mpGain = 10;
             if (player.mp + mpGain <= player.maxMP)
             {
                 player.mp += mpGain;
@@ -307,13 +306,16 @@ namespace pax_infinium
             else if (player.mp + mpGain > player.maxMP)
             {
                 player.mp = player.maxMP;
-            }
+            }*/
             //grid.onCharacterMoved();
             moved = false;
             attacked = false;
             rotated = false;
 
-            Game1.world.triggerAI();
+            if (player.team == 0)
+            {
+                Game1.world.triggerAI(this);
+            }
         }
         
         public void setCharacter(Character c)
@@ -420,10 +422,9 @@ namespace pax_infinium
         }
 
         // ---  MCTS ----
-        public object Clone()
+        public IGameState Clone()
         {
             Level clone = (Level) this.MemberwiseClone();
-            clone.grid.characters.list = grid.characters.list.Select(item => (Character)item.Clone()).ToList();
             String[] words = clone.name.Split(' ');
             if (words.Length > 1)
             {
@@ -436,30 +437,44 @@ namespace pax_infinium
             {
                 clone.name += " 1";
             }
+            clone.grid = (Grid) grid.Clone();
             return clone;
         }
 
-        public IPlayer PlayerJustMoved => players[grid.characters.list.Last().team]; // thief special will break this on success
+        public void DoMove(IMove move)
+        {
+            ((Move)move).DoMove(this);
+        }
+
+        public void DoMove(IMove move, GameTime gameTime)
+        {
+            ((Move)move).DoMove(this, gameTime);
+        }
+
+        public void PlayRandomlyUntilTheEnd()
+        {
+            Console.WriteLine("PlayingRandomlyUntilEnd");
+            int i = 0;
+            while (!OneTeamRemaining())
+            {
+                Console.WriteLine("Turn " + i);
+                if (turn > (200 - turn))
+                {
+                    Console.WriteLine("Draw");
+                    break;
+                }
+                List<Move> moves = (List<Move>) GetMoves();
+                int random = World.Random.Next(moves.Count);
+                DoMove(moves[random]);
+                i++;
+            }
+        }
+
+        public IPlayer PlayerJustMoved => players[grid.characters.list.Last().team]; // thief special will break this on success also broken by a death
 
         public IEnumerable<IMove> GetMoves() // need to add character rotation
         {
             return grid.characters.list.First().GetMoves(this);
-        }
-
-        public IGameState PlayRandomlyUntilTheEnd()
-        {
-            Console.WriteLine("PlayingRandomlyUntilEnd");
-            int i = 0;
-            Level clone = (Level) Clone();
-            while (!clone.OneTeamRemaining())
-            {
-                Console.WriteLine("Turn " + i);
-                List<Move> moves = (List<Move>) clone.GetMoves();
-                int random = World.Random.Next(moves.Count);
-                clone = (Level) moves[random].DoMove();
-                i++;
-            }
-            return clone;
         }
 
         public EGameFinalStatus GetResult(IPlayer player)
@@ -473,13 +488,20 @@ namespace pax_infinium
             {
                 goal = 0;
             }
-            if (grid.characters.list[0].team == goal)
+            if (!OneTeamRemaining())
             {
-                return EGameFinalStatus.GameWon;
+                return EGameFinalStatus.GameDraw;
             }
             else
             {
-                return EGameFinalStatus.GameLost;
+                if (grid.characters.list[0].team == goal)
+                {
+                    return EGameFinalStatus.GameWon;
+                }
+                else
+                {
+                    return EGameFinalStatus.GameLost;
+                }
             }
         }
 

@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using MCTS.V2.Interfaces;
 using Microsoft.Xna.Framework;
 using System.Linq;
+using MCTS.Interfaces;
 
 namespace pax_infinium
 {
     public class Move : IMove
     {
-        private Level level;
         private String name;
         int noneMoveBeforeMoveAfter; // 0-2
         Vector3 movePos; // irrelevant if no movement
         int nothingAttackSpecial; // 0-2
         Vector3 attackSpecialPos; // irrelevant if nothingAttackSpecial is 0
 
-        public Move(Level level, int noneMoveBeforeMoveAfter, Vector3 movement, int nothingAttackSpecial, Vector3 attackSpecialPos)
+        public Move(int noneMoveBeforeMoveAfter, Vector3 movement, int nothingAttackSpecial, Vector3 attackSpecialPos)
         {
-            this.level = level;//.Clone() as Level;
             this.noneMoveBeforeMoveAfter = noneMoveBeforeMoveAfter;
             this.movePos = movement;
             this.nothingAttackSpecial = nothingAttackSpecial;
@@ -58,29 +56,52 @@ namespace pax_infinium
             }
         }
 
-        public IGameState DoMove()
+        public void DoMove(Level level)
         {
             Character player = level.grid.characters.list[0];
             switch (noneMoveBeforeMoveAfter) {
                 case 0:
-                    NothingAttackSpecial(player);
+                    NothingAttackSpecial(player, level);
                     break;
                 case 1:
                     player.Move(movePos);
-                    NothingAttackSpecial(player);
+                    NothingAttackSpecial(player, level);
                     break;
                 case 2:
-                    NothingAttackSpecial(player);
+                    NothingAttackSpecial(player, level);
                     player.Move(movePos);
                     break;
                 default:
                     throw new NotImplementedException();
             }
-            EndTurn();
-            return level;
+            EndTurn(level);
         }
 
-        public void NothingAttackSpecial(Character player)
+        public void DoMove(Level level, GameTime gameTime)
+        {
+            Character player = level.grid.characters.list[0];
+            switch (noneMoveBeforeMoveAfter)
+            {
+                case 0:
+                    NothingAttackSpecial(player, level, gameTime);
+                    break;
+                case 1:
+                    player.Rotate(movePos);
+                    player.Move(movePos);
+                    NothingAttackSpecial(player, level, gameTime);
+                    break;
+                case 2:
+                    NothingAttackSpecial(player, level, gameTime);
+                    player.Rotate(movePos);
+                    player.Move(movePos);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+            EndTurn(level);
+        }
+
+        public void NothingAttackSpecial(Character player, Level level)
         {
             // USE Game1 code!
             Character character;
@@ -90,6 +111,7 @@ namespace pax_infinium
                 case 0:
                     break;
                 case 1:
+                    player.Rotate(attackSpecialPos);
                     Character toBeKilled;
                     character = level.grid.CharacterAtPos(attackSpecialPos);
                     toBeKilled = player.attack(character);
@@ -99,6 +121,8 @@ namespace pax_infinium
                     }
                     break;
                 case 2:
+                    player.Rotate(attackSpecialPos);
+                    player.payForCast(8);
                     switch (player.job)
                     {
                         case 0:
@@ -153,8 +177,85 @@ namespace pax_infinium
                     throw new NotImplementedException();
             }
         }
-        
-        private void EndTurn()
+
+        public void NothingAttackSpecial(Character player, Level level, GameTime gameTime)
+        {
+            // USE Game1 code!
+            Character character;
+            Cube cube;
+            switch (nothingAttackSpecial)
+            {
+                case 0:
+                    break;
+                case 1:
+                    player.Rotate(attackSpecialPos);
+                    Character toBeKilled;
+                    character = level.grid.CharacterAtPos(attackSpecialPos);
+                    toBeKilled = player.attack(character, gameTime);
+                    if (toBeKilled != null)
+                    {
+                        level.grid.characters.list.Remove(toBeKilled);
+                    }
+                    break;
+                case 2:
+                    player.Rotate(attackSpecialPos);
+                    player.payForCast(8, gameTime);
+                    switch (player.job)
+                    {
+                        case 0:
+                            character = level.grid.CharacterAtPos(attackSpecialPos);
+                            player.SoldierSpecial(character, gameTime);
+                            break;
+                        case 1:
+                            throw new NotImplementedException();
+                        //break;
+                        case 2:
+                            //player.MageSpecial()
+                            List<Character> toBeKilledList = new List<Character>();
+                            cube = level.grid.getCube(attackSpecialPos);
+                            foreach (Character chara in level.grid.characters.list)
+                            {
+                                if (cube.isAdjacent(chara.gridPos) || chara.gridPos == cube.gridPos)
+                                {
+                                    Character result = player.MageSpecial(chara, gameTime);
+                                    if (result != null)
+                                    {
+                                        toBeKilledList.Add(result);
+                                    }
+                                }
+                            }
+                            level.attacked = true;
+                            foreach (Character c in toBeKilledList)
+                            {
+                                level.grid.characters.list.Remove(c);
+                            }
+                            break;
+                        case 3:
+                            //player.HealerSpecial()
+                            cube = level.grid.getCube(attackSpecialPos);
+                            foreach (Character chara in level.grid.characters.list)
+                            {
+                                if (cube.isAdjacent(chara.gridPos) || chara.gridPos == cube.gridPos)
+                                {
+                                    player.HealerSpecial(chara, gameTime);
+                                }
+                            }
+                            level.attacked = true;
+                            break;
+                        case 4:
+                            character = level.grid.CharacterAtPos(attackSpecialPos);
+                            player.ThiefSpecial(character, gameTime);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        private void EndTurn(Level level)
         {
             level.turn++;
             Character tempCharacter = level.grid.characters.list[0];
@@ -226,7 +327,7 @@ namespace pax_infinium
                 level.playerName.color = Color.Red;
                 level.playerStatus.color = Color.Red;
             }
-            int mpGain = 10;
+            /*int mpGain = 10;
             if (player.mp + mpGain <= player.maxMP)
             {
                 player.mp += mpGain;
@@ -234,11 +335,11 @@ namespace pax_infinium
             else if (player.mp + mpGain > player.maxMP)
             {
                 player.mp = player.maxMP;
-            }
+            }*/
 
-            /*level.moved = false;
+            level.moved = false;
             level.attacked = false;
-            level.rotated = false;*/
+            level.rotated = false;
         }
     }
 }

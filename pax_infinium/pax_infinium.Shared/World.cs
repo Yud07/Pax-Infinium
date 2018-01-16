@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MCTS.V2.UCT;
-using MCTS.V2.Interfaces;
+using MCTS.Interfaces;
+using MCTS;
+using System.Linq;
 
 namespace pax_infinium
 {
@@ -66,6 +67,8 @@ namespace pax_infinium
         public Level level;
 
         public Texture2D oneByOne;
+
+        public GameTime lastGameTime;
 
         public World(GraphicsDeviceManager graphics)
         {
@@ -184,14 +187,58 @@ namespace pax_infinium
             return new Point((int)xnew + origin.X, (int)ynew + origin.Y);
         }
 
-        public void triggerAI()
+        public void triggerAI(Level level)
         {
             Action<string> print = s => Console.WriteLine(s);
-            var game = level.Clone() as IGameState;
-            print(game.ToString());
-            IMove move = SingleThreaded.ComputeSingleThreadedUCT(game, 2, true, print, 0.7F);//1000, true, print, 0.7F);
+            print(level.ToString());
+            IMove move = UCT.ComputeSingleThreadedUCT(level, 50, true, print, 0.7F);//1000, true, print, 0.7F);
             print(move.Name);
-            level = move.DoMove() as Level; // Add boolean so that this animates and only prints this move
+            level.DoMove(move, lastGameTime); // Add boolean so that this animates and only prints this move
+            foreach(Character c in level.grid.characters.list)
+            {
+                c.recalcPos();
+            }
+            level.grid.onCharacterMoved(level);
+            Grid grid = level.grid;
+            Character player = grid.characters.list[0];
+
+            float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
+            float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, 0, player.gridPos.Z));
+            float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, grid.depth, player.gridPos.Z));
+            float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, grid.depth, player.gridPos.Z));
+
+            List<float> distancesToCorners = new List<float>();
+            //East right once
+            //North right twice
+            //West right 3 times
+
+
+            distancesToCorners.Add(distanceToEast);
+            distancesToCorners.Add(distanceToNorth);
+            distancesToCorners.Add(distanceToWest);
+            distancesToCorners.Add(distanceToSouth);
+
+            float min = distancesToCorners.Min();
+            //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
+            if (min != distanceToSouth)
+            {
+                if (distanceToEast == min)
+                {
+                    //Console.WriteLine("east");
+                    grid.rotate(true, level);
+                }
+                else if (distanceToWest == min)
+                {
+                    //Console.WriteLine("west");
+                    grid.rotate(false, level);
+                }
+                else
+                {
+                    //Console.WriteLine("north");
+                    grid.rotate(true, level);
+                    grid.rotate(true, level);
+                }
+            }
         }
     }
 }

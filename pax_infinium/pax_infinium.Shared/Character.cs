@@ -325,22 +325,22 @@ namespace pax_infinium
             if (chance >= World.Random.Next(1, 101))
             {
                 int damage = chanceDamage[1];
-                //Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
                 
                 if (character.health <= 0)
                 {
-                    //Console.WriteLine(character.name + " has died!");
+                    Console.WriteLine(character.name + " has died!");
                     return character;
                 }
                 else
                 {
-                    //Console.WriteLine(character.name + " health: " + character.health);
+                    Console.WriteLine(character.name + " health: " + character.health);
                 }
             }
             else
             {
-                //Console.WriteLine("Miss!");
+                Console.WriteLine("Miss!");
             }
             return null;
         }
@@ -381,14 +381,14 @@ namespace pax_infinium
 
         public void HealerSpecial(Character character)
         {
-            int health = 40;
-            //Console.WriteLine(character.name + " heals " + health + " points!");
+            int health = 15;
+            Console.WriteLine(character.name + " heals " + health + " points!");
             character.health += health;
         }
 
         public void HealerSpecial(Character character, GameTime gameTime)
         {
-            int health = 40;
+            int health = 15;
             Console.WriteLine(character.name + " heals " + health + " points!");
             character.health += health;
             character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
@@ -412,16 +412,16 @@ namespace pax_infinium
         public Character ThiefSpecial(Character character)
         {
             int chance = CalculateThiefSpecial(character);
-            //Console.WriteLine("Chance to hit: " + chance + "%");
+            Console.WriteLine("Chance to hit: " + chance + "%");
             if (chance >= World.Random.Next(1, 101))
             {
 
-                //Console.WriteLine(character.name + " had their next turn stolen!");
+                Console.WriteLine(character.name + " had their next turn stolen!");
                 return character;
             }
             else
             {
-                //Console.WriteLine("Miss!");
+                Console.WriteLine("Miss!");
                 return null;
             }
         }
@@ -470,7 +470,7 @@ namespace pax_infinium
         public void SoldierSpecial(Character character)
         {
             int defenseBoost = 20;
-            //Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
+            Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
             character.MDefense += defenseBoost;
         }
 
@@ -556,15 +556,15 @@ namespace pax_infinium
             {
                 if (cube.gridPos == gridPos)
                 {
-                    moves.Add(new Move(level, 0, gridPos, 0, Vector3.Zero)); // Do nothing at all
+                    moves.Add(new Move(0, gridPos, 0, Vector3.Zero)); // Do nothing at all
                     foreach (Character character in level.grid.characters.list)
                     {
                         if (character != this && InWeaponRange(character.gridPos))
                         {
-                            moves.Add(new Move(level, 0, gridPos, 1, character.gridPos)); // Don't move, Attack character
+                            moves.Add(new Move(0, gridPos, 1, character.gridPos)); // Don't move, Attack character
                         }
                     }
-                    /*if (CanCast(8) && job != 1)
+                    if (CanCast(8) && job != 1)
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
@@ -574,28 +574,28 @@ namespace pax_infinium
                                 {
                                     if (level.grid.CharacterAtPos(cu.gridPos) != null)
                                     {
-                                        moves.Add(new Move(level, 0, gridPos, 2, cu.gridPos)); // Don't move, use special on character
+                                        moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(level, 0, gridPos, 2, cu.gridPos)); // Don't move, use special at cube
+                                    moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special at cube
                                 }
                             }
                         }
-                    }*/
+                    }
                 }
                 else
                 {
-                    moves.Add(new Move(level, 1, cube.gridPos, 0, Vector3.Zero)); // Move before to cube, do nothing
-                    moves.Add(new Move(level, 2, cube.gridPos, 0, Vector3.Zero)); // Move after to cube, do nothing
+                    moves.Add(new Move(1, cube.gridPos, 0, Vector3.Zero)); // Move before to cube, do nothing
+                    moves.Add(new Move(2, cube.gridPos, 0, Vector3.Zero)); // Move after to cube, do nothing
 
-                    /*//move before
+                    //move before
                     foreach (Character character in level.grid.characters.list)
                     {
                         if (character != this && Game1.world.cubeDist(character.gridPos, cube.gridPos) <= weaponRange)
                         {
-                            moves.Add(new Move(level, 1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
+                            moves.Add(new Move(1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
                         }
                     }
                     if (CanCast(8) && job != 1)
@@ -606,28 +606,29 @@ namespace pax_infinium
                             {
                                 if (job != 2 || job != 3)
                                 {
-                                    if (level.grid.CharacterAtPos(cu.gridPos) != null || (job == 0 && cu.gridPos == cube.gridPos))
+                                    Character target = level.grid.CharacterAtPos(cu.gridPos);
+                                    if ((target != null & target != this) || (job == 0 && cu.gridPos == cube.gridPos))
                                     {
-                                        moves.Add(new Move(level, 1, cube.gridPos, 2, cu.gridPos)); // Move first, use special on character
+                                        moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(level, 1, cube.gridPos, 2, cu.gridPos)); // Move first, use special at cube
+                                    moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special at cube
                                 }
                             }
                         }
-                    }*/
+                    }
 
                     //move after
                     foreach (Character character in level.grid.characters.list)
                     {
                         if (character != this && InWeaponRange(character.gridPos))
                         {
-                            moves.Add(new Move(level, 2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
+                            moves.Add(new Move(2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
                         }
                     }
-                    /*if (CanCast(8) && job != 1)
+                    if (CanCast(8) && job != 1)
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
@@ -637,16 +638,16 @@ namespace pax_infinium
                                 {
                                     if (level.grid.CharacterAtPos(cu.gridPos) != null)
                                     {
-                                        moves.Add(new Move(level, 2, cube.gridPos, 2, cu.gridPos)); // Move after, use special on character
+                                        moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(level, 2, cube.gridPos, 2, cu.gridPos)); // Move after, use special at cube
+                                    moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special at cube
                                 }
                             }
                         }
-                    }*/
+                    }
                 }
             }
 

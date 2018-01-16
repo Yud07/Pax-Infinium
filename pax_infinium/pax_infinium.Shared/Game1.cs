@@ -176,6 +176,7 @@ namespace pax_infinium
             Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
             Cube exampleCube = world.level.grid.cubes[0];
             Character player;
+            world.lastGameTime = gameTime;
             //List<Cube> highlightedCubes = new List<Cube>();
 
             // saves last click state
@@ -429,7 +430,7 @@ namespace pax_infinium
                                                     }
                                                     else if (player.job == 3)// healer
                                                     {
-                                                        int health = 40;
+                                                        int health = 15;
                                                         world.level.SetConfirmationText("+" + health + "HP Confirm Y / N");
                                                     }
                                                 }

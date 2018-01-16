@@ -9,7 +9,7 @@ using NoiseTest;
 
 namespace pax_infinium
 {
-    public class Grid
+    public class Grid : ICloneable
     {
         //private Texture2D topTex;
         //private Texture2D southwestTex;
@@ -629,6 +629,13 @@ namespace pax_infinium
                 }
             }
             return null;
+        }
+
+        public object Clone()
+        {
+            Grid clone = (Grid) this.MemberwiseClone();
+            clone.characters = (Characters) characters.Clone();
+            return clone;
         }
     }
 }
