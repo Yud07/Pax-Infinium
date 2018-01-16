@@ -10,7 +10,7 @@ namespace pax_infinium
     public class Move : IMove
     {
         private String name;
-        int noneMoveBeforeMoveAfter; // 0-2
+        public int noneMoveBeforeMoveAfter; // 0-2
         Vector3 movePos; // irrelevant if no movement
         int nothingAttackSpecial; // 0-2
         Vector3 attackSpecialPos; // irrelevant if nothingAttackSpecial is 0

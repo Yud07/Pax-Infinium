@@ -22,6 +22,7 @@ namespace pax_infinium
         public bool confirmAction;
         public Vector2 lastClickMouseState;
         public Vector2 activeMouseState;
+        public Vector3 movedFrom;
 
         public Game1()
         {
@@ -260,7 +261,16 @@ namespace pax_infinium
                 // Cancel key
                 else if (keyboardState.IsKeyDown(Keys.N) && previousKeyboardState.IsKeyUp(Keys.N))
                 {
-                    resetConfirmation();
+                    if (selectedAction == "" && world.level.moved && !world.level.attacked) // undo movement
+                    {
+                        player.Move(movedFrom);
+                        world.level.moved = false;
+                        world.level.rotated = false;
+                    }
+                    else
+                    {
+                        resetConfirmation();
+                    }
                 }
 
                 foreach (Cube cube in world.level.grid.cubes) // clear highlights
@@ -485,7 +495,13 @@ namespace pax_infinium
                             {
                                 if (world.level.grid.isVacant(cube.gridPos))
                                 {
-                                    world.level.SetConfirmationText("Move? Confirm Y / N");
+                                    //world.level.SetConfirmationText("Move? Confirm Y / N");
+                                    movedFrom = player.gridPos;
+                                    player.Move(cube.gridPos);
+                                    //world.level.grid.onCharacterMoved();
+                                    world.level.moved = true;
+                                    world.level.rotated = false;
+                                    resetConfirmation();
                                 }
                             }
                         }
@@ -588,7 +604,7 @@ namespace pax_infinium
                                     }
                                 }
                             }
-                            else if (selectedAction == "move" && player.inMoveRange(cube.gridPos, world.level) &&
+                            /*else if (selectedAction == "move" && player.inMoveRange(cube.gridPos, world.level) &&
                                 !world.level.moved) // Move
                             {
                                 if (world.level.grid.isVacant(cube.gridPos))
@@ -599,7 +615,7 @@ namespace pax_infinium
                                     world.level.rotated = false;
                                     resetConfirmation();
                                 }
-                            }
+                            }*/
                         }
 
 
@@ -608,6 +624,7 @@ namespace pax_infinium
                 if (!mouseInBounds)
                 {
                     world.level.grid.clearTransparencies();
+                    world.level.grid.onCharacterMoved(world.level);
                 }
             }
 
