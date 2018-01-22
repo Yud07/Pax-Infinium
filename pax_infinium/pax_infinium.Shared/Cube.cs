@@ -350,7 +350,7 @@ namespace pax_infinium
         public void onHighlightMoved(Cube c)
         {
             SetAlpha(1f);
-            if (DrawOrder() > c.DrawOrder() && Vector2.Distance(position, c.position) < 125 && gridPos.Z > c.gridPos.Z)
+            if (DrawOrder() > c.DrawOrder() && Vector2.Distance(position, c.position) < 100 && gridPos.Z > c.gridPos.Z)
             {
                 SetAlpha(.5f);
             }

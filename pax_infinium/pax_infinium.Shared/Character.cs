@@ -236,26 +236,26 @@ namespace pax_infinium
             int chance = chanceDamage[0];
             int damage = chanceDamage[1];
 
-            Console.WriteLine("Chance to hit: " + chance + "%");
+            //Console.WriteLine("Chance to hit: " + chance + "%");
             if (chance >= World.Random.Next(1, 101))
             {
-                Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                //Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
                 
                 if (character.health <= 0)
                 {
-                    Console.WriteLine(character.name + " has died!");
+                    //Console.WriteLine(character.name + " has died!");
                     return character;
                 }
                 else
                 {
-                    Console.WriteLine(character.name + " health: " + character.health);
+                    //Console.WriteLine(character.name + " health: " + character.health);
                     return null;
                 }
             }
             else
             {
-                Console.WriteLine("Miss!");
+                //Console.WriteLine("Miss!");
                 return null;
             }
         }
@@ -325,22 +325,22 @@ namespace pax_infinium
             if (chance >= World.Random.Next(1, 101))
             {
                 int damage = chanceDamage[1];
-                Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
+                //Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
                 
                 if (character.health <= 0)
                 {
-                    Console.WriteLine(character.name + " has died!");
+                    //Console.WriteLine(character.name + " has died!");
                     return character;
                 }
                 else
                 {
-                    Console.WriteLine(character.name + " health: " + character.health);
+                    //Console.WriteLine(character.name + " health: " + character.health);
                 }
             }
             else
             {
-                Console.WriteLine("Miss!");
+                //Console.WriteLine("Miss!");
             }
             return null;
         }
@@ -382,7 +382,7 @@ namespace pax_infinium
         public void HealerSpecial(Character character)
         {
             int health = 15;
-            Console.WriteLine(character.name + " heals " + health + " points!");
+            //Console.WriteLine(character.name + " heals " + health + " points!");
             character.health += health;
         }
 
@@ -412,16 +412,16 @@ namespace pax_infinium
         public Character ThiefSpecial(Character character)
         {
             int chance = CalculateThiefSpecial(character);
-            Console.WriteLine("Chance to hit: " + chance + "%");
+            //Console.WriteLine("Chance to hit: " + chance + "%");
             if (chance >= World.Random.Next(1, 101))
             {
 
-                Console.WriteLine(character.name + " had their next turn stolen!");
+                //Console.WriteLine(character.name + " had their next turn stolen!");
                 return character;
             }
             else
             {
-                Console.WriteLine("Miss!");
+                //Console.WriteLine("Miss!");
                 return null;
             }
         }
@@ -470,7 +470,7 @@ namespace pax_infinium
         public void SoldierSpecial(Character character)
         {
             int defenseBoost = 20;
-            Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
+            //Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
             character.MDefense += defenseBoost;
         }
 
@@ -572,7 +572,8 @@ namespace pax_infinium
                             {                                
                                 if (job != 2 || job != 3)
                                 {
-                                    if (level.grid.CharacterAtPos(cu.gridPos) != null)
+                                    Character target = level.grid.CharacterAtPos(cu.gridPos);
+                                    if (target != null && (target.team != team || job == 0))
                                     {
                                         moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special on character
                                     }
@@ -607,7 +608,7 @@ namespace pax_infinium
                                 if (job != 2 || job != 3)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
-                                    if ((target != null & target != this) || (job == 0 && cu.gridPos == cube.gridPos))
+                                    if ((target != null && target != this && (target.team != team || job == 0)) || (job == 0 && cu.gridPos == cube.gridPos))
                                     {
                                         moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special on character
                                     }
@@ -636,7 +637,8 @@ namespace pax_infinium
                             {
                                if (job != 2 || job != 3)
                                 {
-                                    if (level.grid.CharacterAtPos(cu.gridPos) != null)
+                                    Character target = level.grid.CharacterAtPos(cu.gridPos);
+                                    if (target != null && (target.team != team || job == 0))
                                     {
                                         moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special on character
                                     }

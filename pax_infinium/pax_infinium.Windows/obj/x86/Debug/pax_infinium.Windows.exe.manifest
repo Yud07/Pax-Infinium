@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="pax_infinium.Windows.exe" version="1.0.0.4" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
+  <asmv1:assemblyIdentity name="pax_infinium.Windows.exe" version="1.0.0.5" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
   <description asmv2:iconFile="Icon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="254976">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="257536">
       <assemblyIdentity name="pax_infinium.Windows" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>4IY//Ju8aYpExxuTfUI8b8WMwZT8ubH5srj2nkY6ymQ=</dsig:DigestValue>
+        <dsig:DigestValue>GQ82Ti7bvGu4Er0r/Fy1RZ7uzWsXpzNadcq5qtg+3Ss=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -783,6 +783,15 @@
       <dsig:DigestValue>A0wpUipk21iWM6T0sCpLgdUB/jMcwWvsrv+rhREBYPA=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="Content\Start Screen.xnb" size="8294485">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>3U27gYXZ9rpHb5NfxIS3dDVQ70fv17yWiRCkNfNLxiI=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="Content\Status Icons.xnb" size="12448053">
     <hash>
       <dsig:Transforms>
@@ -792,6 +801,15 @@
       <dsig:DigestValue>AWxqSrwC+E1ha5CuYfFRMhpZgWAZqiGf+uURyKN+LUw=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="Content\Thought Bubble.xnb" size="6949">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>AeZzP8SrWwi5ti4O4iiDktKUcUFgTxLVEpnlNCt4EsA=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="Content\top-border.xnb" size="8294485">
     <hash>
       <dsig:Transforms>
@@ -799,6 +817,42 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>4/PUsUynYgMYN7Lr2VeaKOaOiVHgcTMliML998bkpfk=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Trajanus Roman 12.xnb" size="21524">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>9BAjwJjIihQChh3q/QFvurmTAXikf2lL6DMz9NBEtLo=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Trajanus Roman 24.xnb" size="70676">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>T0b3A8/3EaFjUuSq7cdD449TYwBl6eFnCOg27icD9xY=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Trajanus Roman 36.xnb" size="136212">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>R5UqBbYG1GExqb2lDFzYdIkNuRehs2b4TLu3Z6mQCT4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content\Trajanus Roman 64.xnb" size="267284">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>FnK5VFAuZ5pxTBVEi7ToJuat6SJM8d6BHL1nm5uppMg=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Icon.ico" size="147541">

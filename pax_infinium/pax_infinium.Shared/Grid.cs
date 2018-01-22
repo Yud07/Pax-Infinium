@@ -512,6 +512,10 @@ namespace pax_infinium
                 degrees = -90.0;
             }
 
+            Point rotatedMoveFrom = Game1.world.rotate(new Point((int)level.movedFrom.X, (int)level.movedFrom.Y), deg2Rad(degrees), new Point((int)width / 2 - 1, (int)depth / 2 - 1));
+            level.movedFrom.X = rotatedMoveFrom.X;
+            level.movedFrom.Y = rotatedMoveFrom.Y;
+
             foreach (Character character in characters.list)
             {
                 Point newCoords = Game1.world.rotate(new Point((int)character.gridPos.X, (int)character.gridPos.Y), deg2Rad(degrees), new Point((int)width / 2 - 1, (int)depth / 2 - 1));

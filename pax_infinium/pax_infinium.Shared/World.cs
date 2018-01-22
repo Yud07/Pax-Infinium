@@ -68,7 +68,9 @@ namespace pax_infinium
 
         public Texture2D oneByOne;
 
-        public GameTime lastGameTime;
+        public int state;
+
+        public bool triggerAIBool;
 
         public World(GraphicsDeviceManager graphics)
         {
@@ -76,10 +78,15 @@ namespace pax_infinium
             spriteBatch = new SpriteBatch(graphics.GraphicsDevice);
             rooms = new PermanantStates<Room>();
             rooms.AddState("game", new Room(graphics));
+            state = 0;
         }
 
         public void Update(GameTime gameTime)
         {
+            if (triggerAIBool && level.drewThoughtBubble)
+            {
+                triggerAI(level, gameTime);
+            }
             rooms.CurrentState.Update(gameTime);
         }
 
@@ -187,18 +194,21 @@ namespace pax_infinium
             return new Point((int)xnew + origin.X, (int)ynew + origin.Y);
         }
 
-        public void triggerAI(Level level)
+        public void triggerAI(Level level, GameTime gameTime)
         {
             Action<string> print = s => Console.WriteLine(s);
             print(level.ToString());
-            IMove move = UCT.ComputeSingleThreadedUCT(level, 50, true, print, 0.7F);//1000, true, print, 0.7F);
+            IMove move = UCT.ComputeSingleThreadedUCT(level, 1000, true, print, 0.7F, 15);
             print(move.Name);
-            level.DoMove(move, lastGameTime); // Add boolean so that this animates and only prints this move
+            level.DoMove(move, gameTime); // Add boolean so that this animates and only prints this move
             foreach(Character c in level.grid.characters.list)
             {
                 c.recalcPos();
             }
             level.grid.onCharacterMoved(level);
+
+            level.setupTurnOrderIcons();
+
             Grid grid = level.grid;
             Character player = grid.characters.list[0];
 
@@ -238,6 +248,18 @@ namespace pax_infinium
                     grid.rotate(true, level);
                     grid.rotate(true, level);
                 }
+            }
+
+            level.thoughtBubble.position = Vector2.Zero;
+            level.drewThoughtBubble = false;
+            triggerAIBool = false;
+
+            if (player.team == 0)
+            {
+                level.thoughtBubble.position = player.position;
+                level.thoughtBubble.position.Y -= 50;
+                triggerAIBool = true;
+                //Game1.world.triggerAI(level, gameTime);
             }
         }
     }

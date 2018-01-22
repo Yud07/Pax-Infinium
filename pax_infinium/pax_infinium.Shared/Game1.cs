@@ -22,7 +22,6 @@ namespace pax_infinium
         public bool confirmAction;
         public Vector2 lastClickMouseState;
         public Vector2 activeMouseState;
-        public Vector3 movedFrom;
 
         public Game1()
         {
@@ -69,6 +68,11 @@ namespace pax_infinium
             World.fontManager.Load("ScoreFont");
             World.fontManager.Load("InfoFont");
             World.fontManager.Load("Impact-36");
+
+            World.fontManager.Load("Trajanus Roman 64");
+            World.fontManager.Load("Trajanus Roman 12");
+            World.fontManager.Load("Trajanus Roman 24");
+            World.fontManager.Load("Trajanus Roman 36");
 
             World.textureManager.Load("Blue Soldier\\Blue Soldier NW");
             World.textureManager.Load("Blue Soldier\\Blue Soldier NE");
@@ -142,6 +146,10 @@ namespace pax_infinium
 
             World.textureManager.Load("Status Icons");
 
+            World.textureManager.Load("Start Screen");
+
+            World.textureManager.Load("Thought Bubble");
+
             // create 1x1 texture for line drawing
             world.oneByOne = new Texture2D(GraphicsDevice, 1, 1);
             world.oneByOne.SetData<Color>(
@@ -177,13 +185,17 @@ namespace pax_infinium
             Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
             Cube exampleCube = world.level.grid.cubes[0];
             Character player;
-            world.lastGameTime = gameTime;
             //List<Cube> highlightedCubes = new List<Cube>();
 
             // saves last click state
             if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
                 lastClickMouseState = transformedMouseState;
+                if (world.state == 0)
+                {
+                    resetConfirmation(); // Fixes highlighting bug
+                    world.state = 1;
+                }
             }
 
             // if last mouse state is not arbitrary (0,0), make it the active mouse state
@@ -201,6 +213,9 @@ namespace pax_infinium
             {
                 Exit();
             }
+
+            if (world.state == 1)
+            {
 
             // left arrow rotates left
             if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left))
@@ -232,7 +247,8 @@ namespace pax_infinium
                     }
                 }
                 // Special key w/ confirmation
-                else if (keyboardState.IsKeyDown(Keys.S) && previousKeyboardState.IsKeyUp(Keys.S)) {
+                else if (keyboardState.IsKeyDown(Keys.S) && previousKeyboardState.IsKeyUp(Keys.S))
+                {
                     if (selectedAction != "")
                     {
                         resetConfirmation();
@@ -255,7 +271,8 @@ namespace pax_infinium
                     }
                 }
                 // Confirm key
-                else if (keyboardState.IsKeyDown(Keys.Y) && previousKeyboardState.IsKeyUp(Keys.Y)){
+                else if (keyboardState.IsKeyDown(Keys.Y) && previousKeyboardState.IsKeyUp(Keys.Y))
+                {
                     confirmAction = true;
                 }
                 // Cancel key
@@ -263,7 +280,7 @@ namespace pax_infinium
                 {
                     if (selectedAction == "" && world.level.moved && !world.level.attacked) // undo movement
                     {
-                        player.Move(movedFrom);
+                        player.Move(world.level.movedFrom);
                         world.level.moved = false;
                         world.level.rotated = false;
                     }
@@ -285,6 +302,8 @@ namespace pax_infinium
                         cube.invert = false;
                     }
                 }
+
+                 world.level.handleActionTextColors(selectedAction);
 
                 if (selectedAction != "")
                 {
@@ -364,7 +383,7 @@ namespace pax_infinium
 
                 if (keyboardState.IsKeyDown(Keys.E) && previousKeyboardState.IsKeyUp(Keys.E)) // end turn
                 {
-                    world.level.endTurn();
+                    world.level.endTurn(gameTime);
                 }
 
                 bool mouseInBounds = false;
@@ -410,7 +429,7 @@ namespace pax_infinium
                             {
                                 world.level.setCharacter(c);
                             }
-                        }                        
+                        }
 
                         if (!world.level.rotated)
                         {
@@ -460,7 +479,7 @@ namespace pax_infinium
                                             }
                                         }
                                         else if (player.job == 0)// soldier special
-                                        { 
+                                        {
                                             foreach (Character character in world.level.grid.characters.list)
                                             {
                                                 if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
@@ -482,8 +501,9 @@ namespace pax_infinium
                                     int[] chanceDamage;
                                     foreach (Character character in world.level.grid.characters.list)
                                     {
-                                        if (cube.gridPos == character.gridPos) {
-                                            
+                                        if (cube.gridPos == character.gridPos)
+                                        {
+
                                             chanceDamage = player.calculateAttack(character);
                                             world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
                                         }
@@ -496,7 +516,7 @@ namespace pax_infinium
                                 if (world.level.grid.isVacant(cube.gridPos))
                                 {
                                     //world.level.SetConfirmationText("Move? Confirm Y / N");
-                                    movedFrom = player.gridPos;
+                                    world.level.movedFrom = player.gridPos;
                                     player.Move(cube.gridPos);
                                     //world.level.grid.onCharacterMoved();
                                     world.level.moved = true;
@@ -590,7 +610,8 @@ namespace pax_infinium
                                     Character toBeKilled = null;
                                     foreach (Character character in world.level.grid.characters.list)
                                     {
-                                        if (cube.gridPos == character.gridPos) {
+                                        if (cube.gridPos == character.gridPos)
+                                        {
 
                                             toBeKilled = player.attack(character, gameTime);
 
@@ -627,8 +648,9 @@ namespace pax_infinium
                     world.level.grid.onCharacterMoved(world.level);
                 }
             }
+            }
 
-            world.Update(gameTime);            
+            world.Update(gameTime);
 
             previousKeyboardState = keyboardState;
             previousMouseState = mouseState;

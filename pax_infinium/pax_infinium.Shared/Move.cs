@@ -258,84 +258,87 @@ namespace pax_infinium
         private void EndTurn(Level level)
         {
             level.turn++;
-            Character tempCharacter = level.grid.characters.list[0];
-            level.grid.characters.list.Remove(tempCharacter);
-            level.grid.characters.list.Add(tempCharacter);
-
-            level.setupTurnOrderIcons();
-
-            Character player = level.grid.characters.list[0];
-
-            /*float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
-            float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, 0, player.gridPos.Z));
-            float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, level.grid.depth, player.gridPos.Z));
-            float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, level.grid.depth, player.gridPos.Z));
-
-            List<float> distancesToCorners = new List<float>();
-            //East right once
-            //North right twice
-            //West right 3 times
-
-            distancesToCorners.Add(distanceToEast);
-            distancesToCorners.Add(distanceToNorth);
-            distancesToCorners.Add(distanceToWest);
-            distancesToCorners.Add(distanceToSouth);
-
-            float min = distancesToCorners.Min();
-            //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
-            if (min != distanceToSouth)
+            if (level.grid.characters.list.Count > 0)
             {
-                if (distanceToEast == min)
+                Character tempCharacter = level.grid.characters.list[0];
+                level.grid.characters.list.Remove(tempCharacter);
+                level.grid.characters.list.Add(tempCharacter);
+
+                //level.setupTurnOrderIcons();
+
+                Character player = level.grid.characters.list[0];
+
+                /*float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
+                float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, 0, player.gridPos.Z));
+                float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, level.grid.depth, player.gridPos.Z));
+                float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, level.grid.depth, player.gridPos.Z));
+
+                List<float> distancesToCorners = new List<float>();
+                //East right once
+                //North right twice
+                //West right 3 times
+
+                distancesToCorners.Add(distanceToEast);
+                distancesToCorners.Add(distanceToNorth);
+                distancesToCorners.Add(distanceToWest);
+                distancesToCorners.Add(distanceToSouth);
+
+                float min = distancesToCorners.Min();
+                //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
+                if (min != distanceToSouth)
                 {
-                    //Console.WriteLine("east");
-                    level.grid.rotate(true, level);
+                    if (distanceToEast == min)
+                    {
+                        //Console.WriteLine("east");
+                        level.grid.rotate(true, level);
+                    }
+                    else if (distanceToWest == min)
+                    {
+                        //Console.WriteLine("west");
+                        level.grid.rotate(false, level);
+                    }
+                    else
+                    {
+                        //Console.WriteLine("north");
+                        level.grid.rotate(true, level);
+                        level.grid.rotate(true, level);
+                    }
                 }
-                else if (distanceToWest == min)
-                {
-                    //Console.WriteLine("west");
-                    level.grid.rotate(false, level);
-                }
-                else
-                {
-                    //Console.WriteLine("north");
-                    level.grid.rotate(true, level);
-                    level.grid.rotate(true, level);
-                }
-            }
-            */
+                */
 
-            //Console.WriteLine("turn: " + turn);
-            //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
-            level.text.Text = "Turn:" + level.turn.ToString();
-            level.playerName.Text = player.name;
-            String t = player.health + "              " + player.mp;
-            t += "\n\n\n" + player.move + "                 " + player.jump;
-            t += "\n\n\n" + player.speed + "              " + player.evasion;
-            t += "\n\n\n" + player.WAttack + "              " + player.MAttack;
-            t += "\n\n\n" + player.WDefense + "              " + player.MDefense;
-            t += "\n\n\n" + player.weaponRange + "                 " + player.magicRange;
-            level.playerStatus.Text = t;
-            level.playerFace.tex = player.faceLeft;
-            if (player.team == 0)
-            {
-                level.playerName.color = Color.Blue;
-                level.playerStatus.color = Color.Blue;
+                //Console.WriteLine("turn: " + turn);
+                //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
+                level.text.Text = "Turn:" + level.turn.ToString();
+                level.playerName.Text = player.name;
+                String t = player.health + "              " + player.mp;
+                t += "\n\n\n" + player.move + "                 " + player.jump;
+                t += "\n\n\n" + player.speed + "              " + player.evasion;
+                t += "\n\n\n" + player.WAttack + "              " + player.MAttack;
+                t += "\n\n\n" + player.WDefense + "              " + player.MDefense;
+                t += "\n\n\n" + player.weaponRange + "                 " + player.magicRange;
+                level.playerStatus.Text = t;
+                level.playerFace.tex = player.faceLeft;
+                if (player.team == 0)
+                {
+                    level.playerName.color = Color.Blue;
+                    level.playerStatus.color = Color.Blue;
 
+                }
+                else if (player.team == 1)
+                {
+                    level.playerName.color = Color.Red;
+                    level.playerStatus.color = Color.Red;
+                }
+                /*int mpGain = 10;
+                if (player.mp + mpGain <= player.maxMP)
+                {
+                    player.mp += mpGain;
+                }
+                else if (player.mp + mpGain > player.maxMP)
+                {
+                    player.mp = player.maxMP;
+                }*/
             }
-            else if (player.team == 1)
-            {
-                level.playerName.color = Color.Red;
-                level.playerStatus.color = Color.Red;
-            }
-            /*int mpGain = 10;
-            if (player.mp + mpGain <= player.maxMP)
-            {
-                player.mp += mpGain;
-            }
-            else if (player.mp + mpGain > player.maxMP)
-            {
-                player.mp = player.maxMP;
-            }*/
 
             level.moved = false;
             level.attacked = false;

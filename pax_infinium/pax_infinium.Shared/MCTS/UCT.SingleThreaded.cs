@@ -8,12 +8,16 @@ namespace MCTS
 
     public static partial class UCT
     {
-        public static IMove ComputeSingleThreadedUCT(IGameState gameState, int itermax, bool verbose, Action<string> printfn, float uctk)
+        public static IMove ComputeSingleThreadedUCT(IGameState gameState, int itermax, bool verbose, Action<string> printfn, float uctk, int secs)
         {
             var rootNode = new SingleThreadedNode(null, null, gameState, uctk);
+            DateTime time = DateTime.Now;
+            DateTime end = time.AddSeconds(secs);//30);
 
-            for (var i = 0; i < itermax; i++)
+            for (var i = 0; i < itermax && time < end; i++)
             {
+                time = DateTime.Now;
+
                 INode node = rootNode;
                 var state = gameState.Clone();
 

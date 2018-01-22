@@ -45,12 +45,47 @@ namespace pax_infinium
 
         public String name = "Level";
 
+        public Vector3 movedFrom;
+
+        public Background startScreen;
+        public TextItem title;
+        public TextItem playGame;
+        public TextItem options;
+        public TextItem quit;
+
+        public Sprite actionsFrame;
+        public TextItem moveAction;
+        public TextItem attackAction;
+        public TextItem specialAction;
+        public TextItem endTurnAction;
+
+        public Sprite thoughtBubble;
+        public bool drewThoughtBubble;
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
+            startScreen = new Background(World.textureManager["Start Screen"], graphics.GraphicsDevice.Viewport);
+
+            title = new TextItem(World.fontManager["Trajanus Roman 64"], "Pax Infinium");
+            title.position = new Vector2(1640, 540);
+            title.scale = 1;
+
+            playGame = new TextItem(World.fontManager["Trajanus Roman 64"], "Play Game");
+            playGame.position = new Vector2(1690, 640);
+            playGame.scale = 1;
+
+            options = new TextItem(World.fontManager["Trajanus Roman 64"], "Options");
+            options.position = new Vector2(1750, 740);
+            options.scale = 1;
+
+            quit = new TextItem(World.fontManager["Trajanus Roman 64"], "Quit");
+            quit.position = new Vector2(1810, 840);
+            quit.scale = 1;
+
             random = World.Random;
             grid = new Grid(graphics, seed, 10, 10, 5, 1, 1, 1, 1, random);
             //background = new Background(World.textureManager["BG-Layer"], graphics.GraphicsDevice.Viewport);
-            background = new Background(Game1.world.textureConverter.GenRectangle(1600, 900, Color.SkyBlue), graphics.GraphicsDevice.Viewport);
+            background = new Background(Game1.world.textureConverter.GenRectangle(1920, 1080, Color.SkyBlue), graphics.GraphicsDevice.Viewport);
             //players.Add(new Player("Human"));
             players.Add(new Player("AI"));
             players.Add(new Player("Human"));
@@ -88,7 +123,7 @@ namespace pax_infinium
 
 
             playerName = new TextItem(World.fontManager["InfoFont"], grid.characters.list[0].name);
-            playerName.position = new Vector2(350, 1050);            
+            playerName.position = new Vector2(430, 1050);            
             playerName.scale = 3;
 
             String t = grid.characters.list[0].health + "              " + grid.characters.list[0].mp;
@@ -149,6 +184,29 @@ namespace pax_infinium
             confirmationText.position = new Vector2(950, 1050);
             confirmationText.scale = 2;
             confirmationText.color = Color.Black;
+
+            actionsFrame = new Sprite(Game1.world.textureConverter.GenRectangle(300, 200, Color.Black));
+            actionsFrame.position = new Vector2(450, 910);
+            actionsFrame.alpha = .5f;
+
+            moveAction = new TextItem(World.fontManager["Trajanus Roman 36"], "Move");
+            moveAction.position = new Vector2(450, 845);
+            moveAction.color = Color.White;
+
+            attackAction = new TextItem(World.fontManager["Trajanus Roman 36"], "Attack");
+            attackAction.position = new Vector2(450, 890);
+            attackAction.color = Color.White;
+
+            specialAction = new TextItem(World.fontManager["Trajanus Roman 36"], "Special");
+            specialAction.position = new Vector2(450, 935);
+            specialAction.color = Color.White;
+
+            endTurnAction = new TextItem(World.fontManager["Trajanus Roman 36"], "End Turn");
+            endTurnAction.position = new Vector2(450, 980);
+            endTurnAction.color = Color.White;
+
+            thoughtBubble = new Sprite(World.textureManager["Thought Bubble"]);
+            drewThoughtBubble = false;
         }
 
         /*
@@ -193,36 +251,62 @@ namespace pax_infinium
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            background.Draw(spriteBatch);
-            grid.Draw(spriteBatch);
-            //grid.characters.Draw(spriteBatch);
-            text.Draw(spriteBatch);
-            playerName.Draw(spriteBatch);
-            playerFace.Draw(spriteBatch);
-            playerStatus.Draw(spriteBatch);
-            playerStatusIcons.Draw(spriteBatch);
-            if (characterName.Text != "")
+            if (Game1.world.state == 0)
             {
-                characterName.Draw(spriteBatch);
-                characterFace.Draw(spriteBatch);
-                characterStatus.Draw(spriteBatch);
-                characterStatusIcons.Draw(spriteBatch);
+                startScreen.Draw(spriteBatch);
+                title.Draw(spriteBatch);
+                playGame.Draw(spriteBatch);
+                options.Draw(spriteBatch);
+                quit.Draw(spriteBatch);
             }
-            foreach (Sprite sp in turnOrderTeamIcons)
+            else
             {
-                sp.Draw(spriteBatch);
-            }
-            foreach (Sprite s in turnOrderIcons)
-            {
-                s.Draw(spriteBatch);
-            }
-            if (confirmationText.Text != "")
-            {
-                confirmationText.Draw(spriteBatch);
+                background.Draw(spriteBatch);
+                grid.Draw(spriteBatch);
+                //grid.characters.Draw(spriteBatch);
+                text.Draw(spriteBatch);
+                playerName.Draw(spriteBatch);
+                playerFace.Draw(spriteBatch);
+                playerStatus.Draw(spriteBatch);
+                playerStatusIcons.Draw(spriteBatch);
+                if (characterName.Text != "")
+                {
+                    characterName.Draw(spriteBatch);
+                    characterFace.Draw(spriteBatch);
+                    characterStatus.Draw(spriteBatch);
+                    characterStatusIcons.Draw(spriteBatch);
+                }
+                foreach (Sprite sp in turnOrderTeamIcons)
+                {
+                    sp.Draw(spriteBatch);
+                }
+                foreach (Sprite s in turnOrderIcons)
+                {
+                    s.Draw(spriteBatch);
+                }
+                if (confirmationText.Text != "")
+                {
+                    confirmationText.Draw(spriteBatch);
+                }
+
+                if (grid.characters.list[0].team == 1)
+                {
+                    actionsFrame.Draw(spriteBatch);
+                    moveAction.Draw(spriteBatch);
+                    attackAction.Draw(spriteBatch);
+                    specialAction.Draw(spriteBatch);
+                    endTurnAction.Draw(spriteBatch);
+                }
+
+                if (thoughtBubble.position != Vector2.Zero)
+                {
+                    thoughtBubble.Draw(spriteBatch);
+                    drewThoughtBubble = true;
+                }
             }
         }
 
-        public void endTurn()
+        public void endTurn(GameTime gameTime)
         {
             turn++;
             Character tempCharacter = grid.characters.list[0];
@@ -314,7 +398,10 @@ namespace pax_infinium
 
             if (player.team == 0)
             {
-                Game1.world.triggerAI(this);
+                thoughtBubble.position = player.position;
+                thoughtBubble.position.Y -= 50;
+                Game1.world.triggerAIBool = true;
+                //Game1.world.triggerAI(this, gameTime);
             }
         }
         
@@ -454,11 +541,12 @@ namespace pax_infinium
         public void PlayRandomlyUntilTheEnd()
         {
             Console.WriteLine("PlayingRandomlyUntilEnd");
+            int startTurn = turn;
             int i = 0;
             while (!OneTeamRemaining())
             {
                 Console.WriteLine("Turn " + i);
-                if (turn > (200 - turn))
+                if (turn > (300 - startTurn))
                 {
                     Console.WriteLine("Draw");
                     break;
@@ -494,14 +582,59 @@ namespace pax_infinium
             }
             else
             {
-                if (grid.characters.list[0].team == goal)
+                if (grid.characters.list.Count > 0)
                 {
-                    return EGameFinalStatus.GameWon;
+                    if (grid.characters.list[0].team == goal)
+                    {
+                        return EGameFinalStatus.GameWon;
+                    }
+                    else
+                    {
+                        return EGameFinalStatus.GameLost;
+                    }
                 }
                 else
                 {
-                    return EGameFinalStatus.GameLost;
+                    return EGameFinalStatus.GameDraw;
                 }
+            }
+        }
+
+        // MCTS End Region
+
+        public void handleActionTextColors(String selectedAction)
+        {
+            if (moved)
+            {
+                moveAction.color = Color.Gray;
+            }
+            else
+            {
+                moveAction.color = Color.White;
+            }
+
+            if (attacked)
+            {
+                attackAction.color = Color.Gray;
+                specialAction.color = Color.Gray;
+            }
+            else
+            {
+                attackAction.color = Color.White;
+                specialAction.color = Color.White;
+            }
+
+            if (selectedAction == "move")
+            {
+                moveAction.color = Color.Yellow;
+            }
+            if (selectedAction == "attack")
+            {
+                attackAction.color = Color.Yellow;
+            }
+            if (selectedAction == "special")
+            {
+                specialAction.color = Color.Yellow;
             }
         }
 
