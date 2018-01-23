@@ -44,7 +44,7 @@ namespace pax_infinium
         public Texture2D faceRight;
 
 
-        public Character(string name, int team, Vector2 origin, Vector3 gridPos, String direction, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
+        public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
             this.name = name;
             this.nwTex = nwTex;
@@ -52,7 +52,7 @@ namespace pax_infinium
             this.swTex = swTex;
             this.seTex = seTex;
             this.origin = origin;
-            this.gridPos = gridPos;
+            this.gridPos = Vector3.Zero;
             this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * cubeWidth), (int)(gridPos.Y * cubeHeight * .65f))).ToVector2();
             this.position.Y -= gridPos.Z * cubeHeight * .65F + nwTex.Height / 2;
             this.graphics = graphics;
@@ -66,7 +66,7 @@ namespace pax_infinium
             //this.evasion = World.Random.Next(0, 6);
             //this.speed = World.Random.Next(75, 100);
             this.team = team;
-            this.direction = direction;
+            this.direction = "ne";
             this.faceLeft = faceL;
             this.faceRight = faceR;
 
@@ -514,6 +514,27 @@ namespace pax_infinium
                     direction = "sw";
                     sprite.tex = swTex;
                 }
+            }
+        }
+
+        public void Rotate(String dir)
+        {
+            direction = dir;
+            if (dir == "nw")
+            {
+                sprite.tex = nwTex;
+            }
+            else if (dir == "se")
+            {
+                sprite.tex = seTex;
+            }
+            else if (dir == "ne")
+            {
+                sprite.tex = neTex;
+            }
+            else if (dir == "sw")
+            {
+                sprite.tex = swTex;
             }
         }
 

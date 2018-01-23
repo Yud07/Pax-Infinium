@@ -36,6 +36,8 @@ namespace pax_infinium
         public String seed;
         public int activeView;
 
+        public int colorSet;
+
         public Grid(GraphicsDeviceManager graphics, string seed, int width, int depth, int height, int c1, int c2, int c3, int c4, Random random)
         {
             this.graphics = graphics;
@@ -84,6 +86,8 @@ namespace pax_infinium
             binaryMatrixB = rotateBM(binaryMatrix, true, width, depth);
             binaryMatrixC = rotateBM(binaryMatrixB, true, depth, width);
             binaryMatrixD = rotateBM(binaryMatrixC, true, width, depth);
+
+            colorSet = World.Random.Next(0, 5);
 
             cubesA = createGrid(binaryMatrix);
             cubesB = createGrid(binaryMatrixB);
@@ -221,7 +225,6 @@ namespace pax_infinium
             bool mirroredA, mirroredB, mirroredC;
             bool borderA, borderB, borderC;
             int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
-            randomColor = 0;// 2;//random.Next(0, 5); //0;
             //Console.WriteLine("randomColor " + randomColor);
             List<Cube> tempCubes = new List<Cube>();
             for (int x = 0; x < width - 1; x++)
@@ -343,7 +346,7 @@ namespace pax_infinium
                                 borderC = false;
                             }
 
-                            switch (randomColor)
+                            switch (colorSet)
                             {
                                 case 0:
                                     colorA = Color.Brown;
@@ -640,6 +643,46 @@ namespace pax_infinium
             Grid clone = (Grid) this.MemberwiseClone();
             clone.characters = (Characters) characters.Clone();
             return clone;
+        }
+
+        public void placeCharacters()
+        {
+            List<Vector3> validPlacesOne = new List<Vector3>();
+            List<Vector3> validPlacesTwo = new List<Vector3>();
+            foreach (Cube cube in cubes)
+            {
+                if (topOfColumn(cube.gridPos) == cube.gridPos.Z)
+                {
+                    if (cube.gridPos.X < cube.gridPos.Y)
+                    {
+                        validPlacesOne.Add(cube.gridPos);
+                    }
+                    if (cube.gridPos.X > cube.gridPos.Y)
+                    {
+                        validPlacesTwo.Add(cube.gridPos);
+                    }
+                }
+            }
+            
+            foreach(Character character in characters.list)
+            {
+                Vector3 pos;
+                if (character.team == 0)
+                {
+                    pos = validPlacesOne[World.Random.Next(validPlacesOne.Count)];
+                    validPlacesOne.Remove(pos);
+                    character.gridPos = pos;
+                    character.Rotate("ne");
+                }
+                else
+                {
+                    pos = validPlacesTwo[World.Random.Next(validPlacesTwo.Count)];
+                    validPlacesTwo.Remove(pos);
+                    character.gridPos = pos;
+                    character.Rotate("sw");
+                }
+                character.recalcPos();
+            }
         }
     }
 }

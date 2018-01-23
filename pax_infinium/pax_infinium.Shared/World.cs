@@ -198,7 +198,7 @@ namespace pax_infinium
         {
             Action<string> print = s => Console.WriteLine(s);
             print(level.ToString());
-            IMove move = UCT.ComputeSingleThreadedUCT(level, 1000, true, print, 0.7F, 15);
+            IMove move = UCT.ComputeSingleThreadedUCT(level, 1000, true, print, 0.7F, 10);
             print(move.Name);
             level.DoMove(move, gameTime); // Add boolean so that this animates and only prints this move
             foreach(Character c in level.grid.characters.list)
@@ -261,6 +261,13 @@ namespace pax_infinium
                 triggerAIBool = true;
                 //Game1.world.triggerAI(level, gameTime);
             }
+        }
+
+        public string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
     }
 }

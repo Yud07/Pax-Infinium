@@ -62,6 +62,10 @@ namespace pax_infinium
         public Sprite thoughtBubble;
         public bool drewThoughtBubble;
 
+        public TextItem battleVictoryDefeat;
+        public TimeSpan startTime;
+        public bool drawBVD;
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
             startScreen = new Background(World.textureManager["Start Screen"], graphics.GraphicsDevice.Viewport);
@@ -90,18 +94,19 @@ namespace pax_infinium
             players.Add(new Player("AI"));
             players.Add(new Player("Human"));
             grid.characters = new Characters();
-            grid.characters.AddCharacter("Blue Soldier", 0, 0, grid.origin, new Vector3(5, 7, 3), "nw", graphics);
-            grid.characters.AddCharacter("Red Soldier", 0, 1, grid.origin, new Vector3(4, 2, 3), "ne", graphics);
-            grid.characters.AddCharacter("Blue Hunter", 1, 0, grid.origin, new Vector3(6, 7, 3), "sw", graphics);
-            grid.characters.AddCharacter("Red Hunter", 1, 1, grid.origin, new Vector3(5, 2, 3), "se", graphics);
-            grid.characters.AddCharacter("Blue Mage", 2, 0, grid.origin, new Vector3(7, 7, 3), "nw", graphics);
-            grid.characters.AddCharacter("Red Mage", 2, 1, grid.origin, new Vector3(6, 2, 3), "ne", graphics);
-            grid.characters.AddCharacter("Blue Healer", 3, 0, grid.origin, new Vector3(4, 7, 3), "nw", graphics);
-            grid.characters.AddCharacter("Red Healer", 3, 1, grid.origin, new Vector3(3, 2, 3), "ne", graphics);
-            grid.characters.AddCharacter("Blue Thief", 4, 0, grid.origin, new Vector3(3, 7, 3), "nw", graphics);
-            grid.characters.AddCharacter("Red Thief", 4, 1, grid.origin, new Vector3(4, 1, 3), "ne", graphics);
+            grid.characters.AddCharacter("Blue Soldier", 0, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Soldier", 0, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Hunter", 1, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Hunter", 1, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Mage", 2, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Mage", 2, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Healer", 3, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Healer", 3, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Thief", 4, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Thief", 4, 1, grid.origin, graphics);
             grid.characters.list.Sort(Character.CompareBySpeed);
             grid.characters.list.Reverse();
+            grid.placeCharacters();
             /*foreach (Cube cube in grid.cubes)
             {
                 if (grid.characters.list[0].gridPos == cube.gridPos)
@@ -206,7 +211,16 @@ namespace pax_infinium
             endTurnAction.color = Color.White;
 
             thoughtBubble = new Sprite(World.textureManager["Thought Bubble"]);
+            thoughtBubble.scale = 2;
             drewThoughtBubble = false;
+
+            battleVictoryDefeat = new TextItem(World.fontManager["Trajanus Roman 64"], "Battle");
+            battleVictoryDefeat.position = new Vector2(960, 540);
+            battleVictoryDefeat.color = Color.Black;
+            battleVictoryDefeat.scale = 3;
+
+            startTime = TimeSpan.Zero;
+            drawBVD = false;
         }
 
         /*
@@ -245,8 +259,39 @@ namespace pax_infinium
                 moved = false;
                 attacked = false;
             }*/
-        //grid.Update(gameTime);
-        grid.characters.Update(gameTime);
+            //grid.Update(gameTime);
+            grid.characters.Update(gameTime);
+            if (Game1.world.state == 1)
+            {
+                if (startTime == TimeSpan.Zero)
+                {
+                    startTime = gameTime.TotalGameTime;
+                }
+                else
+                {
+                    if (gameTime.TotalGameTime - startTime < new TimeSpan(0, 0, 5))
+                    {
+                        drawBVD = true;
+                    }
+                    else
+                    {
+                        drawBVD = false;
+                    }
+                }                
+            }     
+            
+            if (OneTeamRemaining())
+            {
+                if (grid.characters.list[0].team == 1)
+                {
+                    battleVictoryDefeat.Text = "Victory";
+                }
+                else
+                {
+                    battleVictoryDefeat.Text = "Defeat";
+                }
+                drawBVD = true;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -302,6 +347,11 @@ namespace pax_infinium
                 {
                     thoughtBubble.Draw(spriteBatch);
                     drewThoughtBubble = true;
+                }
+
+                if(drawBVD)
+                {
+                    battleVictoryDefeat.Draw(spriteBatch);
                 }
             }
         }
@@ -540,15 +590,15 @@ namespace pax_infinium
 
         public void PlayRandomlyUntilTheEnd()
         {
-            Console.WriteLine("PlayingRandomlyUntilEnd");
+            //Console.WriteLine("PlayingRandomlyUntilEnd");
             int startTurn = turn;
             int i = 0;
             while (!OneTeamRemaining())
             {
-                Console.WriteLine("Turn " + i);
+                //Console.WriteLine("Turn " + i);
                 if (turn > (300 - startTurn))
                 {
-                    Console.WriteLine("Draw");
+                    //Console.WriteLine("Draw");
                     break;
                 }
                 List<Move> moves = (List<Move>) GetMoves();

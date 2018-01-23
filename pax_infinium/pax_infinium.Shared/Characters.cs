@@ -31,7 +31,7 @@ namespace pax_infinium
             }
         }
 
-        public void AddCharacter(string name, int job, int team, Vector2 origin, Vector3 position, String direction, GraphicsDeviceManager graphics)
+        public void AddCharacter(string name, int job, int team, Vector2 origin, GraphicsDeviceManager graphics)
         {
             Texture2D nw;
             Texture2D ne;
@@ -145,7 +145,7 @@ namespace pax_infinium
                     nw = ne = sw = se = fl = fr = Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue);
                     break;
             }
-            list.Add(new Character(name, team, origin, position, direction, nw, ne, sw, se, fl, fr, graphics, new SpriteSheetInfo(64, 128)));
+            list.Add(new Character(name, team, origin, nw, ne, sw, se, fl, fr, graphics, new SpriteSheetInfo(64, 128)));
 
             Character newCharacter = list[list.Count - 1];
             newCharacter.job = job;

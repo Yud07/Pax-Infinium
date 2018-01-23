@@ -159,7 +159,8 @@ namespace pax_infinium
             //tex2 = world.textureConverter.Rotate90(tex2);
             //tex = world.textureConverter.Rotate(tex, 45);
 
-            world.level = new Level(graphics, "The world is mine!");
+            //world.level = new Level(graphics, "The world is mine!");
+            world.level = new Level(graphics, world.RandomString(18));
             world.rooms.CurrentState.AddDraw(world.level.Draw);
             world.rooms.CurrentState.AddUpdate(world.level.Update);
         }
@@ -431,7 +432,7 @@ namespace pax_infinium
                             }
                         }
 
-                        if (!world.level.rotated)
+                        if (!world.level.rotated && !world.triggerAIBool) //ai trigger check prevents accidental rotation on end turn
                         {
                             player.Rotate(cube.gridPos);
                         }

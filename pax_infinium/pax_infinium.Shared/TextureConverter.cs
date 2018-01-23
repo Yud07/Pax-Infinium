@@ -433,6 +433,5 @@ namespace pax_infinium
             tempTex.SetData(mapcolors);
             return tempTex;
         }
-
     }
 }
