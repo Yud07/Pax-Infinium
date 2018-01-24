@@ -38,6 +38,8 @@ namespace pax_infinium
 
         public int colorSet;
 
+        public int peel;
+
         public Grid(GraphicsDeviceManager graphics, string seed, int width, int depth, int height, int c1, int c2, int c3, int c4, Random random)
         {
             this.graphics = graphics;
@@ -96,6 +98,7 @@ namespace pax_infinium
 
             cubes = cubesA;
 
+            peel = height;
             //createGrid();
         }
 
@@ -682,6 +685,28 @@ namespace pax_infinium
                     character.Rotate("sw");
                 }
                 character.recalcPos();
+            }
+        }
+
+        public void peelCubes()
+        {
+            foreach (Cube cube in cubes)
+            {
+                if (cube.gridPos.Z > peel)
+                {
+                    cube.SetAlpha(0f);
+                }
+            }
+            foreach (Character character in characters.list)
+            {
+                if (character.gridPos.Z > peel)
+                {
+                    character.SetAlpha(0f);
+                }
+                else
+                {
+                    character.SetAlpha(1f);
+                }
             }
         }
     }

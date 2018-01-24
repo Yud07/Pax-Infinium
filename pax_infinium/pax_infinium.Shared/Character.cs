@@ -147,6 +147,7 @@ namespace pax_infinium
         public void SetAlpha(float alpha)
         {
             sprite.alpha = alpha;
+            statusText.alpha = alpha;
             //text.alpha = alpha;
         }
 
@@ -580,7 +581,7 @@ namespace pax_infinium
                     moves.Add(new Move(0, gridPos, 0, Vector3.Zero)); // Do nothing at all
                     foreach (Character character in level.grid.characters.list)
                     {
-                        if (character != this && InWeaponRange(character.gridPos))
+                        if (character.team != team && InWeaponRange(character.gridPos))
                         {
                             moves.Add(new Move(0, gridPos, 1, character.gridPos)); // Don't move, Attack character
                         }
@@ -615,7 +616,7 @@ namespace pax_infinium
                     //move before
                     foreach (Character character in level.grid.characters.list)
                     {
-                        if (character != this && Game1.world.cubeDist(character.gridPos, cube.gridPos) <= weaponRange)
+                        if (character.team != team && Game1.world.cubeDist(character.gridPos, cube.gridPos) <= weaponRange)
                         {
                             moves.Add(new Move(1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
                         }
@@ -645,7 +646,7 @@ namespace pax_infinium
                     //move after
                     foreach (Character character in level.grid.characters.list)
                     {
-                        if (character != this && InWeaponRange(character.gridPos))
+                        if (character.team != team && InWeaponRange(character.gridPos))
                         {
                             moves.Add(new Move(2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
                         }
