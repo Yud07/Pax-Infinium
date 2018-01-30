@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 //using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Linq;
+using pax_infinium.Enum;
 
 namespace pax_infinium
 {
@@ -248,7 +249,7 @@ namespace pax_infinium
                     player = world.level.grid.characters.list[0];
 
                     // Attack key w/ confirmation
-                    if (keyboardState.IsKeyDown(Keys.A) && previousKeyboardState.IsKeyUp(Keys.A))
+                    if (keyboardState.IsKeyDown(Keys.A) && previousKeyboardState.IsKeyUp(Keys.A) && !world.level.attacked)
                     {
                         if (selectedAction != "")
                         {
@@ -260,7 +261,7 @@ namespace pax_infinium
                         }
                     }
                     // Special key w/ confirmation
-                    else if (keyboardState.IsKeyDown(Keys.S) && previousKeyboardState.IsKeyUp(Keys.S))
+                    else if (keyboardState.IsKeyDown(Keys.S) && previousKeyboardState.IsKeyUp(Keys.S) && !world.level.attacked)
                     {
                         if (selectedAction != "")
                         {
@@ -272,7 +273,7 @@ namespace pax_infinium
                         }
                     }
                     // Move key w/ confirmation
-                    else if (keyboardState.IsKeyDown(Keys.M) && previousKeyboardState.IsKeyUp(Keys.M))
+                    else if (keyboardState.IsKeyDown(Keys.M) && previousKeyboardState.IsKeyUp(Keys.M) && !world.level.moved)
                     {
                         if (selectedAction != "")
                         {
@@ -306,7 +307,7 @@ namespace pax_infinium
                     foreach (Cube cube in world.level.grid.cubes) // clear highlights
                     {
                         cube.highLight = false;
-                        if (player.gridPos == cube.gridPos)
+                        if (player.gridPos == cube.gridPos && gameTime.TotalGameTime.Seconds%2 == 0 && player.team == 1)
                         {
                             cube.invert = true;
                         }
@@ -320,7 +321,7 @@ namespace pax_infinium
 
                     if (selectedAction != "")
                     {
-                        if ((player.job == 2 || player.job == 3) && selectedAction == "special" && !world.level.attacked)
+                        if ((player.job == EJob.Mage || player.job == EJob.Healer) && selectedAction == "special" && !world.level.attacked)
                         { // Black Mage or healer or thief
                             foreach (Cube cube in world.level.grid.cubes)
                             {
@@ -347,7 +348,7 @@ namespace pax_infinium
                         }
                         else if (selectedAction == "attack" && !world.level.attacked) // WAttack highlight
                         {
-                            if (player.job == 1) // Hunter
+                            if (player.job == EJob.Hunter) // Hunter
                             {
                                 foreach (Cube cube in world.level.grid.cubes)
                                 {
@@ -374,14 +375,14 @@ namespace pax_infinium
                         { // move highlight
                             foreach (Cube cube in world.level.grid.cubes)
                             {
-                                if (player.inMoveRange(cube.gridPos, world.level))
+                                if (player.inMoveRange(cube.gridPos, world.level) && world.level.grid.isVacant(cube.gridPos))
                                 {
                                     cube.highLight = true;
                                     //highlightedCubes.Add(cube);
                                 }
                             }
                         }
-                        else if ((player.job == 0 || player.job == 4) && selectedAction == "special" && !world.level.attacked) //thief special
+                        else if ((player.job == EJob.Soldier || player.job == EJob.Thief) && selectedAction == "special" && !world.level.attacked) //thief special
                         {
                             foreach (Cube cube in world.level.grid.cubes)
                             {
@@ -407,7 +408,7 @@ namespace pax_infinium
                         bool topVisible = true;
                         foreach (Cube c in world.level.grid.cubes)
                         {
-                            if (c != cube)
+                            if (c != cube && c.gridPos.Z < world.level.grid.peel)
                             {
                                 if (c.topPoly.Contains(activeMouseState))
                                 {
@@ -436,6 +437,7 @@ namespace pax_infinium
                             world.level.grid.onCharacterMoved(world.level);
                             world.level.grid.peelCubes();
 
+
                             world.level.clearCharacter();
                             foreach (Character c in world.level.grid.characters.list)
                             {
@@ -452,26 +454,26 @@ namespace pax_infinium
 
                             if (!confirmAction && selectedAction != "" && lastClickMouseState != Vector2.Zero)
                             {
-                                if ((((player.job == 2 || player.job == 3 || player.job == 4 || player.job == 0) && selectedAction == "special") || selectedAction == "attack") && !world.level.attacked) // Attack
+                                if ((((player.job == EJob.Mage || player.job == EJob.Healer || player.job == EJob.Thief || player.job == EJob.Soldier) && selectedAction == "special") || selectedAction == "attack") && !world.level.attacked) // Attack
                                 {
                                     if (selectedAction == "special")
                                     {
                                         if (player.CanCast(8))
                                         {
-                                            if (player.job == 2 || player.job == 3)
+                                            if (player.job == EJob.Mage || player.job == EJob.Healer)
                                             {
                                                 foreach (Character character in world.level.grid.characters.list)
                                                 {
                                                     if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
                                                         player.InMagicRange(cube.gridPos))
                                                     {
-                                                        if (player.job == 2)
+                                                        if (player.job == EJob.Mage)
                                                         {
                                                             int[] chanceDamage;
                                                             chanceDamage = player.calculateMageSpecial(character);
                                                             world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
                                                         }
-                                                        else if (player.job == 3)// healer
+                                                        else if (player.job == EJob.Healer)// healer
                                                         {
                                                             int health = 15;
                                                             world.level.SetConfirmationText("+" + health + "HP Confirm Y / N");
@@ -479,7 +481,7 @@ namespace pax_infinium
                                                     }
                                                 }
                                             }
-                                            else if (player.job == 4)// thief special
+                                            else if (player.job == EJob.Thief)// thief special
                                             {
                                                 foreach (Character character in world.level.grid.characters.list)
                                                 {
@@ -517,7 +519,6 @@ namespace pax_infinium
                                         {
                                             if (cube.gridPos == character.gridPos)
                                             {
-
                                                 chanceDamage = player.calculateAttack(character);
                                                 world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
                                             }
@@ -541,7 +542,7 @@ namespace pax_infinium
                             }
                             else if (confirmAction && selectedAction != "" && lastClickMouseState != Vector2.Zero) // Confirmed
                             {
-                                if ((((player.job == 2 || player.job == 3 || player.job == 4 || player.job == 0) && selectedAction == "special") || selectedAction == "attack") && !world.level.attacked) // Attack
+                                if ((((player.job == EJob.Mage || player.job == EJob.Healer || player.job == EJob.Thief || player.job == EJob.Soldier) && selectedAction == "special") || selectedAction == "attack") && !world.level.attacked) // Attack
                                 {
                                     if (selectedAction == "special")
                                     {
@@ -549,7 +550,7 @@ namespace pax_infinium
                                         {
                                             player.payForCast(8, gameTime);
 
-                                            if (player.job == 2 || player.job == 3)
+                                            if (player.job == EJob.Mage || player.job == EJob.Healer)
                                             {
                                                 List<Character> toBeKilled = new List<Character>();
                                                 foreach (Character character in world.level.grid.characters.list)
@@ -557,7 +558,7 @@ namespace pax_infinium
                                                     if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
                                                         player.InMagicRange(cube.gridPos))
                                                     {
-                                                        if (player.job == 2)
+                                                        if (player.job == EJob.Mage)
                                                         {
                                                             Character result = player.MageSpecial(character, gameTime);
                                                             if (result != null)
@@ -565,7 +566,7 @@ namespace pax_infinium
                                                                 toBeKilled.Add(result);
                                                             }
                                                         }
-                                                        else if (player.job == 3)// healer
+                                                        else if (player.job == EJob.Healer)// healer
                                                         {
                                                             player.HealerSpecial(character, gameTime);
                                                         }
@@ -578,7 +579,7 @@ namespace pax_infinium
                                                     world.level.grid.characters.list.Remove(character);
                                                 }
                                             }
-                                            else if (player.job == 4)// thief special
+                                            else if (player.job == EJob.Thief)// thief special
                                             {
                                                 Character toSkipTurn = null;
                                                 foreach (Character character in world.level.grid.characters.list)

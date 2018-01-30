@@ -333,27 +333,41 @@ namespace pax_infinium
             southwest.alpha = alpha;
             southeast.alpha = alpha;
             text.alpha = alpha;
+            highlight.alpha = alpha;
+            invertSprite.alpha = alpha;
         }
 
         public void onCharacterMoved(Level level)
         {
             //SetAlpha(1f);
-            foreach (Character character in level.grid.characters.list)
-            {
-                Cube tempCube = Game1.world.level.grid.getCube(character.gridPos);
-                if (DrawOrder() > character.DrawOrder() && Vector2.Distance(position, tempCube.position) < 100 && gridPos.Z > character.gridPos.Z)
+            Character character = level.grid.characters.list[0];
+            //foreach (Character character in level.grid.characters.list)
+            //{
+                //Cube tempCube = Game1.world.level.grid.getCube(character.gridPos);
+                if (DrawOrder() > character.DrawOrder() && Vector2.Distance(position, character.position) < 100 && gridPos.Z > character.gridPos.Z)
                 {
                     SetAlpha(.5f);
                 }
-            }
+            //}
         }
 
         public void onHighlightMoved(Cube c)
         {
             SetAlpha(1f);
-            if (DrawOrder() > c.DrawOrder() && Vector2.Distance(position, c.position) < 100 && gridPos.Z > c.gridPos.Z)
+            Character characterOnCube = Game1.world.level.grid.CharacterAtPos(c.gridPos);
+            if (characterOnCube != null)
             {
-                SetAlpha(.5f);
+                if (DrawOrder() > characterOnCube.DrawOrder() && Vector2.Distance(position, characterOnCube.position) < 100 && gridPos.Z > characterOnCube.gridPos.Z)
+                {
+                    SetAlpha(.5f);
+                }
+            }
+            else
+            {
+                if (DrawOrder() > c.DrawOrder() && Vector2.Distance(position, c.position) < 100 && gridPos.Z > c.gridPos.Z)
+                {
+                    SetAlpha(.5f);
+                }
             }
         }
 

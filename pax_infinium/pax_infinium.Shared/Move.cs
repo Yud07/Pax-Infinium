@@ -123,7 +123,7 @@ namespace pax_infinium
                 case 2:
                     player.Rotate(attackSpecialPos);
                     player.payForCast(8);
-                    switch (player.job)
+                    switch ((int)player.job)
                     {
                         case 0:
                             character = level.grid.CharacterAtPos(attackSpecialPos);
@@ -200,7 +200,7 @@ namespace pax_infinium
                 case 2:
                     player.Rotate(attackSpecialPos);
                     player.payForCast(8, gameTime);
-                    switch (player.job)
+                    switch ((int) player.job)
                     {
                         case 0:
                             character = level.grid.CharacterAtPos(attackSpecialPos);
@@ -258,6 +258,7 @@ namespace pax_infinium
         private void EndTurn(Level level)
         {
             level.turn++;
+
             if (level.grid.characters.list.Count > 0)
             {
                 Character tempCharacter = level.grid.characters.list[0];

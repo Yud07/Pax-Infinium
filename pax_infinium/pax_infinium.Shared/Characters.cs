@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using pax_infinium.Enum;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,7 +32,7 @@ namespace pax_infinium
             }
         }
 
-        public void AddCharacter(string name, int job, int team, Vector2 origin, GraphicsDeviceManager graphics)
+        public void AddCharacter(string name, EJob job, int team, Vector2 origin, GraphicsDeviceManager graphics)
         {
             Texture2D nw;
             Texture2D ne;
@@ -39,7 +40,7 @@ namespace pax_infinium
             Texture2D se;
             Texture2D fl;
             Texture2D fr;
-            switch (job)
+            switch ((int) job)
             {
                 case 0: // Soldier
                     if (team == 0)
@@ -150,7 +151,7 @@ namespace pax_infinium
             Character newCharacter = list[list.Count - 1];
             newCharacter.job = job;
 
-            switch (job)
+            switch ((int) job)
             {
                 case 0: // Soldier
                     newCharacter.move = 4;

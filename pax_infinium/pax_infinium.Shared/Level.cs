@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using System.Linq;
 using MCTS.Interfaces;
 using MCTS.Enum;
+using pax_infinium.Enum;
 
 namespace pax_infinium
 {
@@ -66,6 +67,18 @@ namespace pax_infinium
         public TimeSpan startTime;
         public bool drawBVD;
 
+        public bool firstRotate;
+
+        public Sprite Compass;
+        public TextItem N;
+        public TextItem E;
+        public TextItem S;
+        public TextItem W;
+        public TextItem Arrows;
+
+        public Sprite teamZeroHealth;
+        public Sprite teamOneHealth;
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
             startScreen = new Background(World.textureManager["Start Screen"], graphics.GraphicsDevice.Viewport);
@@ -87,36 +100,29 @@ namespace pax_infinium
             quit.scale = 1;
 
             random = World.Random;
-            grid = new Grid(graphics, seed, 10, 10, 5, 1, 1, 1, 1, random);
-            //background = new Background(World.textureManager["BG-Layer"], graphics.GraphicsDevice.Viewport);
+            int c1, c2, c3, c4;
+            c1 = 1;// random.Next(0,5);
+            c2 = 1;// random.Next(0,5);
+            c3 = 1;// random.Next(0,5);
+            c4 = 0;// random.Next(0,5);
+            grid = new Grid(graphics, seed, 10, 10, 5, c1, c2, c3, c4, random);
             background = new Background(Game1.world.textureConverter.GenRectangle(1920, 1080, Color.SkyBlue), graphics.GraphicsDevice.Viewport);
-            //players.Add(new Player("Human"));
             players.Add(new Player("AI"));
             players.Add(new Player("Human"));
             grid.characters = new Characters();
-            grid.characters.AddCharacter("Blue Soldier", 0, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Red Soldier", 0, 1, grid.origin, graphics);
-            grid.characters.AddCharacter("Blue Hunter", 1, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Red Hunter", 1, 1, grid.origin, graphics);
-            grid.characters.AddCharacter("Blue Mage", 2, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Red Mage", 2, 1, grid.origin, graphics);
-            grid.characters.AddCharacter("Blue Healer", 3, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Red Healer", 3, 1, grid.origin, graphics);
-            grid.characters.AddCharacter("Blue Thief", 4, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Red Thief", 4, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Soldier", EJob.Soldier, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Soldier", EJob.Soldier, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Hunter", EJob.Hunter, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Hunter", EJob.Hunter, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Mage", EJob.Mage, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Mage", EJob.Mage, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Healer", EJob.Healer, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Healer", EJob.Healer, 1, grid.origin, graphics);
+            grid.characters.AddCharacter("Blue Thief", EJob.Thief, 0, grid.origin, graphics);
+            grid.characters.AddCharacter("Red Thief", EJob.Thief, 1, grid.origin, graphics);
             grid.characters.list.Sort(Character.CompareBySpeed);
             grid.characters.list.Reverse();
             grid.placeCharacters();
-            /*foreach (Cube cube in grid.cubes)
-            {
-                if (grid.characters.list[0].gridPos == cube.gridPos)
-                {
-                    cube.invert = true;
-                }
-            }*/
-            //turnOrder = new string[grid.characters.list.Count];
-            //turnOrder[0] = grid.characters.list[0].name;
-            //turnOrder[1] = grid.characters.list[1].name;
             turn = 0;
             moved = false;
             attacked = false;
@@ -221,6 +227,50 @@ namespace pax_infinium
 
             startTime = TimeSpan.Zero;
             drawBVD = false;
+            firstRotate = false;
+
+            Cube middleCube = grid.cubes[grid.cubes.Count / 2];
+            middleCube = grid.getCube((int)middleCube.gridPos.X, (int)middleCube.gridPos.Y, grid.topOfColumn(middleCube.gridPos));
+            Compass = new Sprite(middleCube.topTex);
+            Compass.position = new Vector2(1800, 175);
+            N = new TextItem(World.fontManager["Trajanus Roman 36"], "N");
+            N.position = Compass.position - new Vector2(0, 64);
+            E = new TextItem(World.fontManager["Trajanus Roman 36"], "E");
+            E.position = Compass.position + new Vector2(85, 0);
+            S = new TextItem(World.fontManager["Trajanus Roman 36"], "S");
+            S.position = Compass.position + new Vector2(0, 64);
+            W = new TextItem(World.fontManager["Trajanus Roman 36"], "W");
+            W.position = Compass.position - new Vector2(100, 0);
+            N.color = E.color = S.color = W.color = Color.Black;
+            Arrows = new TextItem(World.fontManager["Trajanus Roman 36"], "<-    ->");
+            Arrows.color = Color.Black;
+            Arrows.position = Compass.position + new Vector2(0, 64);
+
+            recalcTeamHealthBar();
+        }
+
+        public void recalcTeamHealthBar()
+        {
+            int zeroHealth = 0;
+            int oneHealth = 0;
+            foreach(Character character in grid.characters.list)
+            {
+                if (character.team == 0)
+                {
+                    zeroHealth += character.health;
+                }
+                else
+                {
+                    oneHealth += character.health;
+                }
+            }
+
+            int zeroSize = 800 * zeroHealth / (zeroHealth + oneHealth);
+            int oneSize = 800 * oneHealth / (zeroHealth + oneHealth);
+            teamZeroHealth = new Sprite(Game1.world.textureConverter.GenRectangle(zeroSize, 25, Color.Blue));
+            teamZeroHealth.position = new Vector2(1920 / 2.5f - zeroSize / 2, 0);
+            teamOneHealth = new Sprite(Game1.world.textureConverter.GenRectangle(oneSize, 25, Color.Red));
+            teamOneHealth.position = new Vector2(1920 / 2.5f + oneSize / 2, 0);
         }
 
         /*
@@ -275,6 +325,11 @@ namespace pax_infinium
                     }
                     else
                     {
+                        if (drawBVD && !firstRotate)
+                        {
+                            firstRotate = true;
+                            RotateToActiveCharacter();
+                        }
                         drawBVD = false;
                     }
                 }                
@@ -353,12 +408,23 @@ namespace pax_infinium
                 {
                     battleVictoryDefeat.Draw(spriteBatch);
                 }
+
+                Compass.Draw(spriteBatch);
+                N.Draw(spriteBatch);
+                E.Draw(spriteBatch);
+                S.Draw(spriteBatch);
+                W.Draw(spriteBatch);
+                Arrows.Draw(spriteBatch);
+
+                teamZeroHealth.Draw(spriteBatch);
+                teamOneHealth.Draw(spriteBatch);
             }
         }
 
         public void endTurn(GameTime gameTime)
         {
             turn++;
+            recalcTeamHealthBar();
             Character tempCharacter = grid.characters.list[0];
             grid.characters.list.Remove(tempCharacter);
             grid.characters.list.Add(tempCharacter);
@@ -367,47 +433,7 @@ namespace pax_infinium
 
             Character player = grid.characters.list[0];
 
-            float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
-            float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, 0, player.gridPos.Z));
-            float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, grid.depth, player.gridPos.Z));
-            float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, grid.depth, player.gridPos.Z));
-
-            List<float> distancesToCorners = new List<float>();
-            //East right once
-            //North right twice
-            //West right 3 times
-
-            
-            distancesToCorners.Add(distanceToEast);
-            distancesToCorners.Add(distanceToNorth);
-            distancesToCorners.Add(distanceToWest);
-            distancesToCorners.Add(distanceToSouth);
-
-            float min = distancesToCorners.Min();
-            //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
-            if (min != distanceToSouth)
-            {
-                if (distanceToEast == min)
-                {
-                    //Console.WriteLine("east");
-                    grid.rotate(true, this);
-                }
-                else if (distanceToWest == min)
-                {
-                    //Console.WriteLine("west");
-                    grid.rotate(false, this);
-                }
-                else
-                {
-                    //Console.WriteLine("north");
-                    grid.rotate(true, this);
-                    grid.rotate(true, this);
-                }
-            }
-            /*else
-            {
-                Console.WriteLine("south");
-            }*/
+            RotateToActiveCharacter();
 
             //Console.WriteLine("turn: " + turn);
             //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
@@ -685,6 +711,96 @@ namespace pax_infinium
             if (selectedAction == "special")
             {
                 specialAction.color = Color.Yellow;
+            }
+        }
+
+        public void RotateToActiveCharacter()
+        {
+            Character player = grid.characters.list[0];
+
+            float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
+            float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, 0, player.gridPos.Z));
+            float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, grid.depth, player.gridPos.Z));
+            float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, grid.depth, player.gridPos.Z));
+
+            List<float> distancesToCorners = new List<float>();
+            //East right once
+            //North right twice
+            //West right 3 times
+
+
+            distancesToCorners.Add(distanceToEast);
+            distancesToCorners.Add(distanceToNorth);
+            distancesToCorners.Add(distanceToWest);
+            distancesToCorners.Add(distanceToSouth);
+
+            float min = distancesToCorners.Min();
+            //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
+            if (min != distanceToSouth)
+            {
+                if (distanceToEast == min)
+                {
+                    //Console.WriteLine("east");
+                    grid.rotate(true, this);
+                }
+                else if (distanceToWest == min)
+                {
+                    //Console.WriteLine("west");
+                    grid.rotate(false, this);
+                }
+                else
+                {
+                    //Console.WriteLine("north");
+                    grid.rotate(true, this);
+                    grid.rotate(true, this);
+                }
+            }
+        }
+
+        public void RotateCompass()
+        {
+            switch (grid.activeView)
+            {
+                case 0:
+                    N.Text = "N";
+                    E.Text = "E";
+                    S.Text = "S";
+                    W.Text = "W";
+                    N.position = Compass.position - new Vector2(0, 64);
+                    E.position = Compass.position + new Vector2(85, 0);
+                    S.position = Compass.position + new Vector2(0, 64);
+                    W.position = Compass.position - new Vector2(100, 0);
+                    break;
+                case 1:
+                    N.Text = "W";
+                    E.Text = "N";
+                    S.Text = "E";
+                    W.Text = "S";
+                    N.position = Compass.position - new Vector2(0, 64);
+                    E.position = Compass.position + new Vector2(85, 0);
+                    S.position = Compass.position + new Vector2(0, 64);
+                    W.position = Compass.position - new Vector2(75, 0);
+                    break;
+                case 2:
+                    N.Text = "S";
+                    E.Text = "W";
+                    S.Text = "N";
+                    W.Text = "E";
+                    N.position = Compass.position - new Vector2(-10, 64);
+                    E.position = Compass.position + new Vector2(85, 0);
+                    S.position = Compass.position + new Vector2(-10, 64);
+                    W.position = Compass.position - new Vector2(75, 0);
+                    break;
+                case 3:
+                    N.Text = "E";
+                    E.Text = "S";
+                    S.Text = "W";
+                    W.Text = "N";
+                    N.position = Compass.position - new Vector2(-10, 64);
+                    E.position = Compass.position + new Vector2(85, 0);
+                    S.position = Compass.position + new Vector2(-10, 64);
+                    W.position = Compass.position - new Vector2(85, 0);
+                    break;
             }
         }
 

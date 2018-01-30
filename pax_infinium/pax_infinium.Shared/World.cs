@@ -201,6 +201,7 @@ namespace pax_infinium
             IMove move = UCT.ComputeSingleThreadedUCT(level, 1000, true, print, 0.7F, 15);
             print(move.Name);
             level.DoMove(move, gameTime); // Add boolean so that this animates and only prints this move
+            level.recalcTeamHealthBar();
             foreach(Character c in level.grid.characters.list)
             {
                 c.recalcPos();

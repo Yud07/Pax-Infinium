@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using pax_infinium.Enum;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,12 +37,15 @@ namespace pax_infinium
         public int team;
         public int weaponRange;
         public int magicRange;
-        public int job;
-        public string direction;
+        public EJob job;
+        public EDirection direction;
         public TextItem statusText;
         public int maxMP;
         public Texture2D faceLeft;
         public Texture2D faceRight;
+
+        public Action attackAction;
+        public Action specialAction;
 
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
@@ -66,16 +70,16 @@ namespace pax_infinium
             //this.evasion = World.Random.Next(0, 6);
             //this.speed = World.Random.Next(75, 100);
             this.team = team;
-            this.direction = "ne";
+            this.direction = EDirection.Northeast;
             this.faceLeft = faceL;
             this.faceRight = faceR;
 
             Texture2D tex;
-            if (direction == "nw")
+            if (direction == EDirection.Northwest)
                 tex = nwTex;
-            else if (direction == "ne")
+            else if (direction == EDirection.Northeast)
                 tex = neTex;
-            else if (direction == "sw")
+            else if (direction == EDirection.Southwest)
                 tex = swTex;
             else
                 tex = seTex;
@@ -153,13 +157,10 @@ namespace pax_infinium
 
         public void onCharacterMoved(Level level)
         {
-            SetAlpha(1f);
-            foreach (Character character in level.grid.characters.list)
+            Character character = level.grid.characters.list[0];
+            if (DrawOrder() > character.DrawOrder() && Vector2.Distance(position, character.position) < 10)
             {
-                if (character != this && DrawOrder() > character.DrawOrder() && Math.Abs(Game1.world.cubeDist(gridPos, character.gridPos)) < 5)
-                {
-                    SetAlpha(.5f);
-                }
+                SetAlpha(.25f);
             }
         }
 
@@ -184,7 +185,8 @@ namespace pax_infinium
 
         public void onHighlightMoved(Cube c)
         {
-            if (gridPos != c.gridPos && DrawOrder() > c.DrawOrder() && Math.Abs(Game1.world.cubeDist(gridPos, c.gridPos)) < 5)
+            SetAlpha(1f);
+            if (c.gridPos != gridPos && DrawOrder() > c.DrawOrder() && Vector2.Distance(position, c.position) < 60)// && gridPos.Z > c.gridPos.Z)
             {
                 SetAlpha(.5f);
             }
@@ -204,7 +206,7 @@ namespace pax_infinium
 
             canAttack = character != this;
 
-            if (job != 1)
+            if (job != EJob.Hunter)
             {
                 canAttack = canAttack && character.isAdjacent(gridPos);
             }
@@ -216,10 +218,7 @@ namespace pax_infinium
             if (canAttack)
             {
                 int angleModifier = 0;
-                if (character.direction.Contains(direction[0].ToString()))
-                    angleModifier++;
-                if (character.direction.Contains(direction[1].ToString()))
-                    angleModifier++;
+                angleModifier = getAngleModifier(character.direction);
 
                 int chance = 90 - character.evasion + angleModifier * 5;
                 int damage = (int)((WAttack + WAttack * angleModifier / 2 - (character.WDefense / 2)) * .5);
@@ -400,10 +399,7 @@ namespace pax_infinium
         public int CalculateThiefSpecial(Character character)
         {
             int angleModifier = 0;
-            if (character.direction.Contains(direction[0].ToString()))
-                angleModifier++;
-            if (character.direction.Contains(direction[1].ToString()))
-                angleModifier++;
+            angleModifier = getAngleModifier(character.direction);
 
             int chance = 45 - character.evasion + angleModifier * 5;
 
@@ -494,12 +490,12 @@ namespace pax_infinium
             {
                 if (x > 0)
                 {
-                    direction = "nw";
+                    direction = EDirection.Northwest;
                     sprite.tex = nwTex;
                 }
                 else
                 {
-                    direction = "se";
+                    direction = EDirection.Southeast;
                     sprite.tex = seTex;
                 }
             }
@@ -507,33 +503,33 @@ namespace pax_infinium
             {
                 if (y > 0)
                 {
-                    direction = "ne";
+                    direction = EDirection.Northeast;
                     sprite.tex = neTex;
                 }
                 else
                 {
-                    direction = "sw";
+                    direction = EDirection.Southwest;
                     sprite.tex = swTex;
                 }
             }
         }
 
-        public void Rotate(String dir)
+        public void Rotate(EDirection dir)
         {
             direction = dir;
-            if (dir == "nw")
+            if (dir == EDirection.Northwest)
             {
                 sprite.tex = nwTex;
             }
-            else if (dir == "se")
+            else if (dir == EDirection.Southeast)
             {
                 sprite.tex = seTex;
             }
-            else if (dir == "ne")
+            else if (dir == EDirection.Northeast)
             {
                 sprite.tex = neTex;
             }
-            else if (dir == "sw")
+            else if (dir == EDirection.Southwest)
             {
                 sprite.tex = swTex;
             }
@@ -586,16 +582,16 @@ namespace pax_infinium
                             moves.Add(new Move(0, gridPos, 1, character.gridPos)); // Don't move, Attack character
                         }
                     }
-                    if (CanCast(8) && job != 1)
+                    if (CanCast(8) && job != EJob.Hunter)
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
                             if (InMagicRange(cu.gridPos) && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
                             {                                
-                                if (job != 2 || job != 3)
+                                if (job != EJob.Mage || job != EJob.Healer)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
-                                    if (target != null && (target.team != team || job == 0))
+                                    if (target != null && (target.team != team || job == EJob.Soldier))
                                     {
                                         moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special on character
                                     }
@@ -621,16 +617,16 @@ namespace pax_infinium
                             moves.Add(new Move(1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
                         }
                     }
-                    if (CanCast(8) && job != 1)
+                    if (CanCast(8) && job != EJob.Hunter)
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
                             if (Game1.world.cubeDist(cu.gridPos, cube.gridPos) <= magicRange && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
                             {
-                                if (job != 2 || job != 3)
+                                if (job != EJob.Mage || job != EJob.Healer)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
-                                    if ((target != null && target != this && (target.team != team || job == 0)) || (job == 0 && cu.gridPos == cube.gridPos))
+                                    if ((target != null && target != this && (target.team != team || job == EJob.Soldier)) || (job == EJob.Soldier && cu.gridPos == cube.gridPos))
                                     {
                                         moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special on character
                                     }
@@ -651,16 +647,16 @@ namespace pax_infinium
                             moves.Add(new Move(2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
                         }
                     }
-                    if (CanCast(8) && job != 1)
+                    if (CanCast(8) && job != EJob.Hunter)
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
                             if (InMagicRange(cu.gridPos) && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
                             {
-                               if (job != 2 || job != 3)
+                               if (job != EJob.Mage || job != EJob.Healer)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
-                                    if (target != null && (target.team != team || job == 0))
+                                    if (target != null && (target.team != team || job == EJob.Soldier))
                                     {
                                         moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special on character
                                     }
@@ -694,6 +690,24 @@ namespace pax_infinium
                 clone.name += " clone 1";
             }
             return clone;
+        }
+
+        int getAngleModifier(EDirection dir)
+        {
+            int val = Math.Abs(direction - dir);
+            if (val == 3)
+            {
+                val = 1;
+            }
+            if (val == 2)
+            {
+                val = 0;
+            }
+            if (val == 0)
+            {
+                val = 2;
+            }
+            return val;
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using NoiseTest;
-
+using pax_infinium.Enum;
 
 namespace pax_infinium
 {
@@ -137,7 +137,48 @@ namespace pax_infinium
             return topZ;
         }
 
-        public int topOfColumn(int x, int y, int maxHeight, bool[,,] binaryMatrix)
+        public bool TopExposed(Vector3 gridPos)
+        {
+            int x = (int)gridPos.X;
+            int y = (int)gridPos.Y;
+            int z = (int)gridPos.Z;
+            bool[,,] binMat;
+            bool topExposed;
+            switch (activeView)
+            {
+                case 0:
+                    binMat = binaryMatrix;
+                    break;
+                case 1:
+                    binMat = binaryMatrixB;
+                    break;
+                case 2:
+                    binMat = binaryMatrixC;
+                    break;
+                case 3:
+                    binMat = binaryMatrixD;
+                    break;
+                default:
+                    binMat = binaryMatrix;
+                    break;
+            }
+            
+            if (z < height - 2)
+            {
+                topExposed = !binMat[x, y, z + 1] && !binMat[x, y, z + 2];
+            }
+            else if (z < height - 1)
+            {
+                topExposed = !binMat[x, y, z + 1];
+            }
+            else
+            {
+                topExposed = true;
+            }
+            return topExposed;
+        }
+
+        /*public int topOfColumn(int x, int y, int maxHeight, bool[,,] binaryMatrix)
         {
             int topZ = int.MinValue;
             for (int z = 0; z < maxHeight; z++)
@@ -148,7 +189,7 @@ namespace pax_infinium
                 }
             }
             return topZ;
-        }       
+        }*/
 
         public void Update(GameTime gameTime)
         {
@@ -193,10 +234,10 @@ namespace pax_infinium
             {
                 cube.onCharacterMoved(level);
             }
-            /*foreach (Character character in characters.list)
+            foreach (Character character in characters.list)
             {
-                character.onCharacterMoved();
-            }*/
+                character.onCharacterMoved(level);
+            }
         }
 
         public void onHighlightMoved(Cube c)
@@ -205,10 +246,10 @@ namespace pax_infinium
             {
                 cube.onHighlightMoved(c);
             }
-            /*foreach (Character character in characters.list)
+            foreach (Character character in characters.list)
             {
                 character.onHighlightMoved(c);
-            }*/
+            }
         }
 
         public void createGrid()
@@ -218,7 +259,6 @@ namespace pax_infinium
 
         public List<Cube> createGrid(bool [,,] binMatrix)
         {
-            int randomColor;
             int texWidth = 64;
             int texHeight = 64;
             Color colorA = Color.White;
@@ -228,6 +268,7 @@ namespace pax_infinium
             bool mirroredA, mirroredB, mirroredC;
             bool borderA, borderB, borderC;
             int topOrWestOrSouthA, topOrWestOrSouthB, topOrWestOrSouthC;
+            bool topExposed;
             //Console.WriteLine("randomColor " + randomColor);
             List<Cube> tempCubes = new List<Cube>();
             for (int x = 0; x < width - 1; x++)
@@ -246,8 +287,8 @@ namespace pax_infinium
                             int lineNumA = 0, lineNumB = 0, lineNumC = 0;
 
                             // if it is the top of a column
-                            if (topOfColumn(x, y, height, binMatrix) == z) // May want to remove this if --------------------------------------------------------------
-                            {
+                            //if (topOfColumn(x, y, height, binMatrix) == z) // May want to remove this if --------------------------------------------------------------
+                            //{
                                 bool topLeft = false, topRight = false;
                                 if (x > 0)
                                 {
@@ -266,7 +307,7 @@ namespace pax_infinium
                                 if (topLeft && topRight) { c = true; lineNumC = 2; }
                                 else if (topLeft) { c = true; lineNumC = 1; }
                                 else if (topRight) { c = true; lineNumC = 0; }
-                            }
+                            //}
 
                             // right and bottom right sides required
                             // lack of a right or bottomRight neighbor
@@ -367,9 +408,12 @@ namespace pax_infinium
                                     colorC = Color.LightGray;
                                     break;
                                 case 3:
-                                    colorA = Color.YellowGreen;
+                                    colorA = Color.Brown;
+                                    colorB = Color.Chocolate;
+                                    colorC = Color.Green;
+                                    /*colorA = Color.YellowGreen;
                                     colorB = Color.Yellow;
-                                    colorC = Color.Fuchsia;
+                                    colorC = Color.Fuchsia;*/
                                     break;
                                 case 4:
                                     colorA = Color.Tan;
@@ -377,6 +421,29 @@ namespace pax_infinium
                                     colorC = Color.Beige;
                                     break;
                             }
+                            
+                            if (z < height - 2)
+                            {
+                                topExposed = !binMatrix[x, y, z + 1] && !binMatrix[x, y, z + 2];
+                            }
+                            else if (z < height - 1)
+                            {
+                                topExposed = !binMatrix[x, y, z + 1];
+                            }
+                            else
+                            {
+                                topExposed = true;
+                            }
+                            if (!topExposed)
+                            {
+                                /*float R = (colorA.R + colorB.R) / 2;
+                                float G = (colorA.G + colorB.G) / 2;
+                                float B = (colorA.B + colorB.B) / 2;
+                                colorC = new Color(R, G, B);*/
+                                colorC = Color.Multiply(colorC, .5f);
+                                colorC.A = 255;
+                            }
+
                             Vector3 vect = new Vector3(x, y, z);
                             Cube tempCube = new Cube(origin, vect,
                                 Game1.world.textureConverter.GenTex(texWidth, texHeight, colorA, vect, topA, mirroredA, borderA, topOrWestOrSouthA, lineNumA),
@@ -419,6 +486,8 @@ namespace pax_infinium
             {
                 activeView = 3;
             }
+
+            Game1.world.level.RotateCompass();
 
             switch (activeView)
             {
@@ -531,47 +600,47 @@ namespace pax_infinium
 
                 if (clockwise)
                 {
-                    if (character.direction == "nw")
+                    if (character.direction == EDirection.Northwest)
                     {
-                        character.direction = "ne";
+                        character.direction = EDirection.Northeast;
                         character.sprite.tex = character.neTex;
                     }
-                    else if (character.direction == "ne")
+                    else if (character.direction == EDirection.Northeast)
                     {
-                        character.direction = "se";
+                        character.direction = EDirection.Southeast;
                         character.sprite.tex = character.seTex;
                     }
-                    else if (character.direction == "se")
+                    else if (character.direction == EDirection.Southeast)
                     {
-                        character.direction = "sw";
+                        character.direction = EDirection.Southwest;
                         character.sprite.tex = character.swTex;
                     }
                     else
                     {
-                        character.direction = "nw";
+                        character.direction = EDirection.Northwest;
                         character.sprite.tex = character.nwTex;
                     }
                 }
                 else
                 {
-                    if (character.direction == "nw")
+                    if (character.direction == EDirection.Northwest)
                     {
-                        character.direction = "sw";
+                        character.direction = EDirection.Southwest;
                         character.sprite.tex = character.swTex;
                     }
-                    else if (character.direction == "sw")
+                    else if (character.direction == EDirection.Southwest)
                     {
-                        character.direction = "se";
+                        character.direction = EDirection.Southeast;
                         character.sprite.tex = character.seTex;
                     }
-                    else if (character.direction == "se")
+                    else if (character.direction == EDirection.Southeast)
                     {
-                        character.direction = "ne";
+                        character.direction = EDirection.Northeast;
                         character.sprite.tex = character.neTex;
                     }
                     else
                     {
-                        character.direction = "nw";
+                        character.direction = EDirection.Northwest;
                         character.sprite.tex = character.nwTex;
                     }
                 }
@@ -608,10 +677,10 @@ namespace pax_infinium
             {
                 c.SetAlpha(1);
             }
-            /*foreach (Character character in characters.list)
+            foreach (Character character in characters.list)
             {
                 character.SetAlpha(1);
-            }*/
+            }
         }
 
         public bool isVacant(Vector3 pos)
@@ -654,13 +723,13 @@ namespace pax_infinium
             List<Vector3> validPlacesTwo = new List<Vector3>();
             foreach (Cube cube in cubes)
             {
-                if (topOfColumn(cube.gridPos) == cube.gridPos.Z)
+                if (topOfColumn(cube.gridPos) == cube.gridPos.Z && cube.gridPos.Z >= height - 3)
                 {
-                    if (cube.gridPos.X < cube.gridPos.Y)
+                    if (width/2 < cube.gridPos.Y)
                     {
                         validPlacesOne.Add(cube.gridPos);
                     }
-                    if (cube.gridPos.X > cube.gridPos.Y)
+                    if (width/2 > cube.gridPos.Y)
                     {
                         validPlacesTwo.Add(cube.gridPos);
                     }
@@ -675,14 +744,14 @@ namespace pax_infinium
                     pos = validPlacesOne[World.Random.Next(validPlacesOne.Count)];
                     validPlacesOne.Remove(pos);
                     character.gridPos = pos;
-                    character.Rotate("ne");
+                    character.Rotate(EDirection.Northeast);
                 }
                 else
                 {
                     pos = validPlacesTwo[World.Random.Next(validPlacesTwo.Count)];
                     validPlacesTwo.Remove(pos);
                     character.gridPos = pos;
-                    character.Rotate("sw");
+                    character.Rotate(EDirection.Southwest);
                 }
                 character.recalcPos();
             }
@@ -703,10 +772,10 @@ namespace pax_infinium
                 {
                     character.SetAlpha(0f);
                 }
-                else
+               /* else
                 {
                     character.SetAlpha(1f);
-                }
+                }*/
             }
         }
     }

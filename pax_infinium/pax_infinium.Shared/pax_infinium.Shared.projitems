@@ -12,6 +12,10 @@
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Actions\BasicMeleeAttack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enum\EDirection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enum\EJob.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Animations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Background.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Camera.cs" />
@@ -22,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Game1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Grid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDrawable1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISpell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Level.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Line.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MCTS\Enum\EGameFinalStatus.cs" />
