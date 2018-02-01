@@ -234,13 +234,23 @@ namespace pax_infinium
                 if (keyboardState.IsKeyDown(Keys.PageUp) && previousKeyboardState.IsKeyUp(Keys.PageUp))
                 {
                     world.level.grid.peel++;
-                    Console.WriteLine("Peel=" + world.level.grid.peel);
+                    if (world.level.grid.peel > world.level.grid.height - 1)
+                    {
+                        world.level.grid.peel = world.level.grid.height - 1;
+                    }
+                    world.level.recalcPeelStatus();
+                    //Console.WriteLine("Peel=" + world.level.grid.peel);
                 }
 
                 if (keyboardState.IsKeyDown(Keys.PageDown) && previousKeyboardState.IsKeyUp(Keys.PageDown))
                 {
                     world.level.grid.peel--;
-                    Console.WriteLine("Peel=" + world.level.grid.peel);
+                    if (world.level.grid.peel < 0)
+                    {
+                        world.level.grid.peel = 0;
+                    }
+                    world.level.recalcPeelStatus();
+                    //Console.WriteLine("Peel=" + world.level.grid.peel);
                 }
 
                 // if there are characters
@@ -302,6 +312,9 @@ namespace pax_infinium
                         {
                             resetConfirmation();
                         }
+                    }
+                    else if (keyboardState.IsKeyDown(Keys.I) && previousKeyboardState.IsKeyUp(Keys.I)){
+                        world.level.drawInfo = !world.level.drawInfo;
                     }
 
                     foreach (Cube cube in world.level.grid.cubes) // clear highlights
@@ -443,6 +456,10 @@ namespace pax_infinium
                             {
                                 if (cube.gridPos == c.gridPos)
                                 {
+                                    /*if (world.level.highlightedCharacter != c)
+                                    {
+                                        Console.WriteLine("Character Scale = " + c.sprite.scale);
+                                    }*/
                                     world.level.setCharacter(c);
                                 }
                             }

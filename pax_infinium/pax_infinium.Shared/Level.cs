@@ -77,7 +77,26 @@ namespace pax_infinium
         public TextItem Arrows;
 
         public Sprite teamZeroHealth;
+        public TextItem zeroHealthText;
         public Sprite teamOneHealth;
+        public TextItem oneHealthText;
+
+        public bool drawInfo;
+
+        public TextItem peelStatusText;
+        public List<Cube> peelStatus;
+        public TextItem pgUpText;
+        public TextItem pgDownText;
+
+        public Sprite playerHealthBar;
+        public TextItem playerHealthText;
+        public Sprite characterHealthBar;
+        public TextItem characterHealthText;
+
+        public Sprite playerMagicBar;
+        public TextItem playerMagicText;
+        public Sprite characterMagicBar;
+        public TextItem characterMagicText;
 
         public Level(GraphicsDeviceManager graphics, string seed)
         {
@@ -101,9 +120,9 @@ namespace pax_infinium
 
             random = World.Random;
             int c1, c2, c3, c4;
-            c1 = 1;// random.Next(0,5);
-            c2 = 1;// random.Next(0,5);
-            c3 = 1;// random.Next(0,5);
+            c1 = 1;//1;// random.Next(0,5);
+            c2 = 1;//1;// random.Next(0,5);
+            c3 = 1;//1;// random.Next(0,5);
             c4 = 0;// random.Next(0,5);
             grid = new Grid(graphics, seed, 10, 10, 5, c1, c2, c3, c4, random);
             background = new Background(Game1.world.textureConverter.GenRectangle(1920, 1080, Color.SkyBlue), graphics.GraphicsDevice.Viewport);
@@ -137,15 +156,15 @@ namespace pax_infinium
             playerName.position = new Vector2(430, 1050);            
             playerName.scale = 3;
 
-            String t = grid.characters.list[0].health + "              " + grid.characters.list[0].mp;
-            t += "\n\n\n" + grid.characters.list[0].move + "                 " + grid.characters.list[0].jump;
-            t += "\n\n\n" + grid.characters.list[0].speed + "              " + grid.characters.list[0].evasion;
-            t += "\n\n\n" + grid.characters.list[0].WAttack + "              " + grid.characters.list[0].MAttack;
-            t += "\n\n\n" + grid.characters.list[0].WDefense + "              " + grid.characters.list[0].MDefense;
-            t += "\n\n\n" + grid.characters.list[0].weaponRange + "                 " + grid.characters.list[0].magicRange;
+            String t = grid.characters.list[0].health + "               " + grid.characters.list[0].mp;
+            t += "\n\n\n" + grid.characters.list[0].move + "                  " + grid.characters.list[0].jump;
+            t += "\n\n\n" + grid.characters.list[0].speed + "               " + grid.characters.list[0].evasion;
+            t += "\n\n\n" + grid.characters.list[0].WAttack + "               " + grid.characters.list[0].MAttack;
+            t += "\n\n\n" + grid.characters.list[0].WDefense + "               " + grid.characters.list[0].MDefense;
+            t += "\n\n\n" + grid.characters.list[0].weaponRange + "                  " + grid.characters.list[0].magicRange;
             playerStatus = new TextItem(World.fontManager["InfoFont"], t);
-            playerStatus.position = new Vector2(200, 500);            
-            playerStatus.scale = 1.5f;
+            playerStatus.position = new Vector2(185, 500);            
+            playerStatus.scale = 1f;
 
             if (grid.characters.list[0].team == 0)
             {
@@ -170,8 +189,8 @@ namespace pax_infinium
 
             characterStatus = new TextItem(World.fontManager["InfoFont"], t);
             characterStatus.Text = "";
-            characterStatus.position = new Vector2(1810, 500);
-            characterStatus.scale = 1.5f;
+            characterStatus.position = new Vector2(1795, 500);
+            characterStatus.scale = 1f;
 
             characterFace = new Sprite(grid.characters.list[0].faceRight);
             //characterFace = new Sprite(Game1.world.textureConverter.GenRectangle(90, 160, Color.Blue));
@@ -180,11 +199,11 @@ namespace pax_infinium
 
             playerStatusIcons = new Sprite(World.textureManager["Status Icons"]);
             playerStatusIcons.position = new Vector2(playerStatusIcons.tex.Width / 10, playerStatusIcons.tex.Height / 5.1f);
-            playerStatusIcons.scale = .2f;
+            playerStatusIcons.scale = .15f;
 
             characterStatusIcons = new Sprite(World.textureManager["Status Icons"]);
             characterStatusIcons.position = new Vector2(characterStatusIcons.tex.Width * 1.45f, characterStatusIcons.tex.Height / 5.1f);
-            characterStatusIcons.scale = .2f;
+            characterStatusIcons.scale = .15f;
 
             turnOrderIcons = new List<Sprite>();
             turnOrderTeamIcons = new List<Sprite>();
@@ -246,7 +265,46 @@ namespace pax_infinium
             Arrows.color = Color.Black;
             Arrows.position = Compass.position + new Vector2(0, 64);
 
+            zeroHealthText = new TextItem(World.fontManager["Trajanus Roman 36"], "1000 HP");
+            oneHealthText = new TextItem(World.fontManager["Trajanus Roman 36"], "1000 HP");
             recalcTeamHealthBar();
+
+            drawInfo = false;
+
+            peelStatusText = new TextItem(World.fontManager["Trajanus Roman 36"], "4/4");
+            peelStatusText.color = Color.Black;
+            peelStatusText.position = new Vector2(90, 150);
+            pgUpText = new TextItem(World.fontManager["Trajanus Roman 36"], "^ PgUp");
+            pgUpText.scale = .5f;
+            pgUpText.color = Color.Black;
+            pgUpText.position = new Vector2(65, 100);
+            pgDownText = new TextItem(World.fontManager["Trajanus Roman 36"], "v PgDown");
+            pgDownText.scale = .5f;
+            pgDownText.color = Color.Black;
+            pgDownText.position = new Vector2(80, 210);
+            initPeelStatus(middleCube);
+
+            playerHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenRectangle(1920/3, 25, Color.Red));
+            playerHealthBar.position = new Vector2(1920/6, 1080 - 25/2);
+            playerHealthText = new TextItem(World.fontManager["Trajanus Roman 36"], grid.characters.list[0].startingHealth + " HP");
+            playerHealthText.position = playerHealthBar.position;
+            playerHealthText.scale = .5f;
+            characterHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenRectangle(1920 / 3, 25, Color.Red));
+            characterHealthBar.position = new Vector2(1920 * 5/6, 1080 - 25/2);
+            characterHealthText = new TextItem(World.fontManager["Trajanus Roman 36"], grid.characters.list[0].startingHealth + " HP");
+            characterHealthText.position = characterHealthBar.position;
+            characterHealthText.scale = .5f;
+
+            playerMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenRectangle(1920 / 3, 25, Color.Blue));
+            playerMagicBar.position = new Vector2(1920 / 6, 1080 - 37);
+            playerMagicText = new TextItem(World.fontManager["Trajanus Roman 36"], grid.characters.list[0].startingMP + " MP");
+            playerMagicText.position = playerMagicBar.position;
+            playerMagicText.scale = .5f;
+            characterMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenRectangle(1920 / 3, 25, Color.Blue));
+            characterMagicBar.position = new Vector2(1920 * 5 / 6, 1080 - 37);
+            characterMagicText = new TextItem(World.fontManager["Trajanus Roman 36"], grid.characters.list[0].startingMP + " MP");
+            characterMagicText.position = characterMagicBar.position;
+            characterMagicText.scale = .5f;
         }
 
         public void recalcTeamHealthBar()
@@ -267,28 +325,97 @@ namespace pax_infinium
 
             int zeroSize = 800 * zeroHealth / (zeroHealth + oneHealth);
             int oneSize = 800 * oneHealth / (zeroHealth + oneHealth);
-            teamZeroHealth = new Sprite(Game1.world.textureConverter.GenRectangle(zeroSize, 25, Color.Blue));
-            teamZeroHealth.position = new Vector2(1920 / 2.5f - zeroSize / 2, 0);
-            teamOneHealth = new Sprite(Game1.world.textureConverter.GenRectangle(oneSize, 25, Color.Red));
-            teamOneHealth.position = new Vector2(1920 / 2.5f + oneSize / 2, 0);
+            teamZeroHealth = new Sprite(Game1.world.textureConverter.GenRectangle(zeroSize, 50, Color.Blue));
+            teamZeroHealth.position = new Vector2(1920 / 2.5f - zeroSize / 2, 20);
+            teamOneHealth = new Sprite(Game1.world.textureConverter.GenRectangle(oneSize, 50, Color.Red));
+            teamOneHealth.position = new Vector2(1920 / 2.5f + oneSize / 2, 20);
+
+
+            zeroHealthText.Text = zeroHealth.ToString() + " HP";
+            zeroHealthText.position = new Vector2(zeroSize/5 + teamZeroHealth.position.X, 25);
+            oneHealthText.Text = oneHealth.ToString() + " HP";
+            oneHealthText.position = new Vector2(-oneSize/5 + teamOneHealth.position.X, 25);
         }
 
-        /*
-            characterName = new TextItem(World.fontManager["InfoFont"], highlightedCharacter.name);
-            characterName.position = new Vector2(1570, 1000);
-            characterName.color = Color.Blue;
-            characterName.scale = 3;
+        public void initPeelStatus(Cube middleCube)
+        {
+            peelStatus = new List<Cube>();
+            for(int i = 0; i < grid.height; i++)
+            {
+                Cube c = grid.getCube((int)middleCube.gridPos.X, (int)middleCube.gridPos.Y, i);
+                int tries = 0;
+                while (c == null && tries < 10)
+                {
+                    int x = random.Next(grid.width);
+                    int y = random.Next(grid.height);
+                    c = grid.getCube(x, y, i);
+                    tries++;
+                }
+                if (c != null)
+                {
+                    c = new Cube(new Vector2(25, 175 - i * .25f * (c.southwestTex.Height + c.topTex.Height)/2), c.southwestTex, c.southeastTex, c.topTex);
+                }
+                peelStatus.Add(c);
+            }
+        }
+        
+        public void recalcPeelStatus()
+        {
+            peelStatusText.Text = grid.peel + "/" + (grid.height - 1);
+            int count = 0;
+            foreach(Cube c in peelStatus)
+            {
+                if (c != null)
+                {
+                    if (count > grid.peel)
+                    {
+                        c.top.alpha = 0;
+                        c.southwest.alpha = 0;
+                        c.southeast.alpha = 0;
+                    }
+                    else
+                    {
+                        c.top.alpha = 1;
+                        c.southwest.alpha = 1;
+                        c.southeast.alpha = 1;
+                    }
+                }
+                count++;
+            }
+        }
 
-            characterStatus = new TextItem(World.fontManager["InfoFont"], highlightedCharacter.health + " Health " + highlightedCharacter.mp + " MP");
-            characterStatus.position = new Vector2(1570, 1050);
-            characterStatus.color = Color.Blue;
-            characterStatus.scale = 2;
+        public void recalcStatusBars()
+        {
+            float fullBarSize = 1920 / 3;
+            float playerHealthRatio = (float)grid.characters.list[0].health / (float)grid.characters.list[0].startingHealth;
+            float playerMPRatio = (float)grid.characters.list[0].mp / (float)grid.characters.list[0].startingMP;
 
-            characterFace = new Sprite(highlightedCharacter.faceRight);
-            //characterFace = new Sprite(Game1.world.textureConverter.GenRectangle(90, 160, Color.Blue));
-            characterFace.position = new Vector2(characterFace.tex.Width * 18, characterFace.tex.Height * 5);
-            characterFace.scale = 4;
-            */
+            playerHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenRectangle((int)(fullBarSize * playerHealthRatio), 25, Color.Red));
+            playerHealthBar.position = new Vector2((fullBarSize * playerHealthRatio)/2, 1080 - 25 / 2);
+            playerHealthText.Text = grid.characters.list[0].startingHealth + " HP";
+            playerHealthText.position = playerHealthBar.position;
+            
+            playerMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenRectangle((int)(fullBarSize * playerMPRatio), 25, Color.Blue));
+            playerMagicBar.position = new Vector2((fullBarSize * playerMPRatio) / 2, 1080 - 37);
+            playerMagicText.Text = grid.characters.list[0].mp + " MP";
+            playerMagicText.position = playerMagicBar.position;
+
+            if (characterName.Text != "")
+            {
+                float characterHealthRatio = (float)highlightedCharacter.health / (float)highlightedCharacter.startingHealth;
+                float characterMPRatio = (float)highlightedCharacter.mp / (float)highlightedCharacter.startingMP;
+
+                characterHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenRectangle((int)(fullBarSize * characterHealthRatio), 25, Color.Red));
+                characterHealthBar.position = new Vector2(1920 - (fullBarSize * characterHealthRatio)/2, 1080 - 25 / 2);
+                characterHealthText.Text = grid.characters.list[0].startingHealth + " HP";
+                characterHealthText.position = characterHealthBar.position;
+
+                characterMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenRectangle((int)(fullBarSize * characterMPRatio), 25, Color.Blue));
+                characterMagicBar.position = new Vector2(1920 - (fullBarSize * characterMPRatio)/2, 1080 - 37);
+                characterMagicText.Text = highlightedCharacter.mp + " MP";
+                characterMagicText.position = characterMagicBar.position;
+            }
+        }
 
         public void Update(GameTime gameTime)
         {
@@ -367,14 +494,24 @@ namespace pax_infinium
                 text.Draw(spriteBatch);
                 playerName.Draw(spriteBatch);
                 playerFace.Draw(spriteBatch);
-                playerStatus.Draw(spriteBatch);
-                playerStatusIcons.Draw(spriteBatch);
+                if (drawInfo)
+                {
+                    playerStatus.Draw(spriteBatch);
+                    playerStatusIcons.Draw(spriteBatch);
+                }
                 if (characterName.Text != "")
                 {
                     characterName.Draw(spriteBatch);
                     characterFace.Draw(spriteBatch);
-                    characterStatus.Draw(spriteBatch);
-                    characterStatusIcons.Draw(spriteBatch);
+                    if (drawInfo)
+                    {
+                        characterStatus.Draw(spriteBatch);
+                        characterStatusIcons.Draw(spriteBatch);
+                    }
+                    characterHealthBar.Draw(spriteBatch);
+                    characterHealthText.Draw(spriteBatch);
+                    characterMagicBar.Draw(spriteBatch);
+                    characterMagicText.Draw(spriteBatch);
                 }
                 foreach (Sprite sp in turnOrderTeamIcons)
                 {
@@ -418,6 +555,25 @@ namespace pax_infinium
 
                 teamZeroHealth.Draw(spriteBatch);
                 teamOneHealth.Draw(spriteBatch);
+                zeroHealthText.Draw(spriteBatch);
+                oneHealthText.Draw(spriteBatch);
+
+                peelStatusText.Draw(spriteBatch);
+                foreach(Cube c in peelStatus)
+                {
+                    if (c != null)
+                    {
+                        c.Draw(spriteBatch);
+                    }
+                }
+                pgUpText.Draw(spriteBatch);
+                pgDownText.Draw(spriteBatch);
+
+                playerHealthBar.Draw(spriteBatch);
+                playerHealthText.Draw(spriteBatch);
+                playerMagicBar.Draw(spriteBatch);
+                playerMagicText.Draw(spriteBatch);
+                
             }
         }
 
@@ -425,9 +581,13 @@ namespace pax_infinium
         {
             turn++;
             recalcTeamHealthBar();
+            grid.peel = grid.height;
+            recalcPeelStatus();
             Character tempCharacter = grid.characters.list[0];
             grid.characters.list.Remove(tempCharacter);
             grid.characters.list.Add(tempCharacter);
+
+            recalcStatusBars();
 
             setupTurnOrderIcons();
 
@@ -439,12 +599,12 @@ namespace pax_infinium
             //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
             text.Text = "Turn:" + turn.ToString();
             playerName.Text = player.name;
-            String t = player.health + "              " + player.mp;
-            t += "\n\n\n" + player.move + "                 " + player.jump;
-            t += "\n\n\n" + player.speed + "              " + player.evasion;
-            t += "\n\n\n" + player.WAttack + "              " + player.MAttack;
-            t += "\n\n\n" + player.WDefense + "              " + player.MDefense;
-            t += "\n\n\n" + player.weaponRange + "                 " + player.magicRange;
+            String t = player.health + "               " + player.mp;
+            t += "\n\n\n" + player.move + "                  " + player.jump;
+            t += "\n\n\n" + player.speed + "               " + player.evasion;
+            t += "\n\n\n" + player.WAttack + "               " + player.MAttack;
+            t += "\n\n\n" + player.WDefense + "               " + player.MDefense;
+            t += "\n\n\n" + player.weaponRange + "                  " + player.magicRange;
             playerStatus.Text = t;
             playerFace.tex = player.faceLeft;
             if (player.team == 0)
@@ -486,12 +646,12 @@ namespace pax_infinium
             highlightedCharacter = c;
 
             characterName.Text = highlightedCharacter.name;
-            String t = c.health + "              " + c.mp;
-            t += "\n\n\n" + c.move + "                 " + c.jump;
-            t += "\n\n\n" + c.speed + "              " + c.evasion;
-            t += "\n\n\n" + c.WAttack + "              " + c.MAttack;
-            t += "\n\n\n" + c.WDefense + "              " + c.MDefense;
-            t += "\n\n\n" + c.weaponRange + "                 " + c.magicRange;
+            String t = c.health + "               " + c.mp;
+            t += "\n\n\n" + c.move + "                  " + c.jump;
+            t += "\n\n\n" + c.speed + "               " + c.evasion;
+            t += "\n\n\n" + c.WAttack + "               " + c.MAttack;
+            t += "\n\n\n" + c.WDefense + "               " + c.MDefense;
+            t += "\n\n\n" + c.weaponRange + "                  " + c.magicRange;
             characterStatus.Text = t;
 
             if (highlightedCharacter.team == 0)
@@ -504,6 +664,8 @@ namespace pax_infinium
                 characterName.color = Color.Red;
                 characterStatus.color = Color.Red;
             }
+
+            recalcStatusBars();
             
 
             characterFace.tex = highlightedCharacter.faceRight;

@@ -421,7 +421,7 @@ namespace pax_infinium
                                     colorC = Color.Beige;
                                     break;
                             }
-                            
+
                             if (z < height - 2)
                             {
                                 topExposed = !binMatrix[x, y, z + 1] && !binMatrix[x, y, z + 2];
@@ -440,7 +440,7 @@ namespace pax_infinium
                                 float G = (colorA.G + colorB.G) / 2;
                                 float B = (colorA.B + colorB.B) / 2;
                                 colorC = new Color(R, G, B);*/
-                                colorC = Color.Multiply(colorC, .5f);
+                                colorC = Color.Multiply(colorC, .65f);
                                 colorC.A = 255;
                             }
 

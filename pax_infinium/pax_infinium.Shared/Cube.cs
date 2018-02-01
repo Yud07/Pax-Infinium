@@ -120,18 +120,58 @@ namespace pax_infinium
             highlight.position = top.position;*/
         }
 
+        public Cube(Vector2 position, Texture2D southwestTex, Texture2D southeastTex, Texture2D topTex) // Only used for peelStatus
+        {
+            this.southwestTex = southwestTex;
+            this.southeastTex = southeastTex;
+            this.topTex = topTex;
+            this.position = position;
+
+            float scale = .25f;
+
+            southwest = new Sprite(southwestTex);
+            southwest.position = position;
+            southwest.position.X -= southwest.tex.Width * scale / 2;// - 1;
+            southwest.position.Y += southwest.tex.Height * scale / 2;//  - 1;
+            southwest.scale = scale;
+            southwest.rotation = 180;
+
+            southeast = new Sprite(southeastTex);
+            southeast.position = position;
+            southeast.position.X += southwest.tex.Width * scale / 2;// - 1;
+            southeast.position.Y += southwest.tex.Height * scale / 2;// - 1;
+            southeast.scale = scale;
+            southeast.rotation = 180;
+
+            top = new Sprite(topTex);
+            top.position = position;
+            top.scale = scale;
+        }
+
         public void recalcPos()
         {
-            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * southwestTex.Width), (int)(gridPos.Y * southwestTex.Height * .65f))).ToVector2();
-            this.position.Y -= gridPos.Z * southwestTex.Height * .65F;
+            int width = 11;// Game1.world.level.grid.width + 1;
+            int depth = 11;// Game1.world.level.grid.depth + 1;
+            int height = 6;// Game1.world.level.grid.height + 1;
+            float scale = (100f - width/2 - depth / 2 - height / 2 + gridPos.Z / 2 + gridPos.Y / 2 + gridPos.X / 2) / (100f - width / 2 - depth / 2 - height / 2);
+            top.scale = scale;
+            southwest.scale = scale;
+            southeast.scale = scale;
+            text.scale = scale;
+
+
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * southwestTex.Width *scale), (int)(gridPos.Y * southwestTex.Height * scale * .65f))).ToVector2();
+            this.position.Y -= gridPos.Z * southwestTex.Height * scale * .65F;
+
+            //this.position.X = position.X * scale;
 
             southwest.position = position;
-            southwest.position.X -= southwest.tex.Width / 2;// - 1;
-            southwest.position.Y += southwest.tex.Height / 2;
+            southwest.position.X -= southwest.tex.Width * scale / 2;// - 1;
+            southwest.position.Y += southwest.tex.Height * scale / 2;
 
             southeast.position = position;
-            southeast.position.X += southwest.tex.Width / 2;// - 1;
-            southeast.position.Y += southwest.tex.Height / 2;// - 1;
+            southeast.position.X += southwest.tex.Width * scale / 2;// - 1;
+            southeast.position.Y += southwest.tex.Height * scale / 2;// - 1;
 
             top.position = position;
             top.rectangle.X = (int)position.X;
@@ -166,11 +206,13 @@ namespace pax_infinium
             highlight = new Sprite(highlightTex);
             highlight.origin = top.origin;
             highlight.position = top.position;
+            highlight.scale = scale;
 
             invertTex = Game1.world.textureConverter.invertTex(topTex);
             invertSprite = new Sprite(invertTex);
             invertSprite.origin = top.origin;
             invertSprite.position = top.position;
+            invertSprite.scale = scale;
         }
 
         public void Update(GameTime gameTime)
@@ -225,7 +267,7 @@ namespace pax_infinium
                 height = 6;// Game1.world.level.grid.height + 1;
                 for (int h = 0; h < width + depth + height - gridPos.Z - gridPos.Y - gridPos.X; h++) // these need to be tied to level size
                 {
-                    tempColor = Color.Multiply(tempColor, .96f);
+                    tempColor = Color.Multiply(tempColor, .97f);
                 }
                 tempColor.A = color.A;
                 mapcolors[s] = tempColor;

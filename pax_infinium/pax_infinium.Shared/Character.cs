@@ -47,6 +47,9 @@ namespace pax_infinium
         public Action attackAction;
         public Action specialAction;
 
+        public int startingHealth;
+        public int startingMP;
+
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -110,8 +113,16 @@ namespace pax_infinium
 
         public void recalcPos()
         {
-            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * cubeWidth), (int)(gridPos.Y * cubeHeight * .65f))).ToVector2();
-            this.position.Y -= gridPos.Z * cubeHeight * .65F + nwTex.Height / 2;
+            int width = 11;// Game1.world.level.grid.width + 1;
+            int depth = 11;// Game1.world.level.grid.depth + 1;
+            int height = 6;// Game1.world.level.grid.height + 1;
+            float scale = (100f - width / 2 - depth / 2 - height / 2 + gridPos.Z / 2 + gridPos.Y / 2 + gridPos.X / 2) / (100f - width / 2 - depth / 2 - height / 2);
+            sprite.scale = scale;
+            statusText.scale = 1.5f * scale;
+
+
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * cubeWidth * scale), (int)(gridPos.Y * cubeHeight * scale * .65f))).ToVector2();
+            this.position.Y -= gridPos.Z * cubeHeight * scale * .65F + nwTex.Height * scale / 2;
 
             sprite.position = position;
 

@@ -226,6 +226,8 @@ namespace pax_infinium
 
                     break;
             }
+            newCharacter.startingHealth = newCharacter.health;
+            newCharacter.startingMP = newCharacter.mp;
         }
         public object Clone()
         {
