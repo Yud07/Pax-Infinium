@@ -13,6 +13,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Actions\BasicMeleeAttack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Buttons\IButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Buttons\LeftButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Buttons\DownButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Buttons\RightButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Buttons\UpButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EDirection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EJob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAction.cs" />

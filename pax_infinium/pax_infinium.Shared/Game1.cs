@@ -231,7 +231,7 @@ namespace pax_infinium
                     world.level.grid.rotate(true, world.level);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.PageUp) && previousKeyboardState.IsKeyUp(Keys.PageUp))
+                if (keyboardState.IsKeyDown(Keys.Up) && previousKeyboardState.IsKeyUp(Keys.Up))
                 {
                     world.level.grid.peel++;
                     if (world.level.grid.peel > world.level.grid.height - 1)
@@ -242,7 +242,7 @@ namespace pax_infinium
                     //Console.WriteLine("Peel=" + world.level.grid.peel);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.PageDown) && previousKeyboardState.IsKeyUp(Keys.PageDown))
+                if (keyboardState.IsKeyDown(Keys.Down) && previousKeyboardState.IsKeyUp(Keys.Down))
                 {
                     world.level.grid.peel--;
                     if (world.level.grid.peel < 0)

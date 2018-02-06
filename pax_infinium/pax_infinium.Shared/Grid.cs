@@ -98,7 +98,7 @@ namespace pax_infinium
 
             cubes = cubesA;
 
-            peel = height;
+            peel = height - 1;
             //createGrid();
         }
 

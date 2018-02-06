@@ -49,8 +49,8 @@ namespace pax_infinium
 
             southwest = new Sprite(southwestTex);
             southwest.position = position;
-            southwest.position.X -= southwest.tex.Width / 2;// - 1;
-            southwest.position.Y += southwest.tex.Height / 2;//  - 1;
+            southwest.position.X -= (int)Math.Floor((double)southwest.tex.Width / 2);// - 1;
+            southwest.position.Y += (int)Math.Floor((double)southwest.tex.Height / 2);//  - 1;
             southwest.origin = new Vector2(southwestTex.Width / 2, southwestTex.Height / 2);
             southwest.scale = 1f;
             southwest.rotation = 180;
@@ -63,8 +63,8 @@ namespace pax_infinium
 
             southeast = new Sprite(southeastTex);
             southeast.position = position;
-            southeast.position.X += southwest.tex.Width / 2;// - 1;
-            southeast.position.Y += southwest.tex.Height / 2;// - 1;
+            southeast.position.X += (int)Math.Floor((double)southwest.tex.Width / 2);// - 1;
+            southeast.position.Y += (int)Math.Floor((double)southwest.tex.Height / 2);// - 1;
             southeast.origin = new Vector2(southeastTex.Width / 2, southeastTex.Height / 2);
             southeast.scale = 1f;
             southeast.rotation = 180;
@@ -131,15 +131,15 @@ namespace pax_infinium
 
             southwest = new Sprite(southwestTex);
             southwest.position = position;
-            southwest.position.X -= southwest.tex.Width * scale / 2;// - 1;
-            southwest.position.Y += southwest.tex.Height * scale / 2;//  - 1;
+            southwest.position.X -= (int)Math.Floor((double)southwest.tex.Width * scale / 2);// - 1;
+            southwest.position.Y += (int)Math.Floor((double)southwest.tex.Height * scale / 2);//  - 1;
             southwest.scale = scale;
             southwest.rotation = 180;
 
             southeast = new Sprite(southeastTex);
             southeast.position = position;
-            southeast.position.X += southwest.tex.Width * scale / 2;// - 1;
-            southeast.position.Y += southwest.tex.Height * scale / 2;// - 1;
+            southeast.position.X += (int)Math.Floor((double)southwest.tex.Width * scale / 2);// - 1;
+            southeast.position.Y += (int)Math.Floor((double)southwest.tex.Height * scale / 2);// - 1;
             southeast.scale = scale;
             southeast.rotation = 180;
 
@@ -166,12 +166,12 @@ namespace pax_infinium
             //this.position.X = position.X * scale;
 
             southwest.position = position;
-            southwest.position.X -= southwest.tex.Width * scale / 2;// - 1;
-            southwest.position.Y += southwest.tex.Height * scale / 2;
+            southwest.position.X -= (int)Math.Floor((double)southwest.tex.Width * scale / 2);// - 1;
+            southwest.position.Y += (int)Math.Floor((double)southwest.tex.Height * scale / 2);
 
             southeast.position = position;
-            southeast.position.X += southwest.tex.Width * scale / 2;// - 1;
-            southeast.position.Y += southwest.tex.Height * scale / 2;// - 1;
+            southeast.position.X += (int)Math.Floor((double)southwest.tex.Width * scale / 2);// - 1;
+            southeast.position.Y += (int)Math.Floor((double)southwest.tex.Height * scale / 2);// - 1;
 
             top.position = position;
             top.rectangle.X = (int)position.X;

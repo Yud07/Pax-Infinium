@@ -27,6 +27,33 @@ namespace pax_infinium
             return tex;
         }
 
+        public Texture2D GenBorderedRectangle(int width, int height, Color color)
+        {
+            var size = width * height;
+            Color[] mapcolors = new Color[size];
+            Color darkened = Color.Multiply(color, .75f);
+            darkened.A = color.A;
+            int i = 0;
+            for (var h = 0; h < height; h++) 
+            {
+                for (var w = 0; w < width; w++)
+                {
+                    if (h < 5 || w < 5 || h > height - 6 || w > width - 6)
+                    {
+                        mapcolors[i] = darkened;
+                    }
+                    else
+                    {
+                        mapcolors[i] = color;
+                    }
+                    i++;
+                }
+            }
+            var tex = new Texture2D(graphicsDevice, width, height, false, SurfaceFormat.Color);
+            tex.SetData(mapcolors);
+            return tex;
+        }
+
         public Texture2D ConvTest()
         {
             return Convert(GenRectangle(64, 64, Color.Blue));
