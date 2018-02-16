@@ -265,6 +265,7 @@ namespace pax_infinium
                 level.grid.characters.list.Remove(tempCharacter);
                 level.grid.characters.list.Add(tempCharacter);
 
+                level.CalcValidMoveSpaces();
                 //level.setupTurnOrderIcons();
 
                 Character player = level.grid.characters.list[0];
@@ -321,14 +322,16 @@ namespace pax_infinium
                 level.playerFace.tex = player.faceLeft;
                 if (player.team == 0)
                 {
-                    level.playerName.color = Color.Blue;
-                    level.playerStatus.color = Color.Blue;
+                    level.playerName.position = new Vector2(260, 970);
+                    level.playerName.color = Color.Green;
+                    level.playerStatus.color = Color.Green;
 
                 }
                 else if (player.team == 1)
                 {
-                    level.playerName.color = Color.Red;
-                    level.playerStatus.color = Color.Red;
+                    level.playerName.position = new Vector2(260, 750);
+                    level.playerName.color = Color.Purple;
+                    level.playerStatus.color = Color.Purple;
                 }
                 /*int mpGain = 10;
                 if (player.mp + mpGain <= player.maxMP)

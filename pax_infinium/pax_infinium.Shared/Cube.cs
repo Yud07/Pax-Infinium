@@ -159,9 +159,13 @@ namespace pax_infinium
             southeast.scale = scale;
             text.scale = scale;
 
+            /*Vector2 newPos = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * southwestTex.Width *scale), (int)(gridPos.Y * southwestTex.Height * scale * .65f))).ToVector2();
+            newPos.Y -= gridPos.Z * southwestTex.Height * scale * .65F;
+            this.position = new Vector2((float)Math.Floor((double)newPos.X), (float)Math.Floor((double)newPos.Y));*/
 
-            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * southwestTex.Width *scale), (int)(gridPos.Y * southwestTex.Height * scale * .65f))).ToVector2();
+            this.position = origin + Game1.world.twoDToIso(new Point((int)(gridPos.X * southwestTex.Width * scale), (int)(gridPos.Y * southwestTex.Height * scale * .65f))).ToVector2();
             this.position.Y -= gridPos.Z * southwestTex.Height * scale * .65F;
+
 
             //this.position.X = position.X * scale;
 
@@ -413,12 +417,12 @@ namespace pax_infinium
             }
         }
 
-        public bool isAdjacent(Vector3 v)
+        public bool isAdjacent(Vector3 v, int zTolerance = 1)
         {
-            Vector3 diff = gridPos - v;
-
+            return Game1.world.linearCubeDist(gridPos, v) == 1 && Math.Abs(gridPos.Z - v.Z) <= zTolerance;
+            /*Vector3 diff = gridPos - v;
             
-            return Game1.world.cubeDist(gridPos, v) == 1 && (diff.X == 0 || diff.Y == 0);
+            return Game1.world.cubeDist(gridPos, v) == 1 && (diff.X == 0 || diff.Y == 0);*/
         }
     }
 }

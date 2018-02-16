@@ -108,25 +108,7 @@ namespace pax_infinium
             int y = (int) gridPos.Y;
             int maxHeight = height;
             int topZ = int.MinValue;
-            bool[,,] binMat;
-            switch (activeView)
-            {
-                case 0:
-                    binMat = binaryMatrix;
-                    break;
-                case 1:
-                    binMat = binaryMatrixB;
-                    break;
-                case 2:
-                    binMat = binaryMatrixC;
-                    break;
-                case 3:
-                    binMat = binaryMatrixD;
-                    break;
-                default:
-                    binMat = binaryMatrix;
-                    break;
-            }
+            bool[,,] binMat = getBinMatrix();
             for (int z = 0; z < maxHeight; z++)
             {
                 if (binMat[x, y, z])
@@ -142,26 +124,8 @@ namespace pax_infinium
             int x = (int)gridPos.X;
             int y = (int)gridPos.Y;
             int z = (int)gridPos.Z;
-            bool[,,] binMat;
             bool topExposed;
-            switch (activeView)
-            {
-                case 0:
-                    binMat = binaryMatrix;
-                    break;
-                case 1:
-                    binMat = binaryMatrixB;
-                    break;
-                case 2:
-                    binMat = binaryMatrixC;
-                    break;
-                case 3:
-                    binMat = binaryMatrixD;
-                    break;
-                default:
-                    binMat = binaryMatrix;
-                    break;
-            }
+            bool[,,] binMat = getBinMatrix();
             
             if (z < height - 2)
             {
@@ -488,6 +452,7 @@ namespace pax_infinium
             }
 
             Game1.world.level.RotateCompass();
+            Game1.world.level.RotateAStarPaths(clockwise);
 
             switch (activeView)
             {
@@ -723,7 +688,7 @@ namespace pax_infinium
             List<Vector3> validPlacesTwo = new List<Vector3>();
             foreach (Cube cube in cubes)
             {
-                if (topOfColumn(cube.gridPos) == cube.gridPos.Z && cube.gridPos.Z >= height - 3)
+                if (TopExposed(cube.gridPos) && cube.gridPos.Z >= height - 3)
                 {
                     if (width/2 < cube.gridPos.Y)
                     {
@@ -777,6 +742,30 @@ namespace pax_infinium
                     character.SetAlpha(1f);
                 }*/
             }
+        }
+
+        public bool[,,] getBinMatrix()
+        {
+            bool[,,] binMat;
+            switch (activeView)
+            {
+                case 0:
+                    binMat = binaryMatrix;
+                    break;
+                case 1:
+                    binMat = binaryMatrixB;
+                    break;
+                case 2:
+                    binMat = binaryMatrixC;
+                    break;
+                case 3:
+                    binMat = binaryMatrixD;
+                    break;
+                default:
+                    binMat = binaryMatrix;
+                    break;
+            }
+            return binMat;
         }
     }
 }

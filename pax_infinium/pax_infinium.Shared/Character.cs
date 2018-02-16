@@ -50,6 +50,9 @@ namespace pax_infinium
         public int startingHealth;
         public int startingMP;
 
+        public List<Vector3> movePath;
+        public TimeSpan moveTime;
+
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -101,12 +104,15 @@ namespace pax_infinium
             statusText.position = position + new Vector2(-25, -25);
             if (team == 0)
             {
-                statusText.color = Color.Blue;
+                statusText.color = Color.Green;
             }
             else if (team == 1)
             {
-                statusText.color = Color.Red;
+                statusText.color = Color.Purple;
             }
+
+            movePath = new List<Vector3>();
+            moveTime = TimeSpan.MinValue;
 
             //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
         }
@@ -140,6 +146,22 @@ namespace pax_infinium
             if (textTime < gameTime.TotalGameTime)
             {
                 text.Text = " ";
+            }
+
+            if (movePath.Count > 0)
+            {
+                if (moveTime == TimeSpan.MinValue)
+                {
+                    moveTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 1);
+                }
+                else if (moveTime < gameTime.TotalGameTime)
+                {
+                    gridPos = movePath.ToArray()[0];
+                    movePath.RemoveAt(0);
+                    recalcPos();
+                    moveTime = TimeSpan.MinValue;
+                }
+                
             }
         }
 
@@ -203,12 +225,9 @@ namespace pax_infinium
             }
         }
 
-        public bool isAdjacent(Vector3 v)
+        public bool isAdjacent(Vector3 v, int zTolerance=1)
         {
-            Vector3 diff = gridPos - v;
-
-
-            return Game1.world.cubeDist(gridPos, v) == 1 && (diff.X == 0 || diff.Y == 0);
+            return Game1.world.linearCubeDist(gridPos, v) == 1 && Math.Abs(gridPos.Z - v.Z) <= zTolerance;
         }
 
         public int[] calculateAttack(Character character)
@@ -309,9 +328,29 @@ namespace pax_infinium
 
         public bool inMoveRange(Vector3 pos, Level level)
         {
-            return Game1.world.cubeDist(gridPos, pos) < move &&
-                    level.grid.topOfColumn(pos) == pos.Z &&
+            return Game1.world.linearCubeDist(gridPos, pos) < move &&
+                    level.grid.TopExposed(pos) &&
                     Math.Abs(pos.Z - gridPos.Z) <= jump;
+        }
+
+        public void Move(Vector3 pos, Level level)
+        {
+            int i = 0;
+            foreach (Vector3 vect in level.validMoveSpaces)
+            {
+                if (vect == pos)
+                {
+                    foreach(Vector3 v in level.validMovePaths.ToArray()[i])
+                    {
+                        movePath.Add(v);
+                    }
+                    movePath.Add(pos);
+                    break;
+                }
+                i++;
+            }
+            /*gridPos = pos;
+            recalcPos();*/
         }
 
         public void Move(Vector3 pos)
@@ -548,12 +587,14 @@ namespace pax_infinium
 
         public bool InMagicRange(Vector3 pos)
         {
-            return Game1.world.cubeDist(pos, gridPos) <= magicRange;
+            //return Game1.world.cubeDist(pos, gridPos) <= magicRange;
+            return Vector3.Distance(pos, gridPos) <= magicRange;
         }
 
         public bool InWeaponRange(Vector3 pos)
         {
-            return Game1.world.cubeDist(pos, gridPos) <= weaponRange;
+            //return Game1.world.cubeDist(pos, gridPos) <= weaponRange;
+            return Vector3.Distance(pos, gridPos) <= weaponRange;
         }
 
         public List<Cube> GetMovePositions(Level level)
@@ -561,7 +602,7 @@ namespace pax_infinium
             List<Cube> results = new List<Cube>();
             foreach (Cube cube in level.grid.cubes)
             {
-                if (((inMoveRange(cube.gridPos, level) && level.grid.isVacant(cube.gridPos)) || cube.gridPos == gridPos) && level.grid.topOfColumn(cube.gridPos) == cube.gridPos.Z)
+                if (((level.validMoveSpaces.Contains(cube.gridPos) || cube.gridPos == gridPos) && level.grid.TopExposed(cube.gridPos)))
                 {
                     results.Add(cube);
                 }
@@ -597,7 +638,7 @@ namespace pax_infinium
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
-                            if (InMagicRange(cu.gridPos) && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
+                            if (InMagicRange(cu.gridPos) && level.grid.TopExposed(cu.gridPos))
                             {                                
                                 if (job != EJob.Mage || job != EJob.Healer)
                                 {
@@ -632,7 +673,7 @@ namespace pax_infinium
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
-                            if (Game1.world.cubeDist(cu.gridPos, cube.gridPos) <= magicRange && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
+                            if (Game1.world.cubeDist(cu.gridPos, cube.gridPos) <= magicRange && level.grid.TopExposed(cu.gridPos))
                             {
                                 if (job != EJob.Mage || job != EJob.Healer)
                                 {
@@ -662,7 +703,7 @@ namespace pax_infinium
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
-                            if (InMagicRange(cu.gridPos) && level.grid.topOfColumn(cu.gridPos) == cu.gridPos.Z)
+                            if (InMagicRange(cu.gridPos) && level.grid.TopExposed(cu.gridPos))
                             {
                                if (job != EJob.Mage || job != EJob.Healer)
                                 {

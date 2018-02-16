@@ -45,21 +45,21 @@ namespace pax_infinium
                 case 0: // Soldier
                     if (team == 0)
                     {
-                        nw = World.textureManager["Blue Soldier\\Blue Soldier NW"];
-                        ne = World.textureManager["Blue Soldier\\Blue Soldier NE"];
-                        sw = World.textureManager["Blue Soldier\\Blue Soldier SW"];
-                        se = World.textureManager["Blue Soldier\\Blue Soldier SE"];
-                        fl = World.textureManager["Blue Soldier\\Blue Soldier FL"];
-                        fr = World.textureManager["Blue Soldier\\Blue Soldier FR"];
-                    }
-                    else
-                    {
                         nw = World.textureManager["Red Soldier\\Red Soldier NW"];
                         ne = World.textureManager["Red Soldier\\Red Soldier NE"];
                         sw = World.textureManager["Red Soldier\\Red Soldier SW"];
                         se = World.textureManager["Red Soldier\\Red Soldier SE"];
                         fl = World.textureManager["Red Soldier\\Red Soldier FL"];
                         fr = World.textureManager["Red Soldier\\Red Soldier FR"];
+                    }
+                    else
+                    {
+                        nw = World.textureManager["Blue Soldier\\Blue Soldier NW"];
+                        ne = World.textureManager["Blue Soldier\\Blue Soldier NE"];
+                        sw = World.textureManager["Blue Soldier\\Blue Soldier SW"];
+                        se = World.textureManager["Blue Soldier\\Blue Soldier SE"];
+                        fl = World.textureManager["Blue Soldier\\Blue Soldier FL"];
+                        fr = World.textureManager["Blue Soldier\\Blue Soldier FR"];
                     }
                     break;
                 case 1: // Hunter

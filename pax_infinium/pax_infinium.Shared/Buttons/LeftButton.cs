@@ -11,6 +11,8 @@ namespace pax_infinium.Buttons
         Polygon poly;
         Sprite sprite;
         TextItem arrowText;
+        DateTime clickTime;
+        Sprite clickedFilter;
 
         public LeftButton(Vector2 pos)
         {
@@ -27,21 +29,51 @@ namespace pax_infinium.Buttons
             arrowText = new TextItem(World.fontManager["Trajanus Roman 36"], "<-");
             arrowText.color = Color.Black;
             arrowText.position = new Vector2(pos.X + size / 2, pos.Y + size / 2 + 3);
+
+            clickTime = DateTime.MinValue;
+            clickedFilter = new Sprite(Game1.world.textureConverter.GenRectangle(size, size, new Color(0, 0, 0, 75)));
+            clickedFilter.origin = Vector2.Zero;
+            clickedFilter.position = pos;
         }
 
         public void Click()
         {
+            clickTime = DateTime.Now;
+            Game1.world.level.grid.rotate(false, Game1.world.level);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             sprite.Draw(spriteBatch);
             arrowText.Draw(spriteBatch);
+            if (clickTime != DateTime.MinValue)
+            {
+                if (DateTime.Now - clickTime < TimeSpan.FromSeconds(.5))
+                {
+                    clickedFilter.Draw(spriteBatch);
+                }
+                else
+                {
+                    clickTime = DateTime.MinValue;
+                }
+            }
         }
 
         public Polygon GetPoly()
         {
             return poly;
+        }
+
+        public bool GetTrigger()
+        {
+            return false;
+        }
+
+        public void ResetTrigger() { }
+
+        public void SetTextColor(Color c)
+        {
+            arrowText.color = c;
         }
     }
 }
