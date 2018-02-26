@@ -68,6 +68,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)C5\ViewSupport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)C5\WrappedArray.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)C5\Wrappers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Descriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EDirection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EJob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAction.cs" />

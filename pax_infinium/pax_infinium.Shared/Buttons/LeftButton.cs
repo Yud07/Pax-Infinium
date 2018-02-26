@@ -13,6 +13,7 @@ namespace pax_infinium.Buttons
         TextItem arrowText;
         DateTime clickTime;
         Sprite clickedFilter;
+        Descriptor desc;
 
         public LeftButton(Vector2 pos)
         {
@@ -34,6 +35,8 @@ namespace pax_infinium.Buttons
             clickedFilter = new Sprite(Game1.world.textureConverter.GenRectangle(size, size, new Color(0, 0, 0, 75)));
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
+
+            desc = new Descriptor(poly, "Rotates the camera around the board counter-clockwise.");
         }
 
         public void Click()
@@ -57,6 +60,11 @@ namespace pax_infinium.Buttons
                     clickTime = DateTime.MinValue;
                 }
             }
+        }
+
+        public Descriptor GetDescriptor()
+        {
+            return desc;
         }
 
         public Polygon GetPoly()

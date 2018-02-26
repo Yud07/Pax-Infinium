@@ -14,6 +14,7 @@ namespace pax_infinium.Buttons
         DateTime clickTime;
         Sprite clickedFilter;
         bool trigger;
+        Descriptor desc;
 
         public MoveButton(Vector2 pos)
         {
@@ -36,6 +37,8 @@ namespace pax_infinium.Buttons
             clickedFilter = new Sprite(Game1.world.textureConverter.GenRectangle(width, height, new Color(0, 0, 0, 75)));
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
+
+            desc = new Descriptor(poly, "Allows the character to move to a new position within their movement range. May be done once per turn before or after an action.");
 
             trigger = false;
         }
@@ -64,6 +67,11 @@ namespace pax_infinium.Buttons
                     }
                 }
             }
+        }
+
+        public Descriptor GetDescriptor()
+        {
+            return desc;
         }
 
         public Polygon GetPoly()

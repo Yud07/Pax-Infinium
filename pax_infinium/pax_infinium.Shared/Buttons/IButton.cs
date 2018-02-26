@@ -19,5 +19,7 @@ namespace pax_infinium.Buttons
         void ResetTrigger();
 
         void SetTextColor(Color c);
+
+        Descriptor GetDescriptor();
     }
 }

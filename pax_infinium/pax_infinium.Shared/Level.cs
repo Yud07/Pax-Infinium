@@ -117,6 +117,8 @@ namespace pax_infinium
         public List<Vector3> validMoveSpaces;
         public List<List<Vector3>> validMovePaths;
 
+        public List<Descriptor> descriptors;
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
             startScreen = new Background(World.textureManager["Start Screen"], graphics.GraphicsDevice.Viewport);
@@ -305,6 +307,55 @@ namespace pax_infinium
             buttons.Add(undoButton);
             buttons.Add(confirmButton);
             buttons.Add(cancelButton);
+
+            descriptors = new List<Descriptor>();
+            descriptors.Add(attackButton.GetDescriptor());
+            descriptors.Add(moveButton.GetDescriptor());
+            descriptors.Add(endTurnButton.GetDescriptor());
+            descriptors.Add(specialButton.GetDescriptor());
+            descriptors.Add(undoButton.GetDescriptor());
+            descriptors.Add(upButton.GetDescriptor());
+            descriptors.Add(downButton.GetDescriptor());
+            descriptors.Add(leftButton.GetDescriptor());
+            descriptors.Add(rightButton.GetDescriptor());
+            descriptors.Add(confirmButton.GetDescriptor());
+            descriptors.Add(cancelButton.GetDescriptor());
+
+            Polygon teamHealthBarPoly = new Polygon();
+            teamHealthBarPoly.Lines.Add(new PolyLine(teamZeroHealth.position, new Vector2(teamZeroHealth.position.X + teamZeroHealth.tex.Width * 2, teamZeroHealth.position.Y)));
+            teamHealthBarPoly.Lines.Add(new PolyLine(teamZeroHealth.position, new Vector2(teamZeroHealth.position.X, teamZeroHealth.position.Y + teamZeroHealth.tex.Height)));
+            teamHealthBarPoly.Lines.Add(new PolyLine(new Vector2(teamZeroHealth.position.X + teamZeroHealth.tex.Width * 2, teamZeroHealth.position.Y + teamZeroHealth.tex.Height),
+                new Vector2(teamZeroHealth.position.X + teamZeroHealth.tex.Width * 2, teamZeroHealth.position.Y + teamZeroHealth.tex.Height)));
+            teamHealthBarPoly.Lines.Add(new PolyLine(new Vector2(teamZeroHealth.position.X, teamZeroHealth.position.Y + teamZeroHealth.tex.Height),
+                new Vector2(teamZeroHealth.position.X + teamZeroHealth.tex.Width * 2, teamZeroHealth.position.Y + teamZeroHealth.tex.Height)));
+            Descriptor teamHealthBarsDescriptor = new Descriptor(teamHealthBarPoly, "The Total Health Points of each team. Purple is the player and Green is the computer.");
+            descriptors.Add(teamHealthBarsDescriptor);
+
+            float offset = 1970 - 75 * grid.characters.list.Count + 12;
+            Polygon turnOrderIconsPoly = new Polygon();
+            turnOrderIconsPoly.Lines.Add(new PolyLine(new Vector2(offset, 0), new Vector2(1920, 0)));
+            turnOrderIconsPoly.Lines.Add(new PolyLine(new Vector2(offset, 0), new Vector2(offset, 100)));
+            turnOrderIconsPoly.Lines.Add(new PolyLine(new Vector2(1920, 0), new Vector2(1920, 100)));
+            turnOrderIconsPoly.Lines.Add(new PolyLine(new Vector2(offset, 0), new Vector2(1920, 100)));
+            Descriptor turnOrderIconsDescriptor = new Descriptor(turnOrderIconsPoly, "The order characters take their turn in from left to right. Updates each turn.");
+            descriptors.Add(turnOrderIconsDescriptor);
+
+            Polygon peelPoly = new Polygon();
+            peelPoly.Lines.Add(new PolyLine(new Vector2(5, 100), new Vector2(5, 205)));
+            peelPoly.Lines.Add(new PolyLine(new Vector2(5, 100), new Vector2(105, 100)));
+            peelPoly.Lines.Add(new PolyLine(new Vector2(5, 205), new Vector2(105, 205)));
+            peelPoly.Lines.Add(new PolyLine(new Vector2(5, 205), new Vector2(105, 205)));
+            Descriptor peelDescriptor = new Descriptor(peelPoly, "The representation of the peel (cube visibility) state. Lower it to 'see' through layers of cubes.");
+            descriptors.Add(peelDescriptor);
+
+            Descriptor compassDescriptor;
+            Descriptor playerFaceDescriptor;
+            Descriptor playerHealthBarDescriptor;
+            Descriptor playerMagicBarDescriptor;
+            Descriptor characterFaceDescriptor;
+            Descriptor characterHealthBarDescriptor;
+            Descriptor characterMagicBarDescriptor;
+
         }
 
         public void recalcTeamHealthBar()
@@ -612,6 +663,11 @@ namespace pax_infinium
                 foreach(IButton b in buttons)
                 {
                     b.Draw(spriteBatch);
+                }
+
+                foreach(Descriptor d in descriptors)
+                {
+                    d.Draw(spriteBatch);
                 }
                 
             }

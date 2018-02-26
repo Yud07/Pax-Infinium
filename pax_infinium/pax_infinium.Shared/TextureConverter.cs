@@ -448,12 +448,23 @@ namespace pax_infinium
             var size = tempTex.Width * tempTex.Height;
             Color[] mapcolors = new Color[size];
             tex.GetData(mapcolors);
+            Color main = mapcolors[tempTex.Width * tempTex.Height / 2 + tempTex.Width/2];
             for (var s = 0; s < size; s++)
             {
                 Color color = mapcolors[s];
                 if (color.A > 0)
                 {
-                    Color tempColor = new Color(byte.MaxValue - color.R, byte.MaxValue - color.G, byte.MaxValue - color.B, color.A);
+                    Color tempColor;
+                    if (color == main)
+                    {
+                        tempColor = new Color(byte.MaxValue - color.R, byte.MaxValue - color.G, byte.MaxValue - color.B, color.A);
+                    }
+                    else
+                    {
+                        tempColor = Color.Multiply(color, 1.5f);
+                        tempColor.A = color.A;
+                    }
+                    
                     mapcolors[s] = tempColor;
                 }
             }

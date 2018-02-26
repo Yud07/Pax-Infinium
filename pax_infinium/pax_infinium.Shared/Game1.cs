@@ -24,6 +24,9 @@ namespace pax_infinium
         public bool confirmAction;
         public Vector2 lastClickMouseState;
         public Vector2 activeMouseState;
+        public Descriptor activeDescriptor;
+        public TimeSpan descriptorTimer;
+
 
         public Game1()
         {
@@ -188,7 +191,35 @@ namespace pax_infinium
             Vector2 transformedMouseState = Vector2.Transform(mouseState.Position.ToVector2(), world.rooms.CurrentState.cameras.CurrentState.InverseTransform);
             Cube exampleCube = world.level.grid.cubes[0];
             Character player;
-            //List<Cube> highlightedCubes = new List<Cube>();
+
+            if (activeDescriptor != null)
+            {
+                activeDescriptor.trigger = false;
+            }
+            bool checkDescriptors = false;
+            foreach (Descriptor d in world.level.descriptors)
+            {
+                if (d.poly.Contains(mouseState.Position.ToVector2()))
+                {
+                    checkDescriptors = true;
+                    if (d == activeDescriptor)
+                    {
+                        if (gameTime.TotalGameTime > descriptorTimer)
+                        {
+                            d.trigger = true;
+                        }
+                    }
+                    else
+                    {
+                        activeDescriptor = d;
+                        descriptorTimer = gameTime.TotalGameTime + new TimeSpan(0, 0, 2);
+                    }
+                }
+            }
+            if (!checkDescriptors)
+            {
+                activeDescriptor = null;
+            }
 
             bool clickedAButton = false;
             // saves last click state
@@ -495,6 +526,7 @@ namespace pax_infinium
                                 else
                                 {
                                     cube.highLight = false;
+                                    cube.invert = true;
                                 }
 
                                 world.level.grid.onHighlightMoved(cube);

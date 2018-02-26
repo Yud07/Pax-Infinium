@@ -14,6 +14,7 @@ namespace pax_infinium.Buttons
         DateTime clickTime;
         Sprite clickedFilter;
         bool trigger;
+        Descriptor desc;
 
         public AttackButton(Vector2 pos)
         {
@@ -36,6 +37,8 @@ namespace pax_infinium.Buttons
             clickedFilter = new Sprite(Game1.world.textureConverter.GenRectangle(width, height, new Color(0, 0, 0, 75)));
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
+
+            desc = new Descriptor(poly, "Conducts a basic attack against a character within the character's attack range. Attacks damage the target's health points.");
 
             trigger = false;
         }
@@ -84,6 +87,11 @@ namespace pax_infinium.Buttons
         public void SetTextColor(Color c)
         {
             text.color = c;
+        }
+
+        public Descriptor GetDescriptor()
+        {
+            return desc;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace pax_infinium.Buttons
         DateTime clickTime;
         Sprite clickedFilter;
         bool trigger;
+        Descriptor desc;
 
         public EndTurnButton(Vector2 pos)
         {
@@ -36,6 +37,8 @@ namespace pax_infinium.Buttons
             clickedFilter = new Sprite(Game1.world.textureConverter.GenRectangle(width, height, new Color(0, 0, 0, 75)));
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
+
+            desc = new Descriptor(poly, "Ends the turn. The next character in the turn order list (top right) goes next.");
 
             trigger = false;
         }
@@ -64,6 +67,11 @@ namespace pax_infinium.Buttons
                     }
                 }
             }
+        }
+
+        public Descriptor GetDescriptor()
+        {
+            return desc;
         }
 
         public Polygon GetPoly()
