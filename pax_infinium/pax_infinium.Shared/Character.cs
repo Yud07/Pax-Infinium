@@ -53,6 +53,8 @@ namespace pax_infinium
         public List<Vector3> movePath;
         public TimeSpan moveTime;
 
+        public Sprite healthBacker;
+
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -104,15 +106,18 @@ namespace pax_infinium
             statusText.position = position + new Vector2(-25, -25);
             if (team == 0)
             {
-                statusText.color = Color.Green;
+                statusText.color = new Color(0, 1f, 0); //Color.Green;
             }
             else if (team == 1)
             {
-                statusText.color = Color.Purple;
+                statusText.color = new Color(1f, 0, 1f);// Color.Purple;
             }
 
             movePath = new List<Vector3>();
             moveTime = TimeSpan.MinValue;
+
+            healthBacker = new Sprite(Game1.world.textureConverter.GenRectangle(60, 30, new Color(Color.Black, .75f)));
+            healthBacker.position = statusText.position + new Vector2(22, -2);
 
             //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
         }
@@ -136,6 +141,8 @@ namespace pax_infinium
             text.position = position + new Vector2(0, -60);
 
             statusText.position = position + new Vector2(-25, -25);
+
+            healthBacker.position = statusText.position + new Vector2(22, -2);
 
             //darken();
         }
@@ -168,6 +175,7 @@ namespace pax_infinium
         public void Draw(SpriteBatch spriteBatch)
         {
             sprite.Draw(spriteBatch);
+            healthBacker.Draw(spriteBatch);
             statusText.Text = health.ToString();
             statusText.Draw(spriteBatch);
             if (text.Text != " ")
@@ -184,6 +192,7 @@ namespace pax_infinium
         public void SetAlpha(float alpha)
         {
             sprite.alpha = alpha;
+            healthBacker.alpha = alpha * .75f;
             statusText.alpha = alpha;
             //text.alpha = alpha;
         }
@@ -242,7 +251,7 @@ namespace pax_infinium
             }
             else
             {
-                canAttack = canAttack && Game1.world.cubeDist(gridPos, character.gridPos) <= weaponRange;
+                canAttack = canAttack && Vector3.Distance(character.gridPos, gridPos) <= weaponRange;// Game1.world.cubeDist(gridPos, character.gridPos) <= weaponRange;
             }
 
             if (canAttack)

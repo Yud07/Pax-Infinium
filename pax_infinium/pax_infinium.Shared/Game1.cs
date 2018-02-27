@@ -27,7 +27,6 @@ namespace pax_infinium
         public Descriptor activeDescriptor;
         public TimeSpan descriptorTimer;
 
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -744,6 +743,11 @@ namespace pax_infinium
                         }
                     if (!mouseInBounds)
                     {
+                        if (!clickedAButton)
+                        {
+                            lastClickMouseState = Vector2.Zero;
+                        }
+
                         world.level.grid.clearTransparencies();
                         world.level.grid.onCharacterMoved(world.level);
                         world.level.grid.peelCubes();

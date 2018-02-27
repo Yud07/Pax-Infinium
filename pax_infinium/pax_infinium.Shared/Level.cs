@@ -322,39 +322,128 @@ namespace pax_infinium
             descriptors.Add(cancelButton.GetDescriptor());
 
             Polygon teamHealthBarPoly = new Polygon();
-            teamHealthBarPoly.Lines.Add(new PolyLine(teamZeroHealth.position, new Vector2(teamZeroHealth.position.X + teamZeroHealth.tex.Width * 2, teamZeroHealth.position.Y)));
-            teamHealthBarPoly.Lines.Add(new PolyLine(teamZeroHealth.position, new Vector2(teamZeroHealth.position.X, teamZeroHealth.position.Y + teamZeroHealth.tex.Height)));
-            teamHealthBarPoly.Lines.Add(new PolyLine(new Vector2(teamZeroHealth.position.X + teamZeroHealth.tex.Width * 2, teamZeroHealth.position.Y + teamZeroHealth.tex.Height),
-                new Vector2(teamZeroHealth.position.X + teamZeroHealth.tex.Width * 2, teamZeroHealth.position.Y + teamZeroHealth.tex.Height)));
-            teamHealthBarPoly.Lines.Add(new PolyLine(new Vector2(teamZeroHealth.position.X, teamZeroHealth.position.Y + teamZeroHealth.tex.Height),
-                new Vector2(teamZeroHealth.position.X + teamZeroHealth.tex.Width * 2, teamZeroHealth.position.Y + teamZeroHealth.tex.Height)));
+            float thbpX = teamZeroHealth.position.X - teamZeroHealth.tex.Width/2;
+            float thbpXb = thbpX + teamZeroHealth.tex.Width * 2;
+            Vector2 thbpTopLeft = new Vector2(thbpX, 0);
+            Vector2 thbpTopRight = new Vector2(thbpXb, 0);
+            Vector2 thbpBotLeft = new Vector2(thbpX, 50);
+            Vector2 thbpBotRight = new Vector2(thbpXb, 50);
+            teamHealthBarPoly.Lines.Add(new PolyLine(thbpTopLeft, thbpTopRight));
+            teamHealthBarPoly.Lines.Add(new PolyLine(thbpTopLeft, thbpBotLeft));
+            teamHealthBarPoly.Lines.Add(new PolyLine(thbpTopRight, thbpBotRight));
+            teamHealthBarPoly.Lines.Add(new PolyLine(thbpBotLeft, thbpBotRight));
             Descriptor teamHealthBarsDescriptor = new Descriptor(teamHealthBarPoly, "The Total Health Points of each team. Purple is the player and Green is the computer.");
             descriptors.Add(teamHealthBarsDescriptor);
 
-            float offset = 1970 - 75 * grid.characters.list.Count + 12;
+            float offset = 1970 - 25 - 50 - 75 * grid.characters.list.Count + 12 + 5;
             Polygon turnOrderIconsPoly = new Polygon();
-            turnOrderIconsPoly.Lines.Add(new PolyLine(new Vector2(offset, 0), new Vector2(1920, 0)));
-            turnOrderIconsPoly.Lines.Add(new PolyLine(new Vector2(offset, 0), new Vector2(offset, 100)));
-            turnOrderIconsPoly.Lines.Add(new PolyLine(new Vector2(1920, 0), new Vector2(1920, 100)));
-            turnOrderIconsPoly.Lines.Add(new PolyLine(new Vector2(offset, 0), new Vector2(1920, 100)));
+            Vector2 toipTopLeft = new Vector2(offset, 0);
+            Vector2 toipTopRight = new Vector2(1920, 0);
+            Vector2 toipBotLeft = new Vector2(offset, 95);
+            Vector2 toipBotRight = new Vector2(1920, 95);
+            turnOrderIconsPoly.Lines.Add(new PolyLine(toipTopLeft, toipTopRight));
+            turnOrderIconsPoly.Lines.Add(new PolyLine(toipTopLeft, toipBotLeft));
+            turnOrderIconsPoly.Lines.Add(new PolyLine(toipTopRight, toipBotRight));
+            turnOrderIconsPoly.Lines.Add(new PolyLine(toipBotLeft, toipBotRight));
             Descriptor turnOrderIconsDescriptor = new Descriptor(turnOrderIconsPoly, "The order characters take their turn in from left to right. Updates each turn.");
             descriptors.Add(turnOrderIconsDescriptor);
 
             Polygon peelPoly = new Polygon();
-            peelPoly.Lines.Add(new PolyLine(new Vector2(5, 100), new Vector2(5, 205)));
-            peelPoly.Lines.Add(new PolyLine(new Vector2(5, 100), new Vector2(105, 100)));
-            peelPoly.Lines.Add(new PolyLine(new Vector2(5, 205), new Vector2(105, 205)));
-            peelPoly.Lines.Add(new PolyLine(new Vector2(5, 205), new Vector2(105, 205)));
+            Vector2 ppTopLeft = new Vector2(5, 100);
+            Vector2 ppTopRight = new Vector2(135, 100);
+            Vector2 ppBotLeft = new Vector2(5, 205);
+            Vector2 ppBotRight = new Vector2(135, 205);
+            peelPoly.Lines.Add(new PolyLine(ppTopLeft, ppTopRight));
+            peelPoly.Lines.Add(new PolyLine(ppTopLeft, ppBotLeft));
+            peelPoly.Lines.Add(new PolyLine(ppTopRight, ppBotRight));
+            peelPoly.Lines.Add(new PolyLine(ppBotLeft, ppBotRight));
             Descriptor peelDescriptor = new Descriptor(peelPoly, "The representation of the peel (cube visibility) state. Lower it to 'see' through layers of cubes.");
             descriptors.Add(peelDescriptor);
 
-            Descriptor compassDescriptor;
-            Descriptor playerFaceDescriptor;
-            Descriptor playerHealthBarDescriptor;
-            Descriptor playerMagicBarDescriptor;
-            Descriptor characterFaceDescriptor;
-            Descriptor characterHealthBarDescriptor;
-            Descriptor characterMagicBarDescriptor;
+            Polygon compassPoly = new Polygon();
+            Vector2 cTopLeft = new Vector2(Compass.position.X - 105 + 40, Compass.position.Y - Compass.tex.Height * 1.5f);
+            Vector2 cTopRight = new Vector2(Compass.position.X + 68, Compass.position.Y - Compass.tex.Height * 1.5f);
+            Vector2 cBotLeft = new Vector2(Compass.position.X - 105 + 40, Compass.position.Y + 80);
+            Vector2 cBotRight = new Vector2(Compass.position.X + 68, Compass.position.Y + 80);
+            compassPoly.Lines.Add(new PolyLine(cTopLeft, cTopRight));
+            compassPoly.Lines.Add(new PolyLine(cTopLeft, cBotLeft));
+            compassPoly.Lines.Add(new PolyLine(cTopRight, cBotRight));
+            compassPoly.Lines.Add(new PolyLine(cBotLeft, cBotRight));
+            Descriptor compassDescriptor = new Descriptor(compassPoly, "The representation of the board's rotation using cardinal directions. At the end of each turn the board is " +
+                "rotated automatically so that the character whose turn it is is closest to the bottom of the screen.");
+            descriptors.Add(compassDescriptor);
+
+            Polygon playerFacePoly = new Polygon();
+            Vector2 pfTopLeft = new Vector2(0, 677);
+            Vector2 pfTopRight = new Vector2(258, 677);
+            Vector2 pfBotLeft = new Vector2(0, 992);
+            Vector2 pfBotRight = new Vector2(258, 992);
+            playerFacePoly.Lines.Add(new PolyLine(pfTopLeft, pfTopRight));
+            playerFacePoly.Lines.Add(new PolyLine(pfTopLeft, pfBotLeft));
+            playerFacePoly.Lines.Add(new PolyLine(pfTopRight, pfBotRight));
+            playerFacePoly.Lines.Add(new PolyLine(pfBotLeft, pfBotRight));
+            Descriptor playerFaceDescriptor = new Descriptor(playerFacePoly, "The face of the character whose turn it is.");
+            descriptors.Add(playerFaceDescriptor);
+
+            Polygon playerHealthBarPoly = new Polygon();
+            Vector2 phbTopLeft = new Vector2(0, 1040);
+            Vector2 phbTopRight = new Vector2(1920/3, 1040);
+            Vector2 phbBotLeft = new Vector2(0, 1080);
+            Vector2 phbBotRight = new Vector2(1920/3, 1080);
+            playerHealthBarPoly.Lines.Add(new PolyLine(phbTopLeft, phbTopRight));
+            playerHealthBarPoly.Lines.Add(new PolyLine(phbTopLeft, phbBotLeft));
+            playerHealthBarPoly.Lines.Add(new PolyLine(phbTopRight, phbBotRight));
+            playerHealthBarPoly.Lines.Add(new PolyLine(phbBotLeft, phbBotRight));
+            Descriptor playerHealthBarDescriptor = new Descriptor(playerHealthBarPoly, "The amount of health points of the character whose turn it is. Health points are removed when a character is attacked or can be added when they are healed. Characters die when out of health.");
+            descriptors.Add(playerHealthBarDescriptor);
+
+            Polygon playerMagicBarPoly = new Polygon();
+            Vector2 pmbTopLeft = new Vector2(0, 1000);
+            Vector2 pmbTopRight = new Vector2(1920 / 3, 1000);
+            Vector2 pmbBotLeft = new Vector2(0, 1040);
+            Vector2 pmbBotRight = new Vector2(1920 / 3, 1040);
+            playerMagicBarPoly.Lines.Add(new PolyLine(pmbTopLeft, pmbTopRight));
+            playerMagicBarPoly.Lines.Add(new PolyLine(pmbTopLeft, pmbBotLeft));
+            playerMagicBarPoly.Lines.Add(new PolyLine(pmbTopRight, pmbBotRight));
+            playerMagicBarPoly.Lines.Add(new PolyLine(pmbBotLeft, pmbBotRight));
+            Descriptor playerMagicBarDescriptor = new Descriptor(playerMagicBarPoly, "The amount of magic points of the character whose turn it is. Magic points are removed when a character uses their special. These points are not regenerated during battle.");
+            descriptors.Add(playerMagicBarDescriptor);
+
+            Polygon characterFacePoly = new Polygon();
+            Vector2 cfTopLeft = new Vector2(1910-258, 677);
+            Vector2 cfTopRight = new Vector2(1910, 677);
+            Vector2 cfBotLeft = new Vector2(1910 - 258, 992);
+            Vector2 cfBotRight = new Vector2(1910, 992);
+            characterFacePoly.Lines.Add(new PolyLine(cfTopLeft, cfTopRight));
+            characterFacePoly.Lines.Add(new PolyLine(cfTopLeft, cfBotLeft));
+            characterFacePoly.Lines.Add(new PolyLine(cfTopRight, cfBotRight));
+            characterFacePoly.Lines.Add(new PolyLine(cfBotLeft, cfBotRight));
+            Descriptor characterFaceDescriptor = new Descriptor(characterFacePoly, "The face of the character who is selected or hovered over.");
+            descriptors.Add(characterFaceDescriptor);
+
+            Polygon characterHealthBarPoly = new Polygon();
+            Vector2 chbTopLeft = new Vector2(1920 * 2 / 3, 1040);
+            Vector2 chbTopRight = new Vector2(1920, 1040);
+            Vector2 chbBotLeft = new Vector2(1920 * 2 / 3, 1080);
+            Vector2 chbBotRight = new Vector2(1920, 1080);
+            characterHealthBarPoly.Lines.Add(new PolyLine(chbTopLeft, chbTopRight));
+            characterHealthBarPoly.Lines.Add(new PolyLine(chbTopLeft, chbBotLeft));
+            characterHealthBarPoly.Lines.Add(new PolyLine(chbTopRight, chbBotRight));
+            characterHealthBarPoly.Lines.Add(new PolyLine(chbBotLeft, chbBotRight));
+            Descriptor characterHealthBarDescriptor = new Descriptor(characterHealthBarPoly, "The amount of health points of the character whose turn it is. Health points are removed when a character is attacked or can be added when they are healed. Characters die when out of health.");
+            descriptors.Add(characterHealthBarDescriptor);
+
+            Polygon characterMagicBarPoly = new Polygon();
+            Vector2 cmbTopLeft = new Vector2(1920 * 2 / 3, 1000);
+            Vector2 cmbTopRight = new Vector2(1920, 1000);
+            Vector2 cmbBotLeft = new Vector2(1920 * 2 / 3, 1040);
+            Vector2 cmbBotRight = new Vector2(1920, 1040);
+            characterMagicBarPoly.Lines.Add(new PolyLine(cmbTopLeft, cmbTopRight));
+            characterMagicBarPoly.Lines.Add(new PolyLine(cmbTopLeft, cmbBotLeft));
+            characterMagicBarPoly.Lines.Add(new PolyLine(cmbTopRight, cmbBotRight));
+            characterMagicBarPoly.Lines.Add(new PolyLine(cmbBotLeft, cmbBotRight));
+            Descriptor characterMagicBarDescriptor = new Descriptor(characterMagicBarPoly, "The amount of magic points of the character who is hovered over or selected. Magic points are removed when a character uses their special. These points are not regenerated during battle.");
+            descriptors.Add(characterMagicBarDescriptor);
 
         }
 

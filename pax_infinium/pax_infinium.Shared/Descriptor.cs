@@ -29,12 +29,12 @@ namespace pax_infinium
                 leftMost = (int) Math.Min(l.Start.X, leftMost);
                 rightMost = (int) Math.Max(l.Start.X, rightMost);
                 topMost = (int) Math.Min(l.Start.Y, topMost);
-                bottomMost = (int) Math.Min(l.Start.Y, bottomMost);
+                bottomMost = (int) Math.Max(l.Start.Y, bottomMost);
 
                 leftMost = (int)Math.Min(l.End.X, leftMost);
                 rightMost = (int)Math.Max(l.End.X, rightMost);
                 topMost = (int)Math.Min(l.End.Y, topMost);
-                bottomMost = (int)Math.Min(l.End.Y, bottomMost);
+                bottomMost = (int)Math.Max(l.End.Y, bottomMost);
             }
 
             textItems = new List<TextItem>();
@@ -104,19 +104,32 @@ namespace pax_infinium
 
             if (textInBounds(topLeft))
             {
+                Console.WriteLine("Chose topLeft");
                 pos = topLeft;
             }
             else if (textInBounds(bottomLeft))
             {
+                Console.WriteLine("Chose bottomLeft");
                 pos = bottomLeft;
             }
             else if (textInBounds(topRight))
             {
+                Console.WriteLine("Chose topRight");
                 pos = topRight;
             }
             else if (textInBounds(bottomRight))
             {
+                Console.WriteLine("Chose bottomRight");
                 pos = bottomRight;
+            }
+            else
+            {
+                pos = Vector2.Zero;
+            }
+
+            if (pos.X + width > 1920)
+            {
+                Console.WriteLine("Right: " + (int)(pos.X + width));
             }
 
             for (int i = 0; i < textItems.Count; i++)
@@ -137,11 +150,11 @@ namespace pax_infinium
 
         bool textInBounds(Vector2 position)
         {
-            Rectangle bounds = new Rectangle(0, 0, 1650, 1080);
+            Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
             Vector2 topLeft = position;
-            Vector2 bottomLeft = new Vector2(pos.X, pos.Y + height);
-            Vector2 topRight = new Vector2(pos.X + width, pos.Y);
-            Vector2 bottomRight = new Vector2(pos.X + width, pos.Y + height);
+            Vector2 bottomLeft = new Vector2(position.X, position.Y + height);
+            Vector2 topRight = new Vector2(position.X + width, position.Y);
+            Vector2 bottomRight = new Vector2(position.X + width, position.Y + height);
 
             return bounds.Contains(topLeft) && bounds.Contains(bottomLeft) &&
                 bounds.Contains(topRight) && bounds.Contains(bottomRight);
