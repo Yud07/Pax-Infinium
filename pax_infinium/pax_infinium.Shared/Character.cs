@@ -54,6 +54,7 @@ namespace pax_infinium
         public TimeSpan moveTime;
 
         public Sprite healthBacker;
+        public Sprite textBacker;
 
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
@@ -97,9 +98,7 @@ namespace pax_infinium
             sprite.origin = new Vector2(tex.Width / 2, tex.Height / 2);
             sprite.scale = 1f;
 
-            text = new TextItem(World.fontManager["ScoreFont"], " ");
-            text.position = position + new Vector2(0, -60);
-            text.color = Color.Red;
+            setText(" ", Color.Red);
 
             statusText = new TextItem(World.fontManager["InfoFont"], " ");
             statusText.scale = 1.5f;
@@ -152,7 +151,7 @@ namespace pax_infinium
             //recalcPos();
             if (textTime < gameTime.TotalGameTime)
             {
-                text.Text = " ";
+                setText(" ", Color.Red);
             }
 
             if (movePath.Count > 0)
@@ -163,7 +162,12 @@ namespace pax_infinium
                 }
                 else if (moveTime < gameTime.TotalGameTime)
                 {
-                    gridPos = movePath.ToArray()[0];
+                    Vector3 newPos = movePath.ToArray()[0];
+                    if (newPos != gridPos)
+                    {
+                        Rotate(newPos);
+                    }
+                    gridPos = newPos;
                     movePath.RemoveAt(0);
                     recalcPos();
                     moveTime = TimeSpan.MinValue;
@@ -194,7 +198,7 @@ namespace pax_infinium
             sprite.alpha = alpha;
             healthBacker.alpha = alpha * .75f;
             statusText.alpha = alpha;
-            //text.alpha = alpha;
+            text.alpha = alpha;
         }
 
         public void onCharacterMoved(Level level)
@@ -311,8 +315,7 @@ namespace pax_infinium
                 Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                character.text.Text = "-" + damage;
-                character.text.color = Color.OrangeRed;
+                character.setText("-" + damage + "HP", Color.Red);
 
                 if (character.health <= 0)
                 {
@@ -329,8 +332,7 @@ namespace pax_infinium
             {
                 Console.WriteLine("Miss!");
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                character.text.Text = "Miss";
-                character.text.color = Color.Green;
+                setText("Miss!", Color.Green);
                 return null;
             }
         }
@@ -415,8 +417,7 @@ namespace pax_infinium
                 Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                character.text.Text = "-" + damage;
-                character.text.color = Color.OrangeRed;
+                character.setText("-" + damage + "HP", Color.Red);
 
                 if (character.health <= 0)
                 {
@@ -432,8 +433,7 @@ namespace pax_infinium
             {
                 Console.WriteLine("Miss!");
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                character.text.Text = "Miss";
-                character.text.color = Color.Green;
+                character.setText("Miss!", Color.Green);
             }
             return null;
         }
@@ -451,8 +451,7 @@ namespace pax_infinium
             Console.WriteLine(character.name + " heals " + health + " points!");
             character.health += health;
             character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-            character.text.Text = "+" + health;
-            character.text.color = Color.Green;
+            character.setText("+" + health + "HP", Color.Red);
         }
 
         public int CalculateThiefSpecial(Character character)
@@ -491,16 +490,14 @@ namespace pax_infinium
                 
                 Console.WriteLine(character.name + " had their next turn stolen!");
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                character.text.Text = "Skipped!";
-                character.text.color = Color.OrangeRed;
+                character.setText("Skipped!", Color.OrangeRed);
                 return character;
             }
             else
             {
                 Console.WriteLine("Miss!");
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                character.text.Text = "Miss";
-                character.text.color = Color.Green;
+                character.setText("Miss!", Color.Green);
                 return null;
             }
         }
@@ -519,8 +516,7 @@ namespace pax_infinium
         {
             mp -= cost;
             textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-            text.Text = "-" + cost;
-            text.color = Color.LightBlue;
+            setText("-" + cost + "MP", Color.Blue);
         }
 
         public void SoldierSpecial(Character character)
@@ -536,8 +532,7 @@ namespace pax_infinium
             Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
             character.MDefense += defenseBoost;
             character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-            character.text.Text = "+" + defenseBoost;
-            character.text.color = Color.Yellow;
+            character.setText("+" + defenseBoost + "WD", Color.Yellow);
         }
 
         public void Rotate(Vector3 pos)
@@ -769,6 +764,14 @@ namespace pax_infinium
                 val = 2;
             }
             return val;
+        }
+
+        public void setText(String t, Color c)
+        {
+            text = new TextItem(World.fontManager["ScoreFont"], t);
+            text.position = position + new Vector2(0, -80);
+            text.color = c;
+            text.scale = 1.5f;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "Allows the character to move to a new position within their movement range. May be done once per turn before or after an action.");
+            desc = new Descriptor(poly, "(Keyboard M) Allows the character to move to a new position within their movement range. May be done once per turn before or after an action.");
 
             trigger = false;
         }

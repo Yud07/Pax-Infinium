@@ -38,7 +38,8 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "Ends the turn. The next character in the turn order list (top right) goes next.");
+            desc = new Descriptor(poly, "(Keyboard E) Ends the turn. The next character in the turn order list (top right) goes next. Be sure to rotate your character to the direction which protects their vulnerable sides and back best." +
+                " To do this, click a tile in the direction you would like your character to face, then End Turn.");
 
             trigger = false;
         }

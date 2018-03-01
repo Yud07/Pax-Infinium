@@ -271,19 +271,21 @@ namespace pax_infinium
                 Exit();
             }
 
-            if (world.state == 1)
+            if (world.state == 1 && !world.level.drawBVD)
             {
-
-                // left arrow rotates left
-                if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left))
+                if (world.level.grid.characters.list[0].movePath.Count == 0)
                 {
-                    world.level.grid.rotate(false, world.level);
-                }
+                    // left arrow rotates left
+                    if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left))
+                    {
+                        world.level.grid.rotate(false, world.level);
+                    }
 
-                // right arrow rotates right
-                if (keyboardState.IsKeyDown(Keys.Right) && previousKeyboardState.IsKeyUp(Keys.Right))
-                {
-                    world.level.grid.rotate(true, world.level);
+                    // right arrow rotates right
+                    if (keyboardState.IsKeyDown(Keys.Right) && previousKeyboardState.IsKeyUp(Keys.Right))
+                    {
+                        world.level.grid.rotate(true, world.level);
+                    }
                 }
 
                 if (keyboardState.IsKeyDown(Keys.Up) && previousKeyboardState.IsKeyUp(Keys.Up))
@@ -546,7 +548,7 @@ namespace pax_infinium
                                     }
                                 }
 
-                                if (!world.level.rotated && !world.triggerAIBool) //ai trigger check prevents accidental rotation on end turn
+                                if (!world.level.rotated && !world.triggerAIBool && player.movePath.Count == 0) //ai trigger check prevents accidental rotation on end turn
                                 {
                                     player.Rotate(cube.gridPos);
                                 }
@@ -627,6 +629,7 @@ namespace pax_infinium
                                     else if (selectedAction == "move" && world.level.validMoveSpaces.Contains(cube.gridPos) &&//player.inMoveRange(cube.gridPos, world.level) &&
                                         !world.level.moved) // Move
                                     {
+                                        world.level.grid.peel = world.level.grid.height - 1;
                                         //world.level.SetConfirmationText("Move? Confirm Y / N");
                                         world.level.movedFrom = player.gridPos;
                                         player.Move(cube.gridPos, world.level);

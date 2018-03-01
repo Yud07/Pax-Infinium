@@ -38,7 +38,8 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "Conducts a basic attack against a character within the character's attack range. Attacks damage the target's health points.");
+            desc = new Descriptor(poly, "(Keyboard A) Conducts a basic attack against a character within the character's attack range. Attacks damage the target's health points. Chance of hitting is lowest from the targets front, higher " +
+                "from the sides, and highest from the back.");
 
             trigger = false;
         }

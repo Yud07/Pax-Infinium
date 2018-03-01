@@ -38,7 +38,7 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "Cancels the selected action.");
+            desc = new Descriptor(poly, "(Keyboard N) Cancels the selected action.");
 
             trigger = false;
         }

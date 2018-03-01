@@ -38,7 +38,7 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "Executes the selected action.");
+            desc = new Descriptor(poly, "(Keyboard Y) Executes the selected action.");
 
             trigger = false;
         }

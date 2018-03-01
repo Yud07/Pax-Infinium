@@ -36,7 +36,7 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "Rotates the camera around the board counter-clockwise.");
+            desc = new Descriptor(poly, "(Keyboard <-) Rotates the camera around the board counter-clockwise.");
         }
 
         public void Click()

@@ -37,7 +37,7 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "Lowers the peel (cube visibility) level.");
+            desc = new Descriptor(poly, "(Keyboard Down-Arrow) Lowers the peel (cube visibility) level.");
         }
 
         public void Click()

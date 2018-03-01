@@ -546,20 +546,23 @@ namespace pax_infinium
 
             if (characterName.Text != "")
             {
-                float characterHealthRatio = (float)highlightedCharacter.health / (float)highlightedCharacter.startingHealth;
-                float characterMPRatio = (float)highlightedCharacter.mp / (float)highlightedCharacter.startingMP;
+                if (highlightedCharacter.health > 0)
+                {
+                    float characterHealthRatio = (float)highlightedCharacter.health / (float)highlightedCharacter.startingHealth;
+                    float characterMPRatio = (float)highlightedCharacter.mp / (float)highlightedCharacter.startingMP;
 
-                characterHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterHealthRatio), height, Color.Red));
-                characterHealthBar.position = new Vector2(1920 - (fullBarSize * characterHealthRatio)/2, 1080 - height / 2);
-                characterHealthText.Text = highlightedCharacter.health + " HP";
-                characterHealthText.position = characterHealthBar.position;
-                characterHealthText.position.Y += 2;
+                    characterHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterHealthRatio), height, Color.Red));
+                    characterHealthBar.position = new Vector2(1920 - (fullBarSize * characterHealthRatio) / 2, 1080 - height / 2);
+                    characterHealthText.Text = highlightedCharacter.health + " HP";
+                    characterHealthText.position = characterHealthBar.position;
+                    characterHealthText.position.Y += 2;
 
-                characterMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterMPRatio), height, Color.Blue));
-                characterMagicBar.position = new Vector2(1920 - (fullBarSize * characterMPRatio)/2, 1080 - height - yOffset);
-                characterMagicText.Text = highlightedCharacter.mp + " MP";
-                characterMagicText.position = characterMagicBar.position;
-                characterMagicText.position.Y += 2;
+                    characterMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterMPRatio), height, Color.Blue));
+                    characterMagicBar.position = new Vector2(1920 - (fullBarSize * characterMPRatio) / 2, 1080 - height - yOffset);
+                    characterMagicText.Text = highlightedCharacter.mp + " MP";
+                    characterMagicText.position = characterMagicBar.position;
+                    characterMagicText.position.Y += 2;
+                }
             }
         }
 
@@ -774,11 +777,12 @@ namespace pax_infinium
 
             CalcValidMoveSpaces();
 
+            Character player = grid.characters.list[0];
+
+            //Console.WriteLine("recalcStatusBars nextCharacter: " + player.name);
             recalcStatusBars();
 
             setupTurnOrderIcons();
-
-            Character player = grid.characters.list[0];
 
             RotateToActiveCharacter();
 
@@ -1211,8 +1215,13 @@ namespace pax_infinium
                 if (c.gridPos != activeCharacter.gridPos && activeCharacter.inMoveRange(c.gridPos, this) && grid.isVacant(c.gridPos))
                 {
                     List<Vector3> tempList = graph.AStar(c.gridPos);
-                    if (tempList != null) 
+                    if (tempList != null && tempList.Count <= activeCharacter.move) 
                     {
+                        /*Console.WriteLine("\nStart: " + activeCharacter.gridPos + " Dest: " + c.gridPos);
+                        foreach(Vector3 v in tempList)
+                        {
+                            Console.Write(v + " ");
+                        }*/
                         validMoveSpaces.Add(c.gridPos);
                         validMovePaths.Add(tempList);
                     }

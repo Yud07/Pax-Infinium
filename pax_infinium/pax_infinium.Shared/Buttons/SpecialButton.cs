@@ -38,7 +38,7 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "Conducts the character's special ability at a location. The Soldier's ability increases" +
+            desc = new Descriptor(poly, "(Keyboard S) Conducts the character's special ability at a location. The Soldier's ability increases" +
                 " the weapon resistance of the target. The Hunter has no special ability but has a long range standard attack. The" +
                 " Mage's ability does health point damage to a cross of connected squares. The Healer's ability heals health points " +
                 "in a cross of connected squares. The Thief's ability skips the target's turn and forces them to the end of the turn order.");
