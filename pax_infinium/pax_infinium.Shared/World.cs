@@ -72,6 +72,9 @@ namespace pax_infinium
 
         public bool triggerAIBool;
 
+        public bool finishedMove;
+        public Move currentMove;
+
         public World(GraphicsDeviceManager graphics)
         {
             this.graphics = graphics;
@@ -79,6 +82,8 @@ namespace pax_infinium
             rooms = new PermanantStates<Room>();
             rooms.AddState("game", new Room(graphics));
             state = 0;
+            finishedMove = false;
+            currentMove = null;
         }
 
         public void Update(GameTime gameTime)
@@ -86,6 +91,11 @@ namespace pax_infinium
             if (triggerAIBool && level.drewThoughtBubble)
             {
                 triggerAI(level, gameTime);
+            }
+            if (finishedMove)
+            {
+                currentMove.PostMove(level, gameTime);
+                finishedMove = false;
             }
             rooms.CurrentState.Update(gameTime);
         }
@@ -206,68 +216,11 @@ namespace pax_infinium
             print(level.ToString());
             IMove move = UCT.ComputeSingleThreadedUCT(level, 1000, true, print, 0.7F, 15);
             print(move.Name);
+            triggerAIBool = false;
             level.DoMove(move, gameTime); // Add boolean so that this animates and only prints this move
-            level.recalcTeamHealthBar();
-            foreach(Character c in level.grid.characters.list)
-            {
-                c.recalcPos();
-            }
-            level.grid.onCharacterMoved(level);
-
-            level.setupTurnOrderIcons();
-
-            Grid grid = level.grid;
-            Character player = grid.characters.list[0];
-
-            float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
-            float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, 0, player.gridPos.Z));
-            float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, grid.depth, player.gridPos.Z));
-            float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, grid.depth, player.gridPos.Z));
-
-            List<float> distancesToCorners = new List<float>();
-            //East right once
-            //North right twice
-            //West right 3 times
-
-
-            distancesToCorners.Add(distanceToEast);
-            distancesToCorners.Add(distanceToNorth);
-            distancesToCorners.Add(distanceToWest);
-            distancesToCorners.Add(distanceToSouth);
-
-            float min = distancesToCorners.Min();
-            //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
-            if (min != distanceToSouth)
-            {
-                if (distanceToEast == min)
-                {
-                    //Console.WriteLine("east");
-                    grid.rotate(true, level);
-                }
-                else if (distanceToWest == min)
-                {
-                    //Console.WriteLine("west");
-                    grid.rotate(false, level);
-                }
-                else
-                {
-                    //Console.WriteLine("north");
-                    grid.rotate(true, level);
-                    grid.rotate(true, level);
-                }
-            }
-
+            currentMove = (Move)move;
             level.thoughtBubble.position = Vector2.Zero;
             level.drewThoughtBubble = false;
-            triggerAIBool = false;
-
-            if (player.team == 0)
-            {
-                level.thoughtBubble.position = player.position;
-                level.thoughtBubble.position.Y -= 50;
-                triggerAIBool = true;
-                //Game1.world.triggerAI(level, gameTime);
-            }
         }
 
         public string RandomString(int length)

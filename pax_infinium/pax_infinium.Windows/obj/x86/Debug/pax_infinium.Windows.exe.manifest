@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="589312">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="pax_infinium.Windows.exe" size="591360">
       <assemblyIdentity name="pax_infinium.Windows" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Boni1V1aezckbiNJSXkxC5b1TY5oxYp9P6xvtNOLQrQ=</dsig:DigestValue>
+        <dsig:DigestValue>5ZoQVYKhGvDnTbkLbnASLB24lLYr2/1FiaK37BH1DI8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

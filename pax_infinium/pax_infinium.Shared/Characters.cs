@@ -179,6 +179,7 @@ namespace pax_infinium
                     newCharacter.evasion = 5;
                     newCharacter.speed = 80;
                     newCharacter.weaponRange = 5;
+                    newCharacter.magicRange = 5;
                     break;
                 case 2: // Black Mage
                     newCharacter.move = 3;

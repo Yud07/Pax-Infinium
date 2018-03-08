@@ -110,7 +110,7 @@ namespace pax_infinium
         public IButton attackButton;
         public IButton specialButton;
         public IButton endTurnButton;
-        public IButton undoButton;
+        //public IButton undoButton;
         public IButton confirmButton;
         public IButton cancelButton;
 
@@ -176,7 +176,7 @@ namespace pax_infinium
 
             playerName = new TextItem(World.fontManager["Trajanus Roman 36"], grid.characters.list[0].name);
             playerName.origin = Vector2.Zero;
-            playerName.position = new Vector2(260, 750);            
+            playerName.position = new Vector2(1920/3 - 300, 750);            
             playerName.scale = 1f;
 
             String t = grid.characters.list[0].health + "               " + grid.characters.list[0].mp;
@@ -286,12 +286,12 @@ namespace pax_infinium
 
             recalcStatusBars();
 
-            Vector2 actionButtonsPos = new Vector2(260, 780);
+            Vector2 actionButtonsPos = new Vector2(1920/3 - 300, 780);
             moveButton = new MoveButton(actionButtonsPos);
             attackButton = new AttackButton(actionButtonsPos + new Vector2(0, 55));
             specialButton = new SpecialButton(actionButtonsPos + new Vector2(0, 55 * 2));
             endTurnButton = new EndTurnButton(actionButtonsPos + new Vector2(0, 55 * 3));
-            undoButton = new UndoButton(actionButtonsPos + new Vector2(305, 0));
+            //undoButton = new UndoButton(actionButtonsPos + new Vector2(305, 0));
             confirmButton = new ConfirmButton(new Vector2(1920/2 - 125, 1080 - 110));
             cancelButton = new CancelButton(new Vector2(1920 / 2 - 125, 1080 - 55));
 
@@ -304,7 +304,7 @@ namespace pax_infinium
             buttons.Add(attackButton);
             buttons.Add(specialButton);
             buttons.Add(endTurnButton);
-            buttons.Add(undoButton);
+            //buttons.Add(undoButton);
             buttons.Add(confirmButton);
             buttons.Add(cancelButton);
 
@@ -313,7 +313,7 @@ namespace pax_infinium
             descriptors.Add(moveButton.GetDescriptor());
             descriptors.Add(endTurnButton.GetDescriptor());
             descriptors.Add(specialButton.GetDescriptor());
-            descriptors.Add(undoButton.GetDescriptor());
+            //descriptors.Add(undoButton.GetDescriptor());
             descriptors.Add(upButton.GetDescriptor());
             descriptors.Add(downButton.GetDescriptor());
             descriptors.Add(leftButton.GetDescriptor());
@@ -418,7 +418,7 @@ namespace pax_infinium
             characterFacePoly.Lines.Add(new PolyLine(cfTopLeft, cfBotLeft));
             characterFacePoly.Lines.Add(new PolyLine(cfTopRight, cfBotRight));
             characterFacePoly.Lines.Add(new PolyLine(cfBotLeft, cfBotRight));
-            Descriptor characterFaceDescriptor = new Descriptor(characterFacePoly, "The face of the character who is selected or hovered over.");
+            Descriptor characterFaceDescriptor = new Descriptor(characterFacePoly, "The face of the character who is selected or hovered over.", characterFace);
             descriptors.Add(characterFaceDescriptor);
 
             Polygon characterHealthBarPoly = new Polygon();
@@ -430,7 +430,7 @@ namespace pax_infinium
             characterHealthBarPoly.Lines.Add(new PolyLine(chbTopLeft, chbBotLeft));
             characterHealthBarPoly.Lines.Add(new PolyLine(chbTopRight, chbBotRight));
             characterHealthBarPoly.Lines.Add(new PolyLine(chbBotLeft, chbBotRight));
-            Descriptor characterHealthBarDescriptor = new Descriptor(characterHealthBarPoly, "The amount of health points of the character whose turn it is. Health points are removed when a character is attacked or can be added when they are healed. Characters die when out of health.");
+            Descriptor characterHealthBarDescriptor = new Descriptor(characterHealthBarPoly, "The amount of health points of the character whose turn it is. Health points are removed when a character is attacked or can be added when they are healed. Characters die when out of health.", characterHealthBar);
             descriptors.Add(characterHealthBarDescriptor);
 
             Polygon characterMagicBarPoly = new Polygon();
@@ -442,7 +442,7 @@ namespace pax_infinium
             characterMagicBarPoly.Lines.Add(new PolyLine(cmbTopLeft, cmbBotLeft));
             characterMagicBarPoly.Lines.Add(new PolyLine(cmbTopRight, cmbBotRight));
             characterMagicBarPoly.Lines.Add(new PolyLine(cmbBotLeft, cmbBotRight));
-            Descriptor characterMagicBarDescriptor = new Descriptor(characterMagicBarPoly, "The amount of magic points of the character who is hovered over or selected. Magic points are removed when a character uses their special. These points are not regenerated during battle.");
+            Descriptor characterMagicBarDescriptor = new Descriptor(characterMagicBarPoly, "The amount of magic points of the character who is hovered over or selected. Magic points are removed when a character uses their special. These points are not regenerated during battle.", characterMagicBar);
             descriptors.Add(characterMagicBarDescriptor);
 
         }
@@ -670,6 +670,16 @@ namespace pax_infinium
             else
             {
                 background.Draw(spriteBatch);
+                if (thoughtBubble.position != Vector2.Zero)
+                {
+                    foreach (Cube c in grid.cubes)
+                    {
+                        if (validMoveSpaces.Contains(c.gridPos))
+                        {
+                            c.highLight = true;
+                        }
+                    }
+                }
                 grid.Draw(spriteBatch);
                 //grid.characters.Draw(spriteBatch);
                 text.Draw(spriteBatch);
@@ -682,6 +692,10 @@ namespace pax_infinium
                 }
                 if (characterName.Text != "")
                 {
+                    characterFace.visible = true;
+                    characterHealthBar.visible = true;
+                    characterMagicBar.visible = true;
+
                     characterName.Draw(spriteBatch);
                     characterFace.Draw(spriteBatch);
                     if (drawInfo)
@@ -693,6 +707,15 @@ namespace pax_infinium
                     characterHealthText.Draw(spriteBatch);
                     characterMagicBar.Draw(spriteBatch);
                     characterMagicText.Draw(spriteBatch);
+                }
+                else
+                {
+                    if (characterHealthBar != null)
+                    {
+                        characterFace.visible = false;
+                        characterHealthBar.visible = false;
+                        characterMagicBar.visible = false;
+                    }
                 }
                 foreach (Sprite sp in turnOrderTeamIcons)
                 {
@@ -1071,13 +1094,29 @@ namespace pax_infinium
 
         public void handleActionTextColors(String selectedAction)
         {
-            if (moved)
+            if (attacked)
             {
-                moveButton.SetTextColor(Color.Gray);
+                if (moved)
+                {
+                    moveButton.SetTextColor(Color.Gray);
+                }
+                else
+                {
+                    moveButton.SetTextColor(Color.White);
+                }
             }
             else
             {
-                moveButton.SetTextColor(Color.White);
+                if (moved)
+                {
+                    moveButton.SetText("Undo");
+                    moveButton.SetTextColor(Color.White);
+                }
+                else
+                {
+                    moveButton.SetText("Move");
+                    moveButton.SetTextColor(Color.White);
+                }
             }
 
             if (attacked)
@@ -1102,15 +1141,6 @@ namespace pax_infinium
             if (selectedAction == "special")
             {
                 specialButton.SetTextColor(Color.Yellow);
-            }
-
-            if (selectedAction == "" && moved && !attacked)
-            {
-                undoButton.SetTextColor(Color.White);
-            }
-            else
-            {
-                undoButton.SetTextColor(Color.Gray);
             }
         }
 

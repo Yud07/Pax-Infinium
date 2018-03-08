@@ -21,5 +21,7 @@ namespace pax_infinium.Buttons
         void SetTextColor(Color c);
 
         Descriptor GetDescriptor();
+
+        void SetText(String text);
     }
 }

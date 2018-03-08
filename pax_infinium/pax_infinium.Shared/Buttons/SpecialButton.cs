@@ -39,9 +39,9 @@ namespace pax_infinium.Buttons
             clickedFilter.position = pos;
 
             desc = new Descriptor(poly, "(Keyboard S) Conducts the character's special ability at a location. The Soldier's ability increases" +
-                " the weapon resistance of the target. The Hunter has no special ability but has a long range standard attack. The" +
+                " the weapon resistance of the target. The Hunter' ability decreases the accuracy of the target. The" +
                 " Mage's ability does health point damage to a cross of connected squares. The Healer's ability heals health points " +
-                "in a cross of connected squares. The Thief's ability skips the target's turn and forces them to the end of the turn order.");
+                "in a cross of connected squares. The Thief's ability skips the target's turn and forces them to the end of the turn order.", sprite);
 
             trigger = false;
         }
@@ -56,6 +56,7 @@ namespace pax_infinium.Buttons
         {
             if (Game1.world.level.grid.characters.list[0].team == 1)
             {
+                sprite.visible = true;
                 sprite.Draw(spriteBatch);
                 text.Draw(spriteBatch);
                 if (clickTime != DateTime.MinValue)
@@ -69,6 +70,10 @@ namespace pax_infinium.Buttons
                         clickTime = DateTime.MinValue;
                     }
                 }
+            }
+            else
+            {
+                sprite.visible = false;
             }
         }
 
@@ -90,6 +95,11 @@ namespace pax_infinium.Buttons
         public void ResetTrigger()
         {
             trigger = false;
+        }
+
+        public void SetText(string text)
+        {
+            throw new NotImplementedException();
         }
 
         public void SetTextColor(Color c)

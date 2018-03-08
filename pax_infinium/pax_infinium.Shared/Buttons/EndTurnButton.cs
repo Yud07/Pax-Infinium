@@ -39,7 +39,7 @@ namespace pax_infinium.Buttons
             clickedFilter.position = pos;
 
             desc = new Descriptor(poly, "(Keyboard E) Ends the turn. The next character in the turn order list (top right) goes next. Be sure to rotate your character to the direction which protects their vulnerable sides and back best." +
-                " To do this, click a tile in the direction you would like your character to face, then End Turn.");
+                " To do this, click a tile in the direction you would like your character to face, then End Turn.", sprite);
 
             trigger = false;
         }
@@ -54,6 +54,7 @@ namespace pax_infinium.Buttons
         {
             if (Game1.world.level.grid.characters.list[0].team == 1)
             {
+                sprite.visible = true;
                 sprite.Draw(spriteBatch);
                 text.Draw(spriteBatch);
                 if (clickTime != DateTime.MinValue)
@@ -67,6 +68,10 @@ namespace pax_infinium.Buttons
                         clickTime = DateTime.MinValue;
                     }
                 }
+            }
+            else
+            {
+                sprite.visible = false;
             }
         }
 
@@ -88,6 +93,11 @@ namespace pax_infinium.Buttons
         public void ResetTrigger()
         {
             trigger = false;
+        }
+
+        public void SetText(string text)
+        {
+            throw new NotImplementedException();
         }
 
         public void SetTextColor(Color c)

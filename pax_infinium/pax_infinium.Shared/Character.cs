@@ -55,6 +55,9 @@ namespace pax_infinium
 
         public Sprite healthBacker;
         public Sprite textBacker;
+        public TimeSpan postMoveWaitTime;
+
+        public int accuracyMod;
 
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
@@ -102,7 +105,7 @@ namespace pax_infinium
 
             statusText = new TextItem(World.fontManager["InfoFont"], " ");
             statusText.scale = 1.5f;
-            statusText.position = position + new Vector2(-25, -25);
+            statusText.position = position + new Vector2(0, -25);
             if (team == 0)
             {
                 statusText.color = new Color(0, 1f, 0); //Color.Green;
@@ -115,8 +118,12 @@ namespace pax_infinium
             movePath = new List<Vector3>();
             moveTime = TimeSpan.MinValue;
 
+            postMoveWaitTime = TimeSpan.MinValue;
+
             healthBacker = new Sprite(Game1.world.textureConverter.GenRectangle(60, 30, new Color(Color.Black, .75f)));
-            healthBacker.position = statusText.position + new Vector2(22, -2);
+            healthBacker.position = statusText.position + new Vector2(-2, -2);
+
+            accuracyMod = 0;
 
             //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
         }
@@ -139,9 +146,9 @@ namespace pax_infinium
             //text.Text = DrawOrder().ToString();
             text.position = position + new Vector2(0, -60);
 
-            statusText.position = position + new Vector2(-25, -25);
+            statusText.position = position + new Vector2(0, -25);
 
-            healthBacker.position = statusText.position + new Vector2(22, -2);
+            healthBacker.position = statusText.position + new Vector2(-2, -2);
 
             //darken();
         }
@@ -152,6 +159,15 @@ namespace pax_infinium
             if (textTime < gameTime.TotalGameTime)
             {
                 setText(" ", Color.Red);
+            }
+
+            if (postMoveWaitTime != TimeSpan.MinValue)
+            {
+                if (postMoveWaitTime < gameTime.TotalGameTime)
+                {
+                    Game1.world.finishedMove = true;
+                    postMoveWaitTime = TimeSpan.MinValue;
+                }
             }
 
             if (movePath.Count > 0)
@@ -165,11 +181,16 @@ namespace pax_infinium
                     Vector3 newPos = movePath.ToArray()[0];
                     if (newPos != gridPos)
                     {
-                        Rotate(newPos);
+                        Rotate(newPos, true);
                     }
                     gridPos = newPos;
+                    if (movePath.Count == 1 && team == 0)
+                    {
+                        postMoveWaitTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 3);
+                    }
                     movePath.RemoveAt(0);
                     recalcPos();
+                    Game1.world.level.grid.onCharacterMoved(Game1.world.level);
                     moveTime = TimeSpan.MinValue;
                 }
                 
@@ -179,8 +200,24 @@ namespace pax_infinium
         public void Draw(SpriteBatch spriteBatch)
         {
             sprite.Draw(spriteBatch);
+            //statusText.Text = health.ToString();
+            if (health.ToString() != statusText.Text)
+            {
+                statusText = new TextItem(World.fontManager["InfoFont"], health.ToString());
+                statusText.scale = 1.5f;
+                statusText.position = position + new Vector2(0, -25);
+                if (team == 0)
+                {
+                    statusText.color = new Color(0, 1f, 0); //Color.Green;
+                }
+                else if (team == 1)
+                {
+                    statusText.color = new Color(1f, 0, 1f);// Color.Purple;
+                }
+                healthBacker = new Sprite(Game1.world.textureConverter.GenRectangle((int)(statusText.rectangle.Width * statusText.scale) + 10, 30, new Color(Color.Black, .75f)));
+                healthBacker.position = statusText.position + new Vector2(-2, -2);
+            }
             healthBacker.Draw(spriteBatch);
-            statusText.Text = health.ToString();
             statusText.Draw(spriteBatch);
             if (text.Text != " ")
             {
@@ -263,7 +300,7 @@ namespace pax_infinium
                 int angleModifier = 0;
                 angleModifier = getAngleModifier(character.direction);
 
-                int chance = 90 - character.evasion + angleModifier * 5;
+                int chance = 90 - character.evasion + angleModifier * 5 + accuracyMod;
                 int damage = (int)((WAttack + WAttack * angleModifier / 2 - (character.WDefense / 2)) * .5);
                 return new int[] { chance, damage };
             }
@@ -317,6 +354,9 @@ namespace pax_infinium
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                 character.setText("-" + damage + "HP", Color.Red);
 
+                Game1.world.level.recalcStatusBars();
+                Game1.world.level.recalcTeamHealthBar();
+
                 if (character.health <= 0)
                 {
                     Console.WriteLine(character.name + " has died!");
@@ -332,7 +372,7 @@ namespace pax_infinium
             {
                 Console.WriteLine("Miss!");
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
-                setText("Miss!", Color.Green);
+                character.setText("Miss!", Color.Green);
                 return null;
             }
         }
@@ -364,15 +404,18 @@ namespace pax_infinium
             recalcPos();*/
         }
 
-        public void Move(Vector3 pos)
+        public void Move(Vector3 pos, bool recalc)
         {
             gridPos = pos;
-            recalcPos();
+            if (recalc)
+            {
+                recalcPos();
+            }
         }
 
         public int[] calculateMageSpecial(Character character)
         {
-            int chance = 100 - character.evasion;
+            int chance = 100 - character.evasion + accuracyMod;
             int spellModifier = 0;
             int damage = (int)((MAttack + spellModifier - (character.MDefense / 2)) * .75);
             return new int[] { chance, damage };
@@ -419,6 +462,9 @@ namespace pax_infinium
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                 character.setText("-" + damage + "HP", Color.Red);
 
+                Game1.world.level.recalcStatusBars();
+                Game1.world.level.recalcTeamHealthBar();
+
                 if (character.health <= 0)
                 {
                     Console.WriteLine(character.name + " has died!");
@@ -459,7 +505,7 @@ namespace pax_infinium
             int angleModifier = 0;
             angleModifier = getAngleModifier(character.direction);
 
-            int chance = 45 - character.evasion + angleModifier * 5;
+            int chance = 45 - character.evasion + angleModifier * 5 + accuracyMod;
 
             return chance;
         }
@@ -517,6 +563,8 @@ namespace pax_infinium
             mp -= cost;
             textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
             setText("-" + cost + "MP", Color.Blue);
+
+            Game1.world.level.recalcStatusBars();
         }
 
         public void SoldierSpecial(Character character)
@@ -535,7 +583,44 @@ namespace pax_infinium
             character.setText("+" + defenseBoost + "WD", Color.Yellow);
         }
 
-        public void Rotate(Vector3 pos)
+        public int CalculateHunterSpecial(Character character)
+        {
+            int chance = 75 - character.evasion + accuracyMod;
+
+            return chance;
+        }
+
+        public void HunterSpecial(Character character)
+        {
+            int chance = CalculateHunterSpecial(character);
+            if (chance >= World.Random.Next(1, 101))
+            {
+                int accuracyDrop = 5;
+                character.accuracyMod -= accuracyDrop;
+            }
+        }
+
+        public void HunterSpecial(Character character, GameTime gameTime)
+        {
+            int chance = CalculateHunterSpecial(character);
+            Console.WriteLine("Chance to hit: " + chance + "%");
+            if (chance >= World.Random.Next(1, 101))
+            {
+                int accuracyDrop = 5;
+                Console.WriteLine(character.name + " loses " + accuracyDrop + " accuracy!");
+                character.accuracyMod -= accuracyDrop;
+                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                character.setText("-" + accuracyDrop + "ACC", Color.Orange);
+            }
+            else
+            {
+                Console.WriteLine("Miss!");
+                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                character.setText("Miss!", Color.Green);
+            }
+        }
+
+        public void Rotate(Vector3 pos, bool changeTex)
         {
             float x = gridPos.X - pos.X;
             float y = gridPos.Y - pos.Y;
@@ -545,12 +630,10 @@ namespace pax_infinium
                 if (x > 0)
                 {
                     direction = EDirection.Northwest;
-                    sprite.tex = nwTex;
                 }
                 else
                 {
                     direction = EDirection.Southeast;
-                    sprite.tex = seTex;
                 }
             }
             else
@@ -558,13 +641,16 @@ namespace pax_infinium
                 if (y > 0)
                 {
                     direction = EDirection.Northeast;
-                    sprite.tex = neTex;
                 }
                 else
                 {
                     direction = EDirection.Southwest;
-                    sprite.tex = swTex;
                 }
+            }
+
+            if (changeTex)
+            {
+                Rotate(direction);
             }
         }
 
@@ -638,12 +724,12 @@ namespace pax_infinium
                             moves.Add(new Move(0, gridPos, 1, character.gridPos)); // Don't move, Attack character
                         }
                     }
-                    if (CanCast(8) && job != EJob.Hunter)
+                    if (CanCast(8))
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
                             if (InMagicRange(cu.gridPos) && level.grid.TopExposed(cu.gridPos))
-                            {                                
+                            {
                                 if (job != EJob.Mage || job != EJob.Healer)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
@@ -673,11 +759,11 @@ namespace pax_infinium
                             moves.Add(new Move(1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
                         }
                     }
-                    if (CanCast(8) && job != EJob.Hunter)
+                    if (CanCast(8))
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
-                            if (Game1.world.cubeDist(cu.gridPos, cube.gridPos) <= magicRange && level.grid.TopExposed(cu.gridPos))
+                            if (Vector3.Distance(cu.gridPos, cube.gridPos) <= magicRange && level.grid.TopExposed(cu.gridPos))
                             {
                                 if (job != EJob.Mage || job != EJob.Healer)
                                 {
@@ -703,13 +789,13 @@ namespace pax_infinium
                             moves.Add(new Move(2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
                         }
                     }
-                    if (CanCast(8) && job != EJob.Hunter)
+                    if (CanCast(8))
                     {
                         foreach (Cube cu in level.grid.cubes)
                         {
                             if (InMagicRange(cu.gridPos) && level.grid.TopExposed(cu.gridPos))
                             {
-                               if (job != EJob.Mage || job != EJob.Healer)
+                                if (job != EJob.Mage || job != EJob.Healer)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if (target != null && (target.team != team || job == EJob.Soldier))

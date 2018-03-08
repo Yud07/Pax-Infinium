@@ -64,12 +64,14 @@ namespace pax_infinium
                     NothingAttackSpecial(player, level);
                     break;
                 case 1:
-                    player.Move(movePos);
+                    player.Rotate(movePos, false);
+                    player.Move(movePos, false);
                     NothingAttackSpecial(player, level);
                     break;
                 case 2:
                     NothingAttackSpecial(player, level);
-                    player.Move(movePos);
+                    player.Rotate(movePos, false);
+                    player.Move(movePos, false);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -84,21 +86,31 @@ namespace pax_infinium
             {
                 case 0:
                     NothingAttackSpecial(player, level, gameTime);
+                    EndTurn(level, gameTime);
                     break;
                 case 1:
-                    player.Rotate(movePos);
-                    player.Move(movePos);
-                    NothingAttackSpecial(player, level, gameTime);
+                    //player.Rotate(movePos);
+                    player.Move(movePos, level);
+                    //NothingAttackSpecial(player, level, gameTime);
                     break;
                 case 2:
                     NothingAttackSpecial(player, level, gameTime);
-                    player.Rotate(movePos);
-                    player.Move(movePos);
+                    //player.Rotate(movePos);
+                    player.Move(movePos, level);
                     break;
                 default:
                     throw new NotImplementedException();
             }
-            EndTurn(level);
+        }
+
+        public void PostMove(Level level, GameTime gameTime)
+        {
+            Character player = level.grid.characters.list[0];
+            if (noneMoveBeforeMoveAfter == 1)
+            {
+                NothingAttackSpecial(player, level, gameTime);
+            }
+            EndTurn(level, gameTime);
         }
 
         public void NothingAttackSpecial(Character player, Level level)
@@ -111,7 +123,7 @@ namespace pax_infinium
                 case 0:
                     break;
                 case 1:
-                    player.Rotate(attackSpecialPos);
+                    player.Rotate(attackSpecialPos, false);
                     Character toBeKilled;
                     character = level.grid.CharacterAtPos(attackSpecialPos);
                     toBeKilled = player.attack(character);
@@ -121,7 +133,7 @@ namespace pax_infinium
                     }
                     break;
                 case 2:
-                    player.Rotate(attackSpecialPos);
+                    player.Rotate(attackSpecialPos, false);
                     player.payForCast(8);
                     switch ((int)player.job)
                     {
@@ -130,8 +142,9 @@ namespace pax_infinium
                             player.SoldierSpecial(character);
                             break;
                         case 1:
-                            throw new NotImplementedException();
-                            //break;
+                            character = level.grid.CharacterAtPos(attackSpecialPos);
+                            player.HunterSpecial(character);
+                            break;
                         case 2:
                             //player.MageSpecial()
                             List<Character> toBeKilledList = new List<Character>();
@@ -188,7 +201,7 @@ namespace pax_infinium
                 case 0:
                     break;
                 case 1:
-                    player.Rotate(attackSpecialPos);
+                    player.Rotate(attackSpecialPos, true);
                     Character toBeKilled;
                     character = level.grid.CharacterAtPos(attackSpecialPos);
                     toBeKilled = player.attack(character, gameTime);
@@ -198,7 +211,7 @@ namespace pax_infinium
                     }
                     break;
                 case 2:
-                    player.Rotate(attackSpecialPos);
+                    player.Rotate(attackSpecialPos, true);
                     player.payForCast(8, gameTime);
                     switch ((int) player.job)
                     {
@@ -207,8 +220,9 @@ namespace pax_infinium
                             player.SoldierSpecial(character, gameTime);
                             break;
                         case 1:
-                            throw new NotImplementedException();
-                        //break;
+                            character = level.grid.CharacterAtPos(attackSpecialPos);
+                            player.HunterSpecial(character, gameTime);
+                            break;
                         case 2:
                             //player.MageSpecial()
                             List<Character> toBeKilledList = new List<Character>();
@@ -310,6 +324,75 @@ namespace pax_infinium
 
                 //Console.WriteLine("turn: " + turn);
                 //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
+                
+            }
+
+            level.moved = false;
+            level.attacked = false;
+            level.rotated = false;
+        }
+
+        private void EndTurn(Level level, GameTime gameTime)
+        {
+            level.turn++;
+
+            if (level.grid.characters.list.Count > 0)
+            {
+                Character tempCharacter = level.grid.characters.list[0];
+                level.grid.characters.list.Remove(tempCharacter);
+                level.grid.characters.list.Add(tempCharacter);
+
+                level.recalcTeamHealthBar();
+                /*foreach (Character c in level.grid.characters.list)
+                {
+                    c.recalcPos();
+                }
+                level.grid.onCharacterMoved(level);*/
+
+                level.CalcValidMoveSpaces();
+                level.setupTurnOrderIcons();
+
+                Character player = level.grid.characters.list[0];
+
+                float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
+                float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, 0, player.gridPos.Z));
+                float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, level.grid.depth, player.gridPos.Z));
+                float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, level.grid.depth, player.gridPos.Z));
+
+                List<float> distancesToCorners = new List<float>();
+                //East right once
+                //North right twice
+                //West right 3 times
+
+                distancesToCorners.Add(distanceToEast);
+                distancesToCorners.Add(distanceToNorth);
+                distancesToCorners.Add(distanceToWest);
+                distancesToCorners.Add(distanceToSouth);
+
+                float min = distancesToCorners.Min();
+                //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
+                if (min != distanceToSouth)
+                {
+                    if (distanceToEast == min)
+                    {
+                        //Console.WriteLine("east");
+                        level.grid.rotate(true, level);
+                    }
+                    else if (distanceToWest == min)
+                    {
+                        //Console.WriteLine("west");
+                        level.grid.rotate(false, level);
+                    }
+                    else
+                    {
+                        //Console.WriteLine("north");
+                        level.grid.rotate(true, level);
+                        level.grid.rotate(true, level);
+                    }
+                }                
+
+                //Console.WriteLine("turn: " + turn);
+                //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
                 level.text.Text = "Turn:" + level.turn.ToString();
                 level.playerName.Text = player.name;
                 String t = player.health + "              " + player.mp;
@@ -342,7 +425,16 @@ namespace pax_infinium
                 {
                     player.mp = player.maxMP;
                 }*/
+                if (player.team == 0)
+                {
+                    level.thoughtBubble.position = player.position;
+                    level.thoughtBubble.position.Y -= 50;
+                    Game1.world.triggerAIBool = true;
+                }
             }
+
+            /*level.thoughtBubble.position = Vector2.Zero;
+            level.drewThoughtBubble = false;*/
 
             level.moved = false;
             level.attacked = false;

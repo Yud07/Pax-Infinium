@@ -25,7 +25,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Buttons\MoveButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Buttons\RightButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Buttons\SpecialButton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Buttons\UndoButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Buttons\UpButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)C5\arrays\ArrayList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)C5\arrays\CircularQueue.cs" />

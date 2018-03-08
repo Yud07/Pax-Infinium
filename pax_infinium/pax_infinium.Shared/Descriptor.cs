@@ -16,10 +16,12 @@ namespace pax_infinium
         int width;
         int height;
         public bool trigger;
+        public Sprite refSprite;
 
-        public Descriptor(Polygon poly, String text)
+        public Descriptor(Polygon poly, String text, Sprite refSprite=null)
         {
             this.poly = poly;
+            this.refSprite = refSprite;
             int leftMost = int.MaxValue;
             int rightMost = int.MinValue;
             int topMost = int.MaxValue;
@@ -104,22 +106,22 @@ namespace pax_infinium
 
             if (textInBounds(topLeft))
             {
-                Console.WriteLine("Chose topLeft");
+                //Console.WriteLine("Chose topLeft");
                 pos = topLeft;
             }
             else if (textInBounds(bottomLeft))
             {
-                Console.WriteLine("Chose bottomLeft");
+                //Console.WriteLine("Chose bottomLeft");
                 pos = bottomLeft;
             }
             else if (textInBounds(topRight))
             {
-                Console.WriteLine("Chose topRight");
+                //Console.WriteLine("Chose topRight");
                 pos = topRight;
             }
             else if (textInBounds(bottomRight))
             {
-                Console.WriteLine("Chose bottomRight");
+                //Console.WriteLine("Chose bottomRight");
                 pos = bottomRight;
             }
             else
@@ -127,10 +129,10 @@ namespace pax_infinium
                 pos = Vector2.Zero;
             }
 
-            if (pos.X + width > 1920)
+            /*if (pos.X + width > 1920)
             {
                 Console.WriteLine("Right: " + (int)(pos.X + width));
-            }
+            }*/
 
             for (int i = 0; i < textItems.Count; i++)
             {
@@ -162,7 +164,12 @@ namespace pax_infinium
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (trigger)
+            bool temp = true;
+            if (refSprite != null)
+            {
+                temp = refSprite.visible;
+            }
+            if (trigger && temp)
             {
                 backing.Draw(spriteBatch);
                 foreach (TextItem t in textItems)

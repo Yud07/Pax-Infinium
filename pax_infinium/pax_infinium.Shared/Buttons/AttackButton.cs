@@ -39,7 +39,7 @@ namespace pax_infinium.Buttons
             clickedFilter.position = pos;
 
             desc = new Descriptor(poly, "(Keyboard A) Conducts a basic attack against a character within the character's attack range. Attacks damage the target's health points. Chance of hitting is lowest from the targets front, higher " +
-                "from the sides, and highest from the back.");
+                "from the sides, and highest from the back.", sprite);
 
             trigger = false;
         }
@@ -54,8 +54,13 @@ namespace pax_infinium.Buttons
         {
             if (Game1.world.level.grid.characters.list[0].team == 1)
             {
+                sprite.visible = true;
                 sprite.Draw(spriteBatch);
                 text.Draw(spriteBatch);
+            }
+            else
+            {
+                sprite.visible = false;
             }
             if (clickTime != DateTime.MinValue)
             {
@@ -93,6 +98,11 @@ namespace pax_infinium.Buttons
         public Descriptor GetDescriptor()
         {
             return desc;
+        }
+
+        public void SetText(string text)
+        {
+            throw new NotImplementedException();
         }
     }
 }

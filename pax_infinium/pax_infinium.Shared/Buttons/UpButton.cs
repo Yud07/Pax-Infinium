@@ -37,7 +37,7 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "(Keyboard Up-Arrow) Raises the peel (cube visibility) level.");
+            desc = new Descriptor(poly, "(Keyboard Up-Arrow) Raises the peel (cube visibility) level.", sprite);
         }
 
         public void Click()
@@ -84,6 +84,11 @@ namespace pax_infinium.Buttons
         }
 
         public void ResetTrigger() { }
+
+        public void SetText(string text)
+        {
+            throw new NotImplementedException();
+        }
 
         public void SetTextColor(Color c)
         {

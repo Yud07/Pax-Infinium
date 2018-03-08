@@ -38,7 +38,9 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "(Keyboard M) Allows the character to move to a new position within their movement range. May be done once per turn before or after an action.");
+            desc = new Descriptor(poly, "(Keyboard M) Allows the character to move to a new position within their movement range." +
+                " May be done once per turn before or after an action. When 'Undo' is displayed, it retracts that move if" +
+                "they have not attacked or used their special.", sprite);
 
             trigger = false;
         }
@@ -53,6 +55,7 @@ namespace pax_infinium.Buttons
         {
             if (Game1.world.level.grid.characters.list[0].team == 1)
             {
+                sprite.visible = true;
                 sprite.Draw(spriteBatch);
                 text.Draw(spriteBatch);
                 if (clickTime != DateTime.MinValue)
@@ -66,6 +69,10 @@ namespace pax_infinium.Buttons
                         clickTime = DateTime.MinValue;
                     }
                 }
+            }
+            else
+            {
+                sprite.visible = false;
             }
         }
 
@@ -87,6 +94,17 @@ namespace pax_infinium.Buttons
         public void ResetTrigger()
         {
             trigger = false;
+        }
+
+        public void SetText(string t)
+        {
+            int width = 300;
+            int height = 50;
+            Color temp = text.color;
+            Vector2 pos = sprite.position;
+            text = new TextItem(World.fontManager["Trajanus Roman 36"], t);
+            text.color = temp;
+            text.position = new Vector2(pos.X + width / 2, pos.Y + height / 2 + 3);
         }
 
         public void SetTextColor(Color c)

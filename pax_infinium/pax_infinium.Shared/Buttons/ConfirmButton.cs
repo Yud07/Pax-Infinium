@@ -38,7 +38,7 @@ namespace pax_infinium.Buttons
             clickedFilter.origin = Vector2.Zero;
             clickedFilter.position = pos;
 
-            desc = new Descriptor(poly, "(Keyboard Y) Executes the selected action.");
+            desc = new Descriptor(poly, "(Keyboard Y) Executes the selected action.", sprite);
 
             trigger = false;
         }
@@ -53,6 +53,7 @@ namespace pax_infinium.Buttons
         {
             if (Game1.world.level.grid.characters.list[0].team == 1 && Game1.world.level.confirmationText.Text != "")
             {
+                sprite.visible = true;
                 sprite.Draw(spriteBatch);
                 text.Draw(spriteBatch);
                 if (clickTime != DateTime.MinValue)
@@ -66,6 +67,10 @@ namespace pax_infinium.Buttons
                         clickTime = DateTime.MinValue;
                     }
                 }
+            }
+            else
+            {
+                sprite.visible = false;
             }
         }
 
@@ -87,6 +92,11 @@ namespace pax_infinium.Buttons
         public void ResetTrigger()
         {
             trigger = false;
+        }
+
+        public void SetText(string text)
+        {
+            throw new NotImplementedException();
         }
 
         public void SetTextColor(Color c)
