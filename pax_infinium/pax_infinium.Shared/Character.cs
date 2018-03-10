@@ -59,6 +59,9 @@ namespace pax_infinium
 
         public int accuracyMod;
 
+        public Sprite hitSprite;
+        public TimeSpan hitTime;
+        public EHitIcon hitType;
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -125,8 +128,11 @@ namespace pax_infinium
 
             accuracyMod = 0;
 
-            //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
-        }
+            hitTime = TimeSpan.MinValue;
+            hitType = EHitIcon.None;
+
+        //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
+    }
 
         public void recalcPos()
         {
@@ -150,6 +156,11 @@ namespace pax_infinium
 
             healthBacker.position = statusText.position + new Vector2(-2, -2);
 
+            if (hitSprite != null)
+            {
+                hitSprite.position = position;
+            }
+
             //darken();
         }
 
@@ -168,6 +179,11 @@ namespace pax_infinium
                     Game1.world.finishedMove = true;
                     postMoveWaitTime = TimeSpan.MinValue;
                 }
+            }
+
+            if (hitTime < gameTime.TotalGameTime)
+            {
+                hitType = EHitIcon.None;
             }
 
             if (movePath.Count > 0)
@@ -199,6 +215,10 @@ namespace pax_infinium
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (hitType == EHitIcon.Magic)
+            {
+                hitSprite.Draw(spriteBatch);
+            }
             sprite.Draw(spriteBatch);
             //statusText.Text = health.ToString();
             if (health.ToString() != statusText.Text)
@@ -223,6 +243,10 @@ namespace pax_infinium
             {
                 text.Draw(spriteBatch);
             }
+            if (hitType != EHitIcon.None && hitType != EHitIcon.Magic)
+            {
+                hitSprite.Draw(spriteBatch);
+            }
         }
 
         public int DrawOrder()
@@ -236,6 +260,7 @@ namespace pax_infinium
             healthBacker.alpha = alpha * .75f;
             statusText.alpha = alpha;
             text.alpha = alpha;
+            hitSprite.alpha = alpha;
         }
 
         public void onCharacterMoved(Level level)
@@ -354,7 +379,15 @@ namespace pax_infinium
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                 character.setText("-" + damage + "HP", Color.Red);
 
-                Game1.world.level.recalcStatusBars();
+                if (job == EJob.Hunter)
+                {
+                    character.UpdateHitIcon(EHitIcon.Arrow, gameTime);
+                }
+                else
+                {
+                    character.UpdateHitIcon(EHitIcon.Slash, gameTime);
+                }
+                
                 Game1.world.level.recalcTeamHealthBar();
 
                 if (character.health <= 0)
@@ -365,6 +398,7 @@ namespace pax_infinium
                 else
                 {
                     Console.WriteLine(character.name + " health: " + character.health);
+                    Game1.world.level.recalcStatusBars();
                     return null;
                 }
             }
@@ -431,6 +465,7 @@ namespace pax_infinium
                 int damage = chanceDamage[1];
                 //Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
+
                 
                 if (character.health <= 0)
                 {
@@ -462,7 +497,8 @@ namespace pax_infinium
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                 character.setText("-" + damage + "HP", Color.Red);
 
-                Game1.world.level.recalcStatusBars();
+                character.UpdateHitIcon(EHitIcon.Lightning, gameTime);
+                
                 Game1.world.level.recalcTeamHealthBar();
 
                 if (character.health <= 0)
@@ -473,6 +509,7 @@ namespace pax_infinium
                 else
                 {
                     Console.WriteLine(character.name + " health: " + character.health);
+                    Game1.world.level.recalcStatusBars();
                 }
             }
             else
@@ -498,6 +535,8 @@ namespace pax_infinium
             character.health += health;
             character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
             character.setText("+" + health + "HP", Color.Red);
+
+            character.UpdateHitIcon(EHitIcon.Heal, gameTime);
         }
 
         public int CalculateThiefSpecial(Character character)
@@ -537,6 +576,9 @@ namespace pax_infinium
                 Console.WriteLine(character.name + " had their next turn stolen!");
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                 character.setText("Skipped!", Color.OrangeRed);
+
+                character.UpdateHitIcon(EHitIcon.Skip, gameTime);
+
                 return character;
             }
             else
@@ -564,6 +606,8 @@ namespace pax_infinium
             textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
             setText("-" + cost + "MP", Color.Blue);
 
+            UpdateHitIcon(EHitIcon.Magic, gameTime);
+
             Game1.world.level.recalcStatusBars();
         }
 
@@ -581,6 +625,8 @@ namespace pax_infinium
             character.MDefense += defenseBoost;
             character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
             character.setText("+" + defenseBoost + "WD", Color.Yellow);
+
+            character.UpdateHitIcon(EHitIcon.Shield, gameTime);
         }
 
         public int CalculateHunterSpecial(Character character)
@@ -611,6 +657,8 @@ namespace pax_infinium
                 character.accuracyMod -= accuracyDrop;
                 character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                 character.setText("-" + accuracyDrop + "ACC", Color.Orange);
+
+                character.UpdateHitIcon(EHitIcon.AccuracyDown, gameTime);
             }
             else
             {
@@ -858,6 +906,45 @@ namespace pax_infinium
             text.position = position + new Vector2(0, -80);
             text.color = c;
             text.scale = 1.5f;
+        }
+
+        public void UpdateHitIcon(EHitIcon hT, GameTime gameTime)
+        {
+            hitType = hT;
+            hitTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 2);
+            switch (hitType)
+            {
+                case EHitIcon.Slash:
+                    hitSprite = new Sprite(World.textureManager["Slash"]);
+                    break;
+                case EHitIcon.Heal:
+                    hitSprite = new Sprite(World.textureManager["Heal"]);
+                    break;
+                case EHitIcon.AccuracyDown:
+                    hitSprite = new Sprite(World.textureManager["AccuracyDown"]);
+                    break;
+                case EHitIcon.Arrow:
+                    hitSprite = new Sprite(World.textureManager["Arrow"]);
+                    break;
+                case EHitIcon.Lightning:
+                    hitSprite = new Sprite(World.textureManager["Lightning"]);
+                    break;
+                case EHitIcon.Magic:
+                    hitSprite = new Sprite(World.textureManager["Magic"]);
+                    break;
+                case EHitIcon.Shield:
+                    hitSprite = new Sprite(World.textureManager["Shield"]);
+                    break;
+                case EHitIcon.Skip:
+                    hitSprite = new Sprite(World.textureManager["Skip"]);
+                    break;
+                default:
+                    break;
+            }
+            if (hitSprite != null)
+            {
+                hitSprite.position = position;
+            }
         }
     }
 }

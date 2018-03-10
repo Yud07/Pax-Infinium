@@ -7,14 +7,14 @@
     <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="pax_infinium.Windows.exe.manifest" size="41467">
+    <dependentAssembly dependencyType="install" codebase="pax_infinium.Windows.exe.manifest" size="44645">
       <assemblyIdentity name="pax_infinium.Windows.exe" version="1.0.0.5" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>NhN6tGQsyH1wsJcf18yfSOcjcGW+iaw1eIduaEi/MAM=</dsig:DigestValue>
+        <dsig:DigestValue>p02sdErfb67AHcG8dK341eEU+iADIGW3Q83tfBj1e/Y=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

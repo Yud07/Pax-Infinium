@@ -154,6 +154,16 @@ namespace pax_infinium
 
             World.textureManager.Load("Thought Bubble");
 
+            World.textureManager.Load("Slash");
+            World.textureManager.Load("Heal");
+
+            World.textureManager.Load("AccuracyDown");
+            World.textureManager.Load("Arrow");
+            World.textureManager.Load("Lightning");
+            World.textureManager.Load("Magic");
+            World.textureManager.Load("Shield");
+            World.textureManager.Load("Skip");
+
             // create 1x1 texture for line drawing
             world.oneByOne = new Texture2D(GraphicsDevice, 1, 1);
             world.oneByOne.SetData<Color>(
@@ -364,6 +374,7 @@ namespace pax_infinium
                         {
                             if (selectedAction == "" && !world.level.attacked) // undo movement
                             {
+                                player.movePath.Clear();
                                 player.Move(world.level.movedFrom, true);
                                 world.level.moved = false;
                                 world.level.rotated = false;
@@ -695,7 +706,6 @@ namespace pax_infinium
 
                                                 if (player.job == EJob.Mage || player.job == EJob.Healer)
                                                 {
-                                                    List<Character> toBeKilled = new List<Character>();
                                                     foreach (Character character in world.level.grid.characters.list)
                                                     {
                                                         if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
@@ -706,7 +716,7 @@ namespace pax_infinium
                                                                 Character result = player.MageSpecial(character, gameTime);
                                                                 if (result != null)
                                                                 {
-                                                                    toBeKilled.Add(result);
+                                                                    world.level.toBeKilled.Add(result);
                                                                 }
                                                             }
                                                             else if (player.job == EJob.Healer)// healer
@@ -717,10 +727,6 @@ namespace pax_infinium
                                                     }
                                                     world.level.attacked = true;
                                                     resetConfirmation();
-                                                    foreach (Character character in toBeKilled)
-                                                    {
-                                                        world.level.grid.characters.list.Remove(character);
-                                                    }
                                                 }
                                                 else if (player.job == EJob.Thief)// thief special
                                                 {
@@ -779,21 +785,21 @@ namespace pax_infinium
                                         }
                                         else
                                         {
-                                            Character toBeKilled = null;
+                                            Character tBKill = null;
                                             foreach (Character character in world.level.grid.characters.list)
                                             {
                                                 if (cube.gridPos == character.gridPos)
                                                 {
 
-                                                    toBeKilled = player.attack(character, gameTime);
+                                                    tBKill = player.attack(character, gameTime);
 
                                                     world.level.attacked = true;
                                                     resetConfirmation();
                                                 }
                                             }
-                                            if (toBeKilled != null)
+                                            if (tBKill != null)
                                             {
-                                                world.level.grid.characters.list.Remove(toBeKilled);
+                                                world.level.toBeKilled.Add(tBKill);
                                             }
                                         }
                                     }
@@ -813,6 +819,8 @@ namespace pax_infinium
                         world.level.grid.onCharacterMoved(world.level);
                         world.level.grid.peelCubes();
                     }
+
+                    
                 }
             }
 

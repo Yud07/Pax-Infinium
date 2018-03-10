@@ -69,6 +69,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)C5\Wrappers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Descriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EDirection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enum\EHitIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EJob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Animations.cs" />

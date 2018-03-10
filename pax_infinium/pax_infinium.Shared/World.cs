@@ -94,6 +94,7 @@ namespace pax_infinium
             }
             if (finishedMove)
             {
+                //Console.WriteLine("Finished Move");
                 currentMove.PostMove(level, gameTime);
                 finishedMove = false;
             }

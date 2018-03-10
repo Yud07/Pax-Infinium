@@ -202,12 +202,12 @@ namespace pax_infinium
                     break;
                 case 1:
                     player.Rotate(attackSpecialPos, true);
-                    Character toBeKilled;
+                    Character tBKill;
                     character = level.grid.CharacterAtPos(attackSpecialPos);
-                    toBeKilled = player.attack(character, gameTime);
-                    if (toBeKilled != null)
+                    tBKill = player.attack(character, gameTime);
+                    if (tBKill != null)
                     {
-                        level.grid.characters.list.Remove(toBeKilled);
+                        level.toBeKilled.Add(tBKill);
                     }
                     break;
                 case 2:
@@ -225,7 +225,6 @@ namespace pax_infinium
                             break;
                         case 2:
                             //player.MageSpecial()
-                            List<Character> toBeKilledList = new List<Character>();
                             cube = level.grid.getCube(attackSpecialPos);
                             foreach (Character chara in level.grid.characters.list)
                             {
@@ -234,15 +233,11 @@ namespace pax_infinium
                                     Character result = player.MageSpecial(chara, gameTime);
                                     if (result != null)
                                     {
-                                        toBeKilledList.Add(result);
+                                        level.toBeKilled.Add(result);
                                     }
                                 }
                             }
                             level.attacked = true;
-                            foreach (Character c in toBeKilledList)
-                            {
-                                level.grid.characters.list.Remove(c);
-                            }
                             break;
                         case 3:
                             //player.HealerSpecial()
@@ -280,50 +275,8 @@ namespace pax_infinium
                 level.grid.characters.list.Add(tempCharacter);
 
                 level.CalcValidMoveSpaces();
-                //level.setupTurnOrderIcons();
 
                 Character player = level.grid.characters.list[0];
-
-                /*float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
-                float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, 0, player.gridPos.Z));
-                float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, level.grid.depth, player.gridPos.Z));
-                float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, level.grid.depth, player.gridPos.Z));
-
-                List<float> distancesToCorners = new List<float>();
-                //East right once
-                //North right twice
-                //West right 3 times
-
-                distancesToCorners.Add(distanceToEast);
-                distancesToCorners.Add(distanceToNorth);
-                distancesToCorners.Add(distanceToWest);
-                distancesToCorners.Add(distanceToSouth);
-
-                float min = distancesToCorners.Min();
-                //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
-                if (min != distanceToSouth)
-                {
-                    if (distanceToEast == min)
-                    {
-                        //Console.WriteLine("east");
-                        level.grid.rotate(true, level);
-                    }
-                    else if (distanceToWest == min)
-                    {
-                        //Console.WriteLine("west");
-                        level.grid.rotate(false, level);
-                    }
-                    else
-                    {
-                        //Console.WriteLine("north");
-                        level.grid.rotate(true, level);
-                        level.grid.rotate(true, level);
-                    }
-                }
-                */
-
-                //Console.WriteLine("turn: " + turn);
-                //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
                 
             }
 
@@ -354,42 +307,7 @@ namespace pax_infinium
 
                 Character player = level.grid.characters.list[0];
 
-                float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
-                float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, 0, player.gridPos.Z));
-                float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(level.grid.width, level.grid.depth, player.gridPos.Z));
-                float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, level.grid.depth, player.gridPos.Z));
-
-                List<float> distancesToCorners = new List<float>();
-                //East right once
-                //North right twice
-                //West right 3 times
-
-                distancesToCorners.Add(distanceToEast);
-                distancesToCorners.Add(distanceToNorth);
-                distancesToCorners.Add(distanceToWest);
-                distancesToCorners.Add(distanceToSouth);
-
-                float min = distancesToCorners.Min();
-                //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
-                if (min != distanceToSouth)
-                {
-                    if (distanceToEast == min)
-                    {
-                        //Console.WriteLine("east");
-                        level.grid.rotate(true, level);
-                    }
-                    else if (distanceToWest == min)
-                    {
-                        //Console.WriteLine("west");
-                        level.grid.rotate(false, level);
-                    }
-                    else
-                    {
-                        //Console.WriteLine("north");
-                        level.grid.rotate(true, level);
-                        level.grid.rotate(true, level);
-                    }
-                }                
+                level.RotateTo = player; 
 
                 //Console.WriteLine("turn: " + turn);
                 //text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
@@ -428,6 +346,7 @@ namespace pax_infinium
                 if (player.team == 0)
                 {
                     level.thoughtBubble.position = player.position;
+                    level.thoughtBubble.position.X += 10;
                     level.thoughtBubble.position.Y -= 50;
                     Game1.world.triggerAIBool = true;
                 }

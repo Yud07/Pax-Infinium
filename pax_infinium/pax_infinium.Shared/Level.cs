@@ -119,6 +119,9 @@ namespace pax_infinium
 
         public List<Descriptor> descriptors;
 
+        public List<Character> toBeKilled;
+        public Character RotateTo;
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
             startScreen = new Background(World.textureManager["Start Screen"], graphics.GraphicsDevice.Viewport);
@@ -445,6 +448,8 @@ namespace pax_infinium
             Descriptor characterMagicBarDescriptor = new Descriptor(characterMagicBarPoly, "The amount of magic points of the character who is hovered over or selected. Magic points are removed when a character uses their special. These points are not regenerated during battle.", characterMagicBar);
             descriptors.Add(characterMagicBarDescriptor);
 
+            toBeKilled = new List<Character>();
+            RotateTo = null;
         }
 
         public void recalcTeamHealthBar()
@@ -600,24 +605,6 @@ namespace pax_infinium
 
         public void Update(GameTime gameTime)
         {
-            /*if (moved == true)
-            {
-                turn++;
-                //Console.WriteLine("turn: " + turn);
-                text.Text = turnOrder[turn % turnOrder.Length] + "'s turn:" + turn.ToString();
-                if (text.color == Color.Blue)
-                {
-                    text.color = Color.Red;
-                }
-                else
-                {
-                    text.color = Color.Blue;
-                }
-                grid.onCharacterMoved();
-                moved = false;
-                attacked = false;
-            }*/
-            //grid.Update(gameTime);
             grid.characters.Update(gameTime);
             if (Game1.world.state == 1)
             {
@@ -641,7 +628,41 @@ namespace pax_infinium
                         drawBVD = false;
                     }
                 }                
-            }     
+            }
+
+            if (toBeKilled.Count > 0) {
+                List<Character> tempCharacters = new List<Character>();
+                foreach (Character c in toBeKilled)
+                {
+                    if (c.hitType == 0)
+                    {
+                        tempCharacters.Add(c);
+                        grid.characters.list.Remove(c);
+                    }
+                }
+                foreach (Character ch in tempCharacters)
+                {
+                    toBeKilled.Remove(ch);
+                }
+            }
+
+            if (RotateTo != null)
+            {
+                bool stillAnimating = false;
+                foreach (Character c in grid.characters.list)
+                {
+                    if (c.hitType != EHitIcon.None)
+                    {
+                        stillAnimating = true;
+                        break;
+                    }
+                }
+                if (!stillAnimating)
+                {
+                    RotateBoardToCharacter(RotateTo);
+                    RotateTo = null;
+                }
+            }
             
             if (OneTeamRemaining())
             {
@@ -823,14 +844,14 @@ namespace pax_infinium
             playerFace.tex = player.faceLeft;
             if (player.team == 0)
             {
-                playerName.position = new Vector2(260, 970);
+                playerName.position = new Vector2(1920/3 - 300, 970);
                 playerName.color = Color.Green;
                 playerStatus.color = Color.Green;
 
             }
             else if (player.team == 1)
             {
-                playerName.position = new Vector2(260, 750);
+                playerName.position = new Vector2(1920/3 -300, 750);
                 playerName.color = Color.Purple;
                 playerStatus.color = Color.Purple;
             }
@@ -851,6 +872,7 @@ namespace pax_infinium
             if (player.team == 0)
             {
                 thoughtBubble.position = player.position;
+                thoughtBubble.position.X += 10;
                 thoughtBubble.position.Y -= 50;
                 Game1.world.triggerAIBool = true;
                 //Game1.world.triggerAI(this, gameTime);
@@ -1146,45 +1168,7 @@ namespace pax_infinium
 
         public void RotateToActiveCharacter()
         {
-            Character player = grid.characters.list[0];
-
-            float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
-            float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, 0, player.gridPos.Z));
-            float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, grid.depth, player.gridPos.Z));
-            float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, grid.depth, player.gridPos.Z));
-
-            List<float> distancesToCorners = new List<float>();
-            //East right once
-            //North right twice
-            //West right 3 times
-
-
-            distancesToCorners.Add(distanceToEast);
-            distancesToCorners.Add(distanceToNorth);
-            distancesToCorners.Add(distanceToWest);
-            distancesToCorners.Add(distanceToSouth);
-
-            float min = distancesToCorners.Min();
-            //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
-            if (min != distanceToSouth)
-            {
-                if (distanceToEast == min)
-                {
-                    //Console.WriteLine("east");
-                    grid.rotate(true, this);
-                }
-                else if (distanceToWest == min)
-                {
-                    //Console.WriteLine("west");
-                    grid.rotate(false, this);
-                }
-                else
-                {
-                    //Console.WriteLine("north");
-                    grid.rotate(true, this);
-                    grid.rotate(true, this);
-                }
-            }
+            RotateBoardToCharacter(grid.characters.list[0]);
         }
 
         public void RotateCompass()
@@ -1255,6 +1239,48 @@ namespace pax_infinium
                         validMoveSpaces.Add(c.gridPos);
                         validMovePaths.Add(tempList);
                     }
+                }
+            }
+        }
+
+        public void RotateBoardToCharacter(Character c)
+        {
+            Character player = c;
+
+            float distanceToNorth = Game1.world.cubeDist(player.gridPos, new Vector3(0, 0, player.gridPos.Z));
+            float distanceToEast = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, 0, player.gridPos.Z));
+            float distanceToSouth = Game1.world.cubeDist(player.gridPos, new Vector3(grid.width, grid.depth, player.gridPos.Z));
+            float distanceToWest = Game1.world.cubeDist(player.gridPos, new Vector3(0, grid.depth, player.gridPos.Z));
+
+            List<float> distancesToCorners = new List<float>();
+            //East right once
+            //North right twice
+            //West right 3 times
+
+            distancesToCorners.Add(distanceToEast);
+            distancesToCorners.Add(distanceToNorth);
+            distancesToCorners.Add(distanceToWest);
+            distancesToCorners.Add(distanceToSouth);
+
+            float min = distancesToCorners.Min();
+            //Console.WriteLine("e:" + distancesToCorners[0] + " n:" + distancesToCorners[1] + " w:" + distancesToCorners[2] + " s:" + distancesToCorners[3]);
+            if (min != distanceToSouth)
+            {
+                if (distanceToEast == min)
+                {
+                    //Console.WriteLine("east");
+                    grid.rotate(true, this);
+                }
+                else if (distanceToWest == min)
+                {
+                    //Console.WriteLine("west");
+                    grid.rotate(false, this);
+                }
+                else
+                {
+                    //Console.WriteLine("north");
+                    grid.rotate(true, this);
+                    grid.rotate(true, this);
                 }
             }
         }
