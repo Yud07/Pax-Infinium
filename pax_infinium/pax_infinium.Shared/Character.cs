@@ -260,7 +260,10 @@ namespace pax_infinium
             healthBacker.alpha = alpha * .75f;
             statusText.alpha = alpha;
             text.alpha = alpha;
-            hitSprite.alpha = alpha;
+            if (hitSprite != null)
+            {
+                hitSprite.alpha = alpha;
+            }
         }
 
         public void onCharacterMoved(Level level)
@@ -387,7 +390,7 @@ namespace pax_infinium
                 {
                     character.UpdateHitIcon(EHitIcon.Slash, gameTime);
                 }
-                
+
                 Game1.world.level.recalcTeamHealthBar();
 
                 if (character.health <= 0)
@@ -498,7 +501,7 @@ namespace pax_infinium
                 character.setText("-" + damage + "HP", Color.Red);
 
                 character.UpdateHitIcon(EHitIcon.Lightning, gameTime);
-                
+
                 Game1.world.level.recalcTeamHealthBar();
 
                 if (character.health <= 0)
@@ -535,6 +538,9 @@ namespace pax_infinium
             character.health += health;
             character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
             character.setText("+" + health + "HP", Color.Red);
+
+            Game1.world.level.recalcTeamHealthBar();
+            Game1.world.level.recalcStatusBars();
 
             character.UpdateHitIcon(EHitIcon.Heal, gameTime);
         }

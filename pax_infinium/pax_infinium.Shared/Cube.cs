@@ -420,9 +420,40 @@ namespace pax_infinium
         public bool isAdjacent(Vector3 v, int zTolerance = 1)
         {
             return Game1.world.linearCubeDist(gridPos, v) == 1 && Math.Abs(gridPos.Z - v.Z) <= zTolerance;
-            /*Vector3 diff = gridPos - v;
-            
-            return Game1.world.cubeDist(gridPos, v) == 1 && (diff.X == 0 || diff.Y == 0);*/
+        }
+
+        public bool clearPath(Vector3 v, Grid g)
+        {
+            Vector3 lower;
+            Vector3 higher;
+
+            if (v.Z <= gridPos.Z)
+            {
+                lower = v;
+                higher = gridPos;
+            }
+            else
+            {
+                higher = v;
+                lower = gridPos;
+            }
+
+            bool result = true;
+            for (int z = ((int)lower.Z) + 1; z < g.height && z < higher.Z + 2; z++)
+            {
+                Cube c = g.getCube((int)lower.X, (int)lower.Y, (int)z);
+                if (c != null)
+                {
+                    result = false;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        public bool canMoveAdjacentTo(Vector3 v, Grid g, int zTolerance = 1)
+        {
+            return isAdjacent(v, zTolerance) && clearPath(v, g);
         }
     }
 }

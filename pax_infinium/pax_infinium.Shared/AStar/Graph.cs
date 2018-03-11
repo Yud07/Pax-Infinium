@@ -47,7 +47,7 @@ namespace pax_infinium.AStar
                 {
                     if (node != n)
                     {
-                        if (!node.neighbors.Contains(n) && node.cube.isAdjacent(n.pos, jumpHeight))
+                        if (!node.neighbors.Contains(n) && node.cube.canMoveAdjacentTo(n.pos, grid, jumpHeight))
                         {
                             node.neighbors.Add(n);
                             n.neighbors.Add(node);

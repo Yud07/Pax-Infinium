@@ -122,6 +122,12 @@ namespace pax_infinium
         public List<Character> toBeKilled;
         public Character RotateTo;
 
+        public Sprite playerStatusBacker;
+        public Sprite characterStatusBacker;
+        public Sprite teamHealthBacker;
+        public int zeroStartHealth;
+        public int oneStartHealth;
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
             startScreen = new Background(World.textureManager["Start Screen"], graphics.GraphicsDevice.Viewport);
@@ -271,6 +277,8 @@ namespace pax_infinium
 
             zeroHealthText = new TextItem(World.fontManager["Trajanus Roman 36"], "1000 HP");
             oneHealthText = new TextItem(World.fontManager["Trajanus Roman 36"], "1000 HP");
+            zeroStartHealth = -1;
+            oneStartHealth = -1;
             recalcTeamHealthBar();
 
             drawInfo = false;
@@ -325,8 +333,8 @@ namespace pax_infinium
             descriptors.Add(cancelButton.GetDescriptor());
 
             Polygon teamHealthBarPoly = new Polygon();
-            float thbpX = teamZeroHealth.position.X - teamZeroHealth.tex.Width/2;
-            float thbpXb = thbpX + teamZeroHealth.tex.Width * 2;
+            float thbpX = 1920/2.75f - 400;
+            float thbpXb = thbpX + 800;
             Vector2 thbpTopLeft = new Vector2(thbpX, 0);
             Vector2 thbpTopRight = new Vector2(thbpXb, 0);
             Vector2 thbpBotLeft = new Vector2(thbpX, 50);
@@ -450,36 +458,58 @@ namespace pax_infinium
 
             toBeKilled = new List<Character>();
             RotateTo = null;
+
+            playerStatusBacker = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(1920 / 3, 80, new Color(0, 0, 0, .5f)));
+            playerStatusBacker.origin = Vector2.Zero;
+            playerStatusBacker.position = new Vector2(0, 1000);
+
+            characterStatusBacker = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(1920 / 3, 80, new Color(0, 0, 0, .5f)));
+            characterStatusBacker.origin = Vector2.Zero;
+            characterStatusBacker.position = new Vector2(1920 * 2 / 3, 1000);
+
+            teamHealthBacker = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(800, 50, new Color(0, 0, 0, .5f)));
+            teamHealthBacker.position = new Vector2(1920 / 2.75f, + 25);
         }
 
         public void recalcTeamHealthBar()
         {
-            int zeroHealth = 0;
-            int oneHealth = 0;
-            foreach(Character character in grid.characters.list)
+            if (!OneTeamRemaining())
             {
-                if (character.team == 0)
+                int zeroHealth = 0;
+                int oneHealth = 0;
+                foreach (Character character in grid.characters.list)
                 {
-                    zeroHealth += character.health;
+                    if (character.team == 0)
+                    {
+                        zeroHealth += character.health;
+                    }
+                    else
+                    {
+                        oneHealth += character.health;
+                    }
                 }
-                else
+
+                if (zeroStartHealth == -1)
                 {
-                    oneHealth += character.health;
+                    zeroStartHealth = zeroHealth;
+                    oneStartHealth = oneHealth;
                 }
+
+                int zeroSize = 400 * zeroHealth / zeroStartHealth;
+                int oneSize = 400 * oneHealth / oneStartHealth;
+                teamZeroHealth = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(zeroSize, 50, Color.Green));
+                teamZeroHealth.origin = Vector2.Zero;
+                teamZeroHealth.position = new Vector2(1920 / 2.75f - zeroSize, 0);
+                teamOneHealth = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(oneSize, 50, Color.Purple));
+                teamOneHealth.origin = Vector2.Zero;
+                teamOneHealth.position = new Vector2(1920 / 2.75f, 0);
+
+
+                zeroHealthText.Text = zeroHealth.ToString() + " HP";
+                zeroHealthText.position = new Vector2(1920/2.75f - 200, 27);
+                oneHealthText.Text = oneHealth.ToString() + " HP";
+                oneHealthText.position = new Vector2(1920 / 2.75f + 200, 27);
             }
-
-            int zeroSize = 800 * zeroHealth / (zeroHealth + oneHealth);
-            int oneSize = 800 * oneHealth / (zeroHealth + oneHealth);
-            teamZeroHealth = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(zeroSize, 50, Color.Green));
-            teamZeroHealth.position = new Vector2(1920 / 2.75f - zeroSize / 2, 25);
-            teamOneHealth = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(oneSize, 50, Color.Purple));
-            teamOneHealth.position = new Vector2(1920 / 2.75f + oneSize / 2, 25);
-
-
-            zeroHealthText.Text = zeroHealth.ToString() + " HP";
-            zeroHealthText.position = new Vector2(zeroSize/5 + teamZeroHealth.position.X, 27);
-            oneHealthText.Text = oneHealth.ToString() + " HP";
-            oneHealthText.position = new Vector2(-oneSize/5 + teamOneHealth.position.X, 27);
         }
 
         public void initPeelStatus(Cube middleCube)
@@ -540,13 +570,13 @@ namespace pax_infinium
             playerHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * playerHealthRatio), height, Color.Red));
             playerHealthBar.position = new Vector2((fullBarSize * playerHealthRatio)/2, 1080 - height / 2);
             playerHealthText.Text = grid.characters.list[0].health + " HP";
-            playerHealthText.position = playerHealthBar.position;
+            playerHealthText.position = new Vector2(fullBarSize / 2, 1080 - height / 2);
             playerHealthText.position.Y += 2;
 
             playerMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * playerMPRatio), height, Color.Blue));
             playerMagicBar.position = new Vector2((fullBarSize * playerMPRatio) / 2, 1080 - height - yOffset);
             playerMagicText.Text = grid.characters.list[0].mp + " MP";
-            playerMagicText.position = playerMagicBar.position;
+            playerMagicText.position = new Vector2(fullBarSize / 2, 1080 - height - yOffset);
             playerMagicText.position.Y += 2;
 
             if (characterName.Text != "")
@@ -559,13 +589,13 @@ namespace pax_infinium
                     characterHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterHealthRatio), height, Color.Red));
                     characterHealthBar.position = new Vector2(1920 - (fullBarSize * characterHealthRatio) / 2, 1080 - height / 2);
                     characterHealthText.Text = highlightedCharacter.health + " HP";
-                    characterHealthText.position = characterHealthBar.position;
+                    characterHealthText.position = new Vector2(1920 - fullBarSize / 2, 1080 - height / 2);
                     characterHealthText.position.Y += 2;
 
                     characterMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterMPRatio), height, Color.Blue));
                     characterMagicBar.position = new Vector2(1920 - (fullBarSize * characterMPRatio) / 2, 1080 - height - yOffset);
                     characterMagicText.Text = highlightedCharacter.mp + " MP";
-                    characterMagicText.position = characterMagicBar.position;
+                    characterMagicText.position = new Vector2(1920 - fullBarSize / 2, 1080 - height - yOffset);
                     characterMagicText.position.Y += 2;
                 }
             }
@@ -716,7 +746,7 @@ namespace pax_infinium
                     characterFace.visible = true;
                     characterHealthBar.visible = true;
                     characterMagicBar.visible = true;
-
+                    
                     characterName.Draw(spriteBatch);
                     characterFace.Draw(spriteBatch);
                     if (drawInfo)
@@ -724,6 +754,7 @@ namespace pax_infinium
                         characterStatus.Draw(spriteBatch);
                         characterStatusIcons.Draw(spriteBatch);
                     }
+                    characterStatusBacker.Draw(spriteBatch);
                     characterHealthBar.Draw(spriteBatch);
                     characterHealthText.Draw(spriteBatch);
                     characterMagicBar.Draw(spriteBatch);
@@ -775,6 +806,7 @@ namespace pax_infinium
                 //leftButton.Draw(spriteBatch);
                 //rightButton.Draw(spriteBatch);
 
+                teamHealthBacker.Draw(spriteBatch);
                 teamZeroHealth.Draw(spriteBatch);
                 teamOneHealth.Draw(spriteBatch);
                 zeroHealthText.Draw(spriteBatch);
@@ -791,6 +823,7 @@ namespace pax_infinium
                 //upButton.Draw(spriteBatch);
                 //downButton.Draw(spriteBatch);
 
+                playerStatusBacker.Draw(spriteBatch);
                 playerHealthBar.Draw(spriteBatch);
                 playerHealthText.Draw(spriteBatch);
                 playerMagicBar.Draw(spriteBatch);
