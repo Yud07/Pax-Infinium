@@ -431,6 +431,7 @@ namespace pax_infinium
                     {
                         if ((player.job == EJob.Mage || player.job == EJob.Healer) && selectedAction == "special" && !world.level.attacked)
                         { // Black Mage or healer
+                            Cube tempCube = null;
                             foreach (Cube cube in world.level.grid.cubes)
                             {
                                 if (player.InMagicRange(cube.gridPos))
@@ -456,11 +457,29 @@ namespace pax_infinium
                                     // and the cube is exposed
                                     if (cube.topPoly.Contains(activeMouseState) && world.level.grid.TopExposed(cube.gridPos) && topVisible)
                                     {
-                                        foreach (Cube c in world.level.grid.cubes)
+                                        if (tempCube == null)
                                         {
-                                            if ((c.isAdjacent(cube.gridPos) || c.gridPos == cube.gridPos))
+                                            tempCube = cube;
+                                            foreach (Cube c in world.level.grid.cubes)
                                             {
-                                                c.invert = true;
+                                                if ((c.isAdjacent(cube.gridPos) || c.gridPos == cube.gridPos))
+                                                {
+                                                    c.invert = true;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (tempCube.DrawOrder() <= cube.DrawOrder())
+                                            {
+                                                tempCube = cube;
+                                                foreach (Cube c in world.level.grid.cubes)
+                                                {
+                                                    if ((c.isAdjacent(cube.gridPos) || c.gridPos == cube.gridPos))
+                                                    {
+                                                        c.invert = true;
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -516,7 +535,7 @@ namespace pax_infinium
                         }
                     }
 
-                    if ((keyboardState.IsKeyDown(Keys.E) && previousKeyboardState.IsKeyUp(Keys.E)) || endTurnTrigger) // end turn
+                    if (((keyboardState.IsKeyDown(Keys.E) && previousKeyboardState.IsKeyUp(Keys.E)) || endTurnTrigger) && world.level.toBeKilled.Count() == 0) // end turn
                     {
                         resetConfirmation();
                         world.level.endTurn(gameTime);

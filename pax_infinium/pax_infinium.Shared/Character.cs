@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using pax_infinium.Enum;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace pax_infinium
@@ -62,6 +63,12 @@ namespace pax_infinium
         public Sprite hitSprite;
         public TimeSpan hitTime;
         public EHitIcon hitType;
+
+        public List<Object[]> timedEvents;
+        public List<EHitIcon> hitList;
+
+        public Move currentMove;
+        public int moveCounter;
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -131,8 +138,12 @@ namespace pax_infinium
             hitTime = TimeSpan.MinValue;
             hitType = EHitIcon.None;
 
-        //Console.WriteLine("Character X:" + position.X + " Y:" + position.Y);
-    }
+            timedEvents = new List<Object[]>();
+            hitList = new List<EHitIcon>();
+
+            currentMove = null;
+            moveCounter = 0;
+        }
 
         public void recalcPos()
         {
@@ -166,26 +177,125 @@ namespace pax_infinium
 
         public void Update(GameTime gameTime)
         {
-            //recalcPos();
-            if (textTime < gameTime.TotalGameTime)
-            {
-                setText(" ", Color.Red);
-            }
+            handleTimedEvents(gameTime);
+            handleMoveEvent(gameTime);
+        }
 
-            if (postMoveWaitTime != TimeSpan.MinValue)
+        public void DoMove(GameTime gameTime)
+        {
+            Object[] obj;
+            switch (currentMove.noneMoveBeforeMoveAfter)
             {
-                if (postMoveWaitTime < gameTime.TotalGameTime)
+                case 0: // Don't Move
+                    switch (moveCounter)
+                    {
+                        case 0: // None
+                            currentMove.NothingAttackSpecial(this, Game1.world.level, gameTime);
+                            Object[] objA = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            timedEvents.Add(objA);
+                            break;
+                        case 1: // Rotate
+                            Rotate(currentMove.rotDir);
+                            Object[] objB = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            timedEvents.Add(objB);
+                            break;
+                        case 2: // EndTurn
+                            currentMove.EndTurn(Game1.world.level, gameTime);
+                            break;
+                    }
+                    break;
+                case 1: // Move Before Action
+                    switch (moveCounter)
+                    {
+                        case 0: // Move
+                            Move(currentMove.movePos, Game1.world.level);
+                            break;
+                        case 1: // NothingAttackSpecial
+                            currentMove.NothingAttackSpecial(this, Game1.world.level, gameTime);
+                            Object[] objC = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            timedEvents.Add(objC);
+                            break;
+                        case 2: // Rotate
+                            Rotate(currentMove.rotDir);
+                            Object[] objD = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            timedEvents.Add(objD);
+                            break;
+                        case 3: // EndTurn
+                            currentMove.EndTurn(Game1.world.level, gameTime);
+                            break;
+                    }
+                    break;
+                case 2: // Move After Action
+                    switch (moveCounter)
+                    {
+                        case 0: // NothingAttackSpecial
+                            currentMove.NothingAttackSpecial(this, Game1.world.level, gameTime);
+                            Object[] objE = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            timedEvents.Add(objE);
+                            break;
+                        case 1: // Move
+                            Move(currentMove.movePos, Game1.world.level);
+                            break;
+                        case 2: // Rotate
+                            Rotate(currentMove.rotDir);
+                            Object[] objF = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            timedEvents.Add(objF);
+                            break;
+                        case 3: // EndTurn
+                            currentMove.EndTurn(Game1.world.level, gameTime);
+                            break;
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+            moveCounter++;
+        }
+
+        public void handleTimedEvents(GameTime gameTime)
+        {
+            if (timedEvents.Count > 0)
+            {
+                Object[][] tempList = new Object[timedEvents.Count][];
+                timedEvents.CopyTo(tempList);
+                foreach (Object[] entry in tempList)
                 {
-                    Game1.world.finishedMove = true;
-                    postMoveWaitTime = TimeSpan.MinValue;
+                    TimeSpan t = (TimeSpan)entry[0];
+                    if (t < gameTime.TotalGameTime)
+                    {
+                        String code = (String)entry[1];
+                        Type thisType = this.GetType();
+                        MethodInfo theMethod = thisType.GetMethod(code);
+                        theMethod.Invoke(this, new object[] { gameTime });
+                        timedEvents.Remove(entry);
+                    }
                 }
             }
+        }
 
-            if (hitTime < gameTime.TotalGameTime)
+        /*public void handlePostMoveWaitTime(GameTime gameTime) // Add Rotation pause handling -------------------------------------------------------TODO-----------------------------------------
+        {
+            Game1.world.currentMove.PostMove(Game1.world.level, gameTime);
+        }*/
+
+        public void clearHitType(GameTime gameTime)
+        {
+            hitType = EHitIcon.None;
+            if (hitList.Count > 0)
             {
-                hitType = EHitIcon.None;
+                EHitIcon temp = hitList.ToArray()[0];
+                UpdateHitIcon(temp, gameTime);
+                hitList.Remove(temp);
             }
+        }
 
+        public void clearText(GameTime gameTime)
+        {
+            setText(" ", Color.Red);
+        }
+
+        public void handleMoveEvent(GameTime gameTime)
+        {
             if (movePath.Count > 0)
             {
                 if (moveTime == TimeSpan.MinValue)
@@ -202,14 +312,15 @@ namespace pax_infinium
                     gridPos = newPos;
                     if (movePath.Count == 1 && team == 0)
                     {
-                        postMoveWaitTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 3);
+                        Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                        timedEvents.Add(obj);
                     }
                     movePath.RemoveAt(0);
                     recalcPos();
                     Game1.world.level.grid.onCharacterMoved(Game1.world.level);
                     moveTime = TimeSpan.MinValue;
                 }
-                
+
             }
         }
 
@@ -379,7 +490,9 @@ namespace pax_infinium
             {
                 Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
-                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+                character.timedEvents.Add(obj);
                 character.setText("-" + damage + "HP", Color.Red);
 
                 if (job == EJob.Hunter)
@@ -391,7 +504,7 @@ namespace pax_infinium
                     character.UpdateHitIcon(EHitIcon.Slash, gameTime);
                 }
 
-                Game1.world.level.recalcTeamHealthBar();
+                Game1.world.level.recalcTeamHealthBar(); // Needs to check to make sure that if the last alive member of a team is killed, this isn't run 
 
                 if (character.health <= 0)
                 {
@@ -408,7 +521,9 @@ namespace pax_infinium
             else
             {
                 Console.WriteLine("Miss!");
-                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+                character.timedEvents.Add(obj);
                 character.setText("Miss!", Color.Green);
                 return null;
             }
@@ -497,7 +612,9 @@ namespace pax_infinium
                 int damage = chanceDamage[1];
                 Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
-                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+                character.timedEvents.Add(obj);
                 character.setText("-" + damage + "HP", Color.Red);
 
                 character.UpdateHitIcon(EHitIcon.Lightning, gameTime);
@@ -518,7 +635,9 @@ namespace pax_infinium
             else
             {
                 Console.WriteLine("Miss!");
-                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+                character.timedEvents.Add(obj);
                 character.setText("Miss!", Color.Green);
             }
             return null;
@@ -536,7 +655,9 @@ namespace pax_infinium
             int health = 15;
             Console.WriteLine(character.name + " heals " + health + " points!");
             character.health += health;
-            character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+            character.timedEvents.Add(obj);
             character.setText("+" + health + "HP", Color.Red);
 
             Game1.world.level.recalcTeamHealthBar();
@@ -580,7 +701,9 @@ namespace pax_infinium
             {
                 
                 Console.WriteLine(character.name + " had their next turn stolen!");
-                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+                character.timedEvents.Add(obj);
                 character.setText("Skipped!", Color.OrangeRed);
 
                 character.UpdateHitIcon(EHitIcon.Skip, gameTime);
@@ -590,7 +713,9 @@ namespace pax_infinium
             else
             {
                 Console.WriteLine("Miss!");
-                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+                character.timedEvents.Add(obj);
                 character.setText("Miss!", Color.Green);
                 return null;
             }
@@ -609,7 +734,9 @@ namespace pax_infinium
         public void payForCast(int cost, GameTime gameTime)
         {
             mp -= cost;
-            textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            //textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+            timedEvents.Add(obj);
             setText("-" + cost + "MP", Color.Blue);
 
             UpdateHitIcon(EHitIcon.Magic, gameTime);
@@ -629,7 +756,9 @@ namespace pax_infinium
             int defenseBoost = 20;
             Console.WriteLine(character.name + " gains " + defenseBoost + " melee defense!");
             character.MDefense += defenseBoost;
-            character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+            Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+            character.timedEvents.Add(obj);
             character.setText("+" + defenseBoost + "WD", Color.Yellow);
 
             character.UpdateHitIcon(EHitIcon.Shield, gameTime);
@@ -661,7 +790,9 @@ namespace pax_infinium
                 int accuracyDrop = 5;
                 Console.WriteLine(character.name + " loses " + accuracyDrop + " accuracy!");
                 character.accuracyMod -= accuracyDrop;
-                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+                character.timedEvents.Add(obj);
                 character.setText("-" + accuracyDrop + "ACC", Color.Orange);
 
                 character.UpdateHitIcon(EHitIcon.AccuracyDown, gameTime);
@@ -669,7 +800,9 @@ namespace pax_infinium
             else
             {
                 Console.WriteLine("Miss!");
-                character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
+                character.timedEvents.Add(obj);
                 character.setText("Miss!", Color.Green);
             }
         }
@@ -708,24 +841,27 @@ namespace pax_infinium
             }
         }
 
-        public void Rotate(EDirection dir)
+        public void Rotate(EDirection dir, bool changeTex=true)
         {
             direction = dir;
-            if (dir == EDirection.Northwest)
+            if (changeTex)
             {
-                sprite.tex = nwTex;
-            }
-            else if (dir == EDirection.Southeast)
-            {
-                sprite.tex = seTex;
-            }
-            else if (dir == EDirection.Northeast)
-            {
-                sprite.tex = neTex;
-            }
-            else if (dir == EDirection.Southwest)
-            {
-                sprite.tex = swTex;
+                if (dir == EDirection.Northwest)
+                {
+                    sprite.tex = nwTex;
+                }
+                else if (dir == EDirection.Southeast)
+                {
+                    sprite.tex = seTex;
+                }
+                else if (dir == EDirection.Northeast)
+                {
+                    sprite.tex = neTex;
+                }
+                else if (dir == EDirection.Southwest)
+                {
+                    sprite.tex = swTex;
+                }
             }
         }
 
@@ -770,12 +906,18 @@ namespace pax_infinium
             {
                 if (cube.gridPos == gridPos)
                 {
-                    moves.Add(new Move(0, gridPos, 0, Vector3.Zero)); // Do nothing at all
+                    moves.Add(new Move(0, gridPos, EDirection.Northeast, 0, Vector3.Zero)); // Do nothing at all
+                    moves.Add(new Move(0, gridPos, EDirection.Northwest, 0, Vector3.Zero)); // Do nothing at all
+                    moves.Add(new Move(0, gridPos, EDirection.Southeast, 0, Vector3.Zero)); // Do nothing at all
+                    moves.Add(new Move(0, gridPos, EDirection.Southwest, 0, Vector3.Zero)); // Do nothing at all
                     foreach (Character character in level.grid.characters.list)
                     {
                         if (character.team != team && InWeaponRange(character.gridPos))
                         {
-                            moves.Add(new Move(0, gridPos, 1, character.gridPos)); // Don't move, Attack character
+                            moves.Add(new Move(0, gridPos, EDirection.Northeast, 1, character.gridPos)); // Don't move, Attack character
+                            moves.Add(new Move(0, gridPos, EDirection.Northwest, 1, character.gridPos)); // Don't move, Attack character
+                            moves.Add(new Move(0, gridPos, EDirection.Southeast, 1, character.gridPos)); // Don't move, Attack character
+                            moves.Add(new Move(0, gridPos, EDirection.Southwest, 1, character.gridPos)); // Don't move, Attack character
                         }
                     }
                     if (CanCast(8))
@@ -789,12 +931,18 @@ namespace pax_infinium
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if (target != null && (target.team != team || job == EJob.Soldier))
                                     {
-                                        moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special on character
+                                        moves.Add(new Move(0, gridPos, EDirection.Northeast, 2, cu.gridPos)); // Don't move, use special on character
+                                        moves.Add(new Move(0, gridPos, EDirection.Northwest, 2, cu.gridPos)); // Don't move, use special on character
+                                        moves.Add(new Move(0, gridPos, EDirection.Southeast, 2, cu.gridPos)); // Don't move, use special on character
+                                        moves.Add(new Move(0, gridPos, EDirection.Southwest, 2, cu.gridPos)); // Don't move, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special at cube
+                                    moves.Add(new Move(0, gridPos, EDirection.Northeast, 2, cu.gridPos)); // Don't move, use special at cube
+                                    moves.Add(new Move(0, gridPos, EDirection.Northwest, 2, cu.gridPos)); // Don't move, use special at cube
+                                    moves.Add(new Move(0, gridPos, EDirection.Southeast, 2, cu.gridPos)); // Don't move, use special at cube
+                                    moves.Add(new Move(0, gridPos, EDirection.Southwest, 2, cu.gridPos)); // Don't move, use special at cube
                                 }
                             }
                         }
@@ -802,15 +950,25 @@ namespace pax_infinium
                 }
                 else
                 {
-                    moves.Add(new Move(1, cube.gridPos, 0, Vector3.Zero)); // Move before to cube, do nothing
-                    moves.Add(new Move(2, cube.gridPos, 0, Vector3.Zero)); // Move after to cube, do nothing
+                    moves.Add(new Move(1, cube.gridPos, EDirection.Northeast, 0, Vector3.Zero)); // Move before to cube, do nothing
+                    moves.Add(new Move(2, cube.gridPos, EDirection.Northeast, 0, Vector3.Zero)); // Move after to cube, do nothing
+                    moves.Add(new Move(1, cube.gridPos, EDirection.Northwest, 0, Vector3.Zero)); // Move before to cube, do nothing
+                    moves.Add(new Move(2, cube.gridPos, EDirection.Northwest, 0, Vector3.Zero)); // Move after to cube, do nothing
+                    moves.Add(new Move(1, cube.gridPos, EDirection.Southeast, 0, Vector3.Zero)); // Move before to cube, do nothing
+                    moves.Add(new Move(2, cube.gridPos, EDirection.Southeast, 0, Vector3.Zero)); // Move after to cube, do nothing
+                    moves.Add(new Move(1, cube.gridPos, EDirection.Southwest, 0, Vector3.Zero)); // Move before to cube, do nothing
+                    moves.Add(new Move(2, cube.gridPos, EDirection.Southwest, 0, Vector3.Zero)); // Move after to cube, do nothing
 
                     //move before
                     foreach (Character character in level.grid.characters.list)
                     {
                         if (character.team != team && Game1.world.cubeDist(character.gridPos, cube.gridPos) <= weaponRange)
                         {
-                            moves.Add(new Move(1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
+                            moves.Add(new Move(1, cube.gridPos, EDirection.Northeast, 1, character.gridPos)); // Move first, Attack character
+                            moves.Add(new Move(1, cube.gridPos, EDirection.Northwest, 1, character.gridPos)); // Move first, Attack character
+                            moves.Add(new Move(1, cube.gridPos, EDirection.Southeast, 1, character.gridPos)); // Move first, Attack character
+                            moves.Add(new Move(1, cube.gridPos, EDirection.Southwest, 1, character.gridPos)); // Move first, Attack character
+
                         }
                     }
                     if (CanCast(8))
@@ -824,12 +982,18 @@ namespace pax_infinium
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if ((target != null && target != this && (target.team != team || job == EJob.Soldier)) || (job == EJob.Soldier && cu.gridPos == cube.gridPos))
                                     {
-                                        moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special on character
+                                        moves.Add(new Move(1, cube.gridPos, EDirection.Northeast, 2, cu.gridPos)); // Move first, use special on character
+                                        moves.Add(new Move(1, cube.gridPos, EDirection.Northwest, 2, cu.gridPos)); // Move first, use special on character
+                                        moves.Add(new Move(1, cube.gridPos, EDirection.Southeast, 2, cu.gridPos)); // Move first, use special on character
+                                        moves.Add(new Move(1, cube.gridPos, EDirection.Southwest, 2, cu.gridPos)); // Move first, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special at cube
+                                    moves.Add(new Move(1, cube.gridPos, EDirection.Northeast, 2, cu.gridPos)); // Move first, use special at cube
+                                    moves.Add(new Move(1, cube.gridPos, EDirection.Northwest, 2, cu.gridPos)); // Move first, use special at cube
+                                    moves.Add(new Move(1, cube.gridPos, EDirection.Southeast, 2, cu.gridPos)); // Move first, use special at cube
+                                    moves.Add(new Move(1, cube.gridPos, EDirection.Southwest, 2, cu.gridPos)); // Move first, use special at cube
                                 }
                             }
                         }
@@ -840,7 +1004,10 @@ namespace pax_infinium
                     {
                         if (character.team != team && InWeaponRange(character.gridPos))
                         {
-                            moves.Add(new Move(2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
+                            moves.Add(new Move(2, cube.gridPos, EDirection.Northeast, 1, character.gridPos)); // Move after, Attack character
+                            moves.Add(new Move(2, cube.gridPos, EDirection.Northwest, 1, character.gridPos)); // Move after, Attack character
+                            moves.Add(new Move(2, cube.gridPos, EDirection.Southeast, 1, character.gridPos)); // Move after, Attack character
+                            moves.Add(new Move(2, cube.gridPos, EDirection.Southwest, 1, character.gridPos)); // Move after, Attack character
                         }
                     }
                     if (CanCast(8))
@@ -854,12 +1021,18 @@ namespace pax_infinium
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if (target != null && (target.team != team || job == EJob.Soldier))
                                     {
-                                        moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special on character
+                                        moves.Add(new Move(2, cube.gridPos, EDirection.Northeast, 2, cu.gridPos)); // Move after, use special on character
+                                        moves.Add(new Move(2, cube.gridPos, EDirection.Northwest, 2, cu.gridPos)); // Move after, use special on character
+                                        moves.Add(new Move(2, cube.gridPos, EDirection.Southeast, 2, cu.gridPos)); // Move after, use special on character
+                                        moves.Add(new Move(2, cube.gridPos, EDirection.Southwest, 2, cu.gridPos)); // Move after, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special at cube
+                                    moves.Add(new Move(2, cube.gridPos, EDirection.Northeast, 2, cu.gridPos)); // Move after, use special at cube
+                                    moves.Add(new Move(2, cube.gridPos, EDirection.Northwest, 2, cu.gridPos)); // Move after, use special at cube
+                                    moves.Add(new Move(2, cube.gridPos, EDirection.Southeast, 2, cu.gridPos)); // Move after, use special at cube
+                                    moves.Add(new Move(2, cube.gridPos, EDirection.Southwest, 2, cu.gridPos)); // Move after, use special at cube
                                 }
                             }
                         }
@@ -891,20 +1064,53 @@ namespace pax_infinium
         int getAngleModifier(EDirection dir)
         {
             int val = Math.Abs(direction - dir);
-            if (val == 3)
+            if (val == 3 || val == 1) // Face to Side
             {
                 val = 1;
             }
-            if (val == 2)
+            if (val == 2) // Face to Face
             {
                 val = 0;
             }
-            if (val == 0)
+            if (val == 0) // Face to Back
             {
                 val = 2;
             }
             return val;
         }
+
+        /*
+            Northeast = 0,
+
+            Southeast = 1,
+
+            Southwest = 2,
+
+            Northwest = 3,
+
+            Face to Side
+            NE - NW = -3
+            NE- SE = -1
+
+            NW - NE = 3
+            NW - SW = 1
+
+            SW - NW = -1
+            SW - SE = 1
+
+            SE - SW = -1
+            SE - NE = 1
+
+            Face to Face
+            NE - SW = -2
+            NW - SE = 2
+            SE - NW = -2
+            SW - NE = 2
+
+            Face to Back
+            x - x = 0
+
+        */
 
         public void setText(String t, Color c)
         {
@@ -916,40 +1122,49 @@ namespace pax_infinium
 
         public void UpdateHitIcon(EHitIcon hT, GameTime gameTime)
         {
-            hitType = hT;
-            hitTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 2);
-            switch (hitType)
+            if (hitType != EHitIcon.None)
             {
-                case EHitIcon.Slash:
-                    hitSprite = new Sprite(World.textureManager["Slash"]);
-                    break;
-                case EHitIcon.Heal:
-                    hitSprite = new Sprite(World.textureManager["Heal"]);
-                    break;
-                case EHitIcon.AccuracyDown:
-                    hitSprite = new Sprite(World.textureManager["AccuracyDown"]);
-                    break;
-                case EHitIcon.Arrow:
-                    hitSprite = new Sprite(World.textureManager["Arrow"]);
-                    break;
-                case EHitIcon.Lightning:
-                    hitSprite = new Sprite(World.textureManager["Lightning"]);
-                    break;
-                case EHitIcon.Magic:
-                    hitSprite = new Sprite(World.textureManager["Magic"]);
-                    break;
-                case EHitIcon.Shield:
-                    hitSprite = new Sprite(World.textureManager["Shield"]);
-                    break;
-                case EHitIcon.Skip:
-                    hitSprite = new Sprite(World.textureManager["Skip"]);
-                    break;
-                default:
-                    break;
+                hitList.Add(hT);
             }
-            if (hitSprite != null)
+            else
             {
-                hitSprite.position = position;
+                hitType = hT;
+                //hitTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 2);
+                Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "clearHitType" };
+                timedEvents.Add(obj);
+                switch (hitType)
+                {
+                    case EHitIcon.Slash:
+                        hitSprite = new Sprite(World.textureManager["Slash"]);
+                        break;
+                    case EHitIcon.Heal:
+                        hitSprite = new Sprite(World.textureManager["Heal"]);
+                        break;
+                    case EHitIcon.AccuracyDown:
+                        hitSprite = new Sprite(World.textureManager["AccuracyDown"]);
+                        break;
+                    case EHitIcon.Arrow:
+                        hitSprite = new Sprite(World.textureManager["Arrow"]);
+                        break;
+                    case EHitIcon.Lightning:
+                        hitSprite = new Sprite(World.textureManager["Lightning"]);
+                        break;
+                    case EHitIcon.Magic:
+                        hitSprite = new Sprite(World.textureManager["Magic"]);
+                        break;
+                    case EHitIcon.Shield:
+                        hitSprite = new Sprite(World.textureManager["Shield"]);
+                        break;
+                    case EHitIcon.Skip:
+                        hitSprite = new Sprite(World.textureManager["Skip"]);
+                        break;
+                    default:
+                        break;
+                }
+                if (hitSprite != null)
+                {
+                    hitSprite.position = position;
+                }
             }
         }
     }

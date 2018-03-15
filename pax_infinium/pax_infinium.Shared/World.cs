@@ -73,7 +73,7 @@ namespace pax_infinium
         public bool triggerAIBool;
 
         public bool finishedMove;
-        public Move currentMove;
+        //public Move currentMove;
 
         public World(GraphicsDeviceManager graphics)
         {
@@ -83,7 +83,7 @@ namespace pax_infinium
             rooms.AddState("game", new Room(graphics));
             state = 0;
             finishedMove = false;
-            currentMove = null;
+            //currentMove = null;
         }
 
         public void Update(GameTime gameTime)
@@ -92,12 +92,12 @@ namespace pax_infinium
             {
                 triggerAI(level, gameTime);
             }
-            if (finishedMove)
+            /*if (finishedMove)
             {
                 //Console.WriteLine("Finished Move");
                 currentMove.PostMove(level, gameTime);
                 finishedMove = false;
-            }
+            }*/
             rooms.CurrentState.Update(gameTime);
         }
 
@@ -215,11 +215,11 @@ namespace pax_infinium
         {
             Action<string> print = s => Console.WriteLine(s);
             print(level.ToString());
-            IMove move = UCT.ComputeSingleThreadedUCT(level, 1000, true, print, 0.7F, 15);
+            IMove move = UCT.ComputeSingleThreadedUCT(level, int.MaxValue, true, print, 0.7F, 15, 700);//1000, true, print, 0.7F, 15);
             print(move.Name);
             triggerAIBool = false;
+            //currentMove = (Move)move;
             level.DoMove(move, gameTime); // Add boolean so that this animates and only prints this move
-            currentMove = (Move)move;
             level.thoughtBubble.position = Vector2.Zero;
             level.drewThoughtBubble = false;
         }

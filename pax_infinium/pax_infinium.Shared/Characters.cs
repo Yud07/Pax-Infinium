@@ -18,7 +18,9 @@ namespace pax_infinium
         }
         public void Update(GameTime gameTime)
         {
-            foreach (Character character in list)
+            Character[] tempList = new Character[list.Count];
+            list.CopyTo(tempList);
+            foreach (Character character in tempList)
             {
                 character.Update(gameTime);
             }

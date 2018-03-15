@@ -670,6 +670,7 @@ namespace pax_infinium
                         grid.characters.list.Remove(c);
                     }
                 }
+                setupTurnOrderIcons();
                 foreach (Character ch in tempCharacters)
                 {
                     toBeKilled.Remove(ch);
@@ -1083,7 +1084,7 @@ namespace pax_infinium
             ((Move)move).DoMove(this, gameTime);
         }
 
-        public void PlayRandomlyUntilTheEnd()
+        public void PlayRandomlyUntilTheEnd(int maxMoves)
         {
             //Console.WriteLine("PlayingRandomlyUntilEnd");
             int startTurn = turn;
@@ -1091,7 +1092,7 @@ namespace pax_infinium
             while (!OneTeamRemaining())
             {
                 //Console.WriteLine("Turn " + i);
-                if (turn > (300 - startTurn))
+                if (turn > maxMoves)//(maxMoves - startTurn))
                 {
                     //Console.WriteLine("Draw");
                     break;
@@ -1101,6 +1102,7 @@ namespace pax_infinium
                 DoMove(moves[random]);
                 i++;
             }
+            Console.WriteLine("Game took " + turn + " moves");
         }
 
         public IPlayer PlayerJustMoved => players[grid.characters.list.Last().team]; // thief special will break this on success also broken by a death

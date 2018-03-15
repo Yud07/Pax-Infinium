@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using MCTS.Interfaces;
+using pax_infinium.Enum;
 
 namespace pax_infinium
 {
@@ -11,16 +12,18 @@ namespace pax_infinium
     {
         private String name;
         public int noneMoveBeforeMoveAfter; // 0-2
-        Vector3 movePos; // irrelevant if no movement
-        int nothingAttackSpecial; // 0-2
-        Vector3 attackSpecialPos; // irrelevant if nothingAttackSpecial is 0
+        public Vector3 movePos; // irrelevant if no movement
+        public int nothingAttackSpecial; // 0-2
+        public Vector3 attackSpecialPos; // irrelevant if nothingAttackSpecial is 0
+        public EDirection rotDir;
 
-        public Move(int noneMoveBeforeMoveAfter, Vector3 movement, int nothingAttackSpecial, Vector3 attackSpecialPos)
+        public Move(int noneMoveBeforeMoveAfter, Vector3 movement, EDirection rotDir, int nothingAttackSpecial, Vector3 attackSpecialPos)
         {
             this.noneMoveBeforeMoveAfter = noneMoveBeforeMoveAfter;
             this.movePos = movement;
             this.nothingAttackSpecial = nothingAttackSpecial;
             this.attackSpecialPos = attackSpecialPos;
+            this.rotDir = rotDir;
             if (noneMoveBeforeMoveAfter == 0)
             {
                 name = "Don't move";
@@ -46,6 +49,7 @@ namespace pax_infinium
             {
                 name += ", use special at " + attackSpecialPos;  
             }
+            name += ", Rotate " + rotDir.ToString();
         }
 
         public string Name
@@ -76,26 +80,36 @@ namespace pax_infinium
                 default:
                     throw new NotImplementedException();
             }
+            player.Rotate(rotDir, false);
             EndTurn(level);
         }
 
         public void DoMove(Level level, GameTime gameTime)
         {
             Character player = level.grid.characters.list[0];
+            player.moveCounter = 0;
+            player.currentMove = this;
+            player.DoMove(gameTime);
+        }
+
+        /*public void DoMove(Level level, GameTime gameTime)
+        {
+            Character player = level.grid.characters.list[0];
             switch (noneMoveBeforeMoveAfter)
             {
                 case 0:
                     NothingAttackSpecial(player, level, gameTime);
+                    player.Rotate(rotDir);
                     EndTurn(level, gameTime);
                     break;
                 case 1:
-                    //player.Rotate(movePos);
+                    //player.Rotate(movePos, true);
                     player.Move(movePos, level);
                     //NothingAttackSpecial(player, level, gameTime);
                     break;
                 case 2:
                     NothingAttackSpecial(player, level, gameTime);
-                    //player.Rotate(movePos);
+                    //player.Rotate(movePos, true);
                     player.Move(movePos, level);
                     break;
                 default:
@@ -110,8 +124,9 @@ namespace pax_infinium
             {
                 NothingAttackSpecial(player, level, gameTime);
             }
+            player.Rotate(rotDir);
             EndTurn(level, gameTime);
-        }
+        }*/
 
         public void NothingAttackSpecial(Character player, Level level)
         {
@@ -285,7 +300,7 @@ namespace pax_infinium
             level.rotated = false;
         }
 
-        private void EndTurn(Level level, GameTime gameTime)
+        public void EndTurn(Level level, GameTime gameTime)
         {
             level.turn++;
 

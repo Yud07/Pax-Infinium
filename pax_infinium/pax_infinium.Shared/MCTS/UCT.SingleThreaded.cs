@@ -8,13 +8,14 @@ namespace MCTS
 
     public static partial class UCT
     {
-        public static IMove ComputeSingleThreadedUCT(IGameState gameState, int itermax, bool verbose, Action<string> printfn, float uctk, int secs)
+        public static IMove ComputeSingleThreadedUCT(IGameState gameState, int itermax, bool verbose, Action<string> printfn, float uctk, int secs, int maxMovesPerSim)
         {
             var rootNode = new SingleThreadedNode(null, null, gameState, uctk);
             DateTime time = DateTime.Now;
             DateTime end = time.AddSeconds(secs);//30);
 
-            for (var i = 0; i < itermax && time < end; i++)
+            var i = 0;
+            for (; i < itermax && time < end; i++)
             {
                 time = DateTime.Now;
 
@@ -43,7 +44,7 @@ namespace MCTS
                 }
 
                 // Rollout
-                state.PlayRandomlyUntilTheEnd();
+                state.PlayRandomlyUntilTheEnd(maxMovesPerSim);
 
                 // Backpropagate
                 while (node != null)
@@ -51,6 +52,14 @@ namespace MCTS
                     node.Update(state.GetResult(node.PlayerJustMoved));
                     node = node.Parent;
                 }
+            }
+            if (i >= itermax)
+            {
+                Console.WriteLine("Max iteration timeout");
+            }
+            else
+            {
+                Console.WriteLine("Clock timeout");
             }
             if (verbose)
             {
