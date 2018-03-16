@@ -1092,17 +1092,87 @@ namespace pax_infinium
             while (!OneTeamRemaining())
             {
                 //Console.WriteLine("Turn " + i);
-                if (turn > maxMoves)//(maxMoves - startTurn))
+                if (turn > (maxMoves - startTurn))
                 {
-                    //Console.WriteLine("Draw");
+                    Console.WriteLine("Too Many Moves");
                     break;
                 }
-                List<Move> moves = (List<Move>) GetMoves();
-                int random = World.Random.Next(moves.Count);
-                DoMove(moves[random]);
+                int playerTeamHealth = 0;
+                int aiTeamHealth = 0;
+                foreach (Character c in grid.characters.list)
+                {
+                    if (c.team == 0)
+                    {
+                        aiTeamHealth += c.health;
+                    }
+                    else
+                    {
+                        playerTeamHealth += c.health;
+                    }
+                }
+                if (playerTeamHealth / aiTeamHealth >= 2) // Good for increasing number of moves evaluated
+                {
+                    Console.WriteLine("Unwinnable");
+                    break;
+                }
+                List<Move> moves = (List<Move>)GetMoves();
+                if (turn > startTurn + 40 || grid.characters.list[0].team == 1) // True random // only use eval for first 20 ai moves
+                {
+                    int random = World.Random.Next(moves.Count);
+                    DoMove(moves[random]);
+                }
+                else // Greedy Health
+                {
+                    DoMove(GetBestMove(moves));
+                }
                 i++;
             }
             Console.WriteLine("Game took " + turn + " moves");
+        }
+
+        public Move GetBestMove(List<Move> moves)
+        {
+            Move result = moves[0];
+            int score = Score(result);
+            foreach (Move m in moves)
+            {
+                int tempScore = Score(m);
+                if (tempScore > score)
+                {
+                    result = m;
+                    score = tempScore;
+                }
+            }
+            return result;
+        }
+
+        public int Score(Move move)
+        {
+            int score = 0;
+            Level clone = (Level) Clone();
+            clone.DoMove(move);
+            if (move.noneMoveBeforeMoveAfter > 0)
+            {
+                score += 1;
+            }
+            if (move.nothingAttackSpecial > 0)
+            {
+                score += 2;
+            }
+            foreach (Character c in clone.grid.characters.list)
+            {
+                if (c.team == 0)
+                {
+                    score += 50; // if they have ally alive
+                    score += c.health;
+                }
+                else
+                {
+                    score -= 50; // if they have enemy alive
+                    score -= c.health;
+                }
+            }
+            return score;
         }
 
         public IPlayer PlayerJustMoved => players[grid.characters.list.Last().team]; // thief special will break this on success also broken by a death
