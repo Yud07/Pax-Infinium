@@ -397,6 +397,7 @@ namespace pax_infinium
                         //printRelevantInfo();
                         if (selectedAction == "" && world.level.moved && !world.level.attacked) // undo movement
                         {
+                            player.movePath.Clear();
                             player.Move(world.level.movedFrom, true);
                             world.level.moved = false;
                             world.level.rotated = false;

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using pax_infinium;
 
 namespace MCTS.Node
 {
@@ -136,6 +137,65 @@ namespace MCTS.Node
                 return this.Childs.OrderByDescending(node => node.Wins).First().Move;
             }
         }
+
+        public IMove MostVisitedMoveWithTieBreaks()
+        {
+            IEnumerable<INode> descending = this.Childs.OrderByDescending(node => node.Visits);
+            var firstVisitOrdered = descending.First();
+
+            Level level = Game1.world.level;
+
+            // most visited move is a really above other moves.
+            // done to avoid :
+            //      Node 1 : Visit = 334, Win = 2 (selected)
+            //      Node 2 : Visit = 333, Win = 330 (most promising)
+            //      Node 3 : Visit = 333, Win = 5
+            // return first 
+            if (firstVisitOrdered.Visits > (this.Visits / this.Childs.Count()) + 1)
+            {
+                int bestScore = level.Score((Move)firstVisitOrdered.Move);
+                for (int i = 1; i < descending.Count(); i++)
+                {
+                    INode tempNode = descending.ElementAt(i);
+                    if (tempNode.Visits != firstVisitOrdered.Visits)
+                    {
+                        break;
+                    }
+                    int tempScore = level.Score((Move)tempNode.Move);
+                    if (tempScore > bestScore)
+                    {
+                        firstVisitOrdered = tempNode;
+                        bestScore = tempScore;
+                        Console.WriteLine("Visits Tie Broke");
+                    }
+
+                }
+                return firstVisitOrdered.Move;
+            }
+            // otherwise return most wins    
+            else
+            {
+                int bestScore = level.Score((Move)firstVisitOrdered.Move);
+                for (int i = 1; i < descending.Count(); i++)
+                {
+                    INode tempNode = descending.ElementAt(i);
+                    if (tempNode.Wins != firstVisitOrdered.Wins)
+                    {
+                        break;
+                    }
+                    int tempScore = level.Score((Move)tempNode.Move);
+                    if (tempScore > bestScore)
+                    {
+                        firstVisitOrdered = tempNode;
+                        bestScore = tempScore;
+                        Console.WriteLine("Wins Tie Broke");
+                    }
+
+                }
+                return this.Childs.OrderByDescending(node => node.Wins).First().Move;
+            }
+        }
+
         public INode UCTSelectChild()
         {
             // bigger is first

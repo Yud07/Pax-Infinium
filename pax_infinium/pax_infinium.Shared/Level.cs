@@ -1084,15 +1084,15 @@ namespace pax_infinium
             ((Move)move).DoMove(this, gameTime);
         }
 
-        public void PlayRandomlyUntilTheEnd(int maxMoves)
+        public void Simulate(int maxPlayout, int maxRollout)
         {
             //Console.WriteLine("PlayingRandomlyUntilEnd");
             int startTurn = turn;
             int i = 0;
+            bool checkUnwinnable = true;
             while (!OneTeamRemaining())
             {
-                //Console.WriteLine("Turn " + i);
-                if (turn > (maxMoves - startTurn))
+                if (turn > (maxRollout + maxPlayout))
                 {
                     Console.WriteLine("Too Many Moves");
                     break;
@@ -1110,13 +1110,20 @@ namespace pax_infinium
                         playerTeamHealth += c.health;
                     }
                 }
-                if (playerTeamHealth / aiTeamHealth >= 2) // Good for increasing number of moves evaluated
+                if (checkUnwinnable && playerTeamHealth / aiTeamHealth >= 2) // Good for increasing number of moves evaluated
                 {
-                    Console.WriteLine("Unwinnable");
-                    break;
+                    if (startTurn == turn)
+                    {
+                        checkUnwinnable = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unwinnable");
+                        break;
+                    }
                 }
                 List<Move> moves = (List<Move>)GetMoves();
-                if (turn > startTurn + 40 || grid.characters.list[0].team == 1) // True random // only use eval for first 20 ai moves
+                if (turn > startTurn + maxPlayout) //* 2)|| grid.characters.list[0].team == 1) // True random // only use eval for first 20 ai moves
                 {
                     int random = World.Random.Next(moves.Count);
                     DoMove(moves[random]);

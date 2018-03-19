@@ -15,15 +15,15 @@ namespace pax_infinium
         public Vector3 movePos; // irrelevant if no movement
         public int nothingAttackSpecial; // 0-2
         public Vector3 attackSpecialPos; // irrelevant if nothingAttackSpecial is 0
-        public EDirection rotDir;
+        //public EDirection rotDir;
 
-        public Move(int noneMoveBeforeMoveAfter, Vector3 movement, EDirection rotDir, int nothingAttackSpecial, Vector3 attackSpecialPos)
+        public Move(int noneMoveBeforeMoveAfter, Vector3 movement, int nothingAttackSpecial, Vector3 attackSpecialPos)
         {
             this.noneMoveBeforeMoveAfter = noneMoveBeforeMoveAfter;
             this.movePos = movement;
             this.nothingAttackSpecial = nothingAttackSpecial;
             this.attackSpecialPos = attackSpecialPos;
-            this.rotDir = rotDir;
+            //this.rotDir = rotDir;
             if (noneMoveBeforeMoveAfter == 0)
             {
                 name = "Don't move";
@@ -49,7 +49,7 @@ namespace pax_infinium
             {
                 name += ", use special at " + attackSpecialPos;  
             }
-            name += ", Rotate " + rotDir.ToString();
+            //name += ", Rotate " + rotDir.ToString();
         }
 
         public string Name
@@ -80,7 +80,8 @@ namespace pax_infinium
                 default:
                     throw new NotImplementedException();
             }
-            player.Rotate(rotDir, false);
+            //player.Rotate(rotDir, false);
+            //player.RotateBest(level, false);
             EndTurn(level);
         }
 

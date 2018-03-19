@@ -195,7 +195,8 @@ namespace pax_infinium
                             timedEvents.Add(objA);
                             break;
                         case 1: // Rotate
-                            Rotate(currentMove.rotDir);
+                            //Rotate(currentMove.rotDir);
+                            //RotateBest(Game1.world.level);
                             Object[] objB = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
                             timedEvents.Add(objB);
                             break;
@@ -216,7 +217,8 @@ namespace pax_infinium
                             timedEvents.Add(objC);
                             break;
                         case 2: // Rotate
-                            Rotate(currentMove.rotDir);
+                            //Rotate(currentMove.rotDir);
+                            //RotateBest(Game1.world.level);
                             Object[] objD = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
                             timedEvents.Add(objD);
                             break;
@@ -237,7 +239,8 @@ namespace pax_infinium
                             Move(currentMove.movePos, Game1.world.level);
                             break;
                         case 2: // Rotate
-                            Rotate(currentMove.rotDir);
+                            //Rotate(currentMove.rotDir);
+                            //RotateBest(Game1.world.level);
                             Object[] objF = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
                             timedEvents.Add(objF);
                             break;
@@ -865,6 +868,127 @@ namespace pax_infinium
             }
         }
 
+        public void RotateBest(Level level, bool changeTex = true)
+        {
+            Cube nw = null;
+            int nwScore = 0;
+            Cube se = null;
+            int seScore = 0;
+            Cube ne = null;
+            int neScore = 0;
+            Cube sw = null;
+            int swScore = 0;
+            int topHeight = (int) Math.Min(level.grid.height - 1, gridPos.Z + 1);
+            int bottomHeight = (int)Math.Max(0, gridPos.Z - 1);
+            for(; topHeight >= 0; topHeight++)
+            {
+                if (nw == null) nw = level.grid.getCube((int)gridPos.X - 1, (int)gridPos.Y, topHeight);
+                if (se == null) se = level.grid.getCube((int)gridPos.X + 1, (int)gridPos.Y, topHeight);
+                if (ne == null) ne = level.grid.getCube((int)gridPos.X, (int)gridPos.Y - 1, topHeight);
+                if (sw == null) sw = level.grid.getCube((int)gridPos.X - 1, (int)gridPos.Y + 1, topHeight);
+            }
+
+            nwScore += GetCubeScore(level, nw);
+            seScore += GetCubeScore(level, se);
+            neScore += GetCubeScore(level, ne);
+            swScore += GetCubeScore(level, sw);
+            int maxScore = Math.Max(Math.Max(nwScore, seScore), Math.Max(neScore, swScore));
+            /*if (maxScore != 2) // if there is no enemy adjacent
+            {
+                Character closestEnemy = null;
+                int closestEnemyDist = 0;
+                foreach(Character c in level.grid.characters.list)
+                {
+                    if (c.team != team)
+                    {
+                        if (closestEnemy == null)
+                        {
+                            closestEnemy = c;
+                            closestEnemyDist = Game1.world.cubeDist(gridPos, c.gridPos);
+                        }
+                        else
+                        {
+                            int tempEnemyDist = Game1.world.cubeDist(gridPos, c.gridPos);
+                            if (tempEnemyDist < closestEnemyDist)
+                            {
+                                closestEnemy = c;
+                                closestEnemyDist = tempEnemyDist;
+                            }
+                        }
+                    }
+                }
+
+                Vector3 directionToClosestEnemy = gridPos - closestEnemy.gridPos;
+                int xDiff = (int) directionToClosestEnemy.X;
+                int yDiff = (int) directionToClosestEnemy.Y;
+
+                if (Math.Abs(xDiff) > Math.Abs(yDiff))
+                {
+                    if (xDiff > 0)
+                    {
+                        nwScore += 1;
+                    }
+                    else
+                    {
+                        seScore += 1;
+                    }
+                }
+                else
+                {
+                    if (yDiff > 0)
+                    {
+                        neScore += 1;
+                    }
+                    else
+                    {
+                        swScore += 1;
+                    }
+
+                }
+            }
+
+            maxScore = (int)Math.Max(Math.Max(nwScore, seScore), Math.Max(neScore, swScore));*/
+
+            if (nwScore == maxScore) {
+                Rotate(EDirection.Northwest, changeTex);
+            }
+            else if (neScore == maxScore) {
+                Rotate(EDirection.Northeast, changeTex);
+            }
+            else if (swScore == maxScore) {
+                Rotate(EDirection.Southwest, changeTex);
+            }
+            else {
+                Rotate(EDirection.Southeast, changeTex);
+            }
+
+        }
+
+        public int GetCubeScore(Level level, Cube c)
+        {
+            int result = 0;
+            if (c != null)
+            {
+                if (level.grid.getCube((int)c.gridPos.X, (int)c.gridPos.Y, (int)c.gridPos.Z + 1) == null)
+                {
+                    result += 1;
+                    Character temp = level.grid.CharacterAtPos(c.gridPos);
+                    if (temp != null)
+                    {
+                        if (temp.team == team)
+                        {
+                            result -= 1;
+                        }
+                        else
+                        {
+                            result += 1;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         public bool InMagicRange(Vector3 pos)
         {
             //return Game1.world.cubeDist(pos, gridPos) <= magicRange;
@@ -906,18 +1030,13 @@ namespace pax_infinium
             {
                 if (cube.gridPos == gridPos)
                 {
-                    moves.Add(new Move(0, gridPos, EDirection.Northeast, 0, Vector3.Zero)); // Do nothing at all
-                    moves.Add(new Move(0, gridPos, EDirection.Northwest, 0, Vector3.Zero)); // Do nothing at all
-                    moves.Add(new Move(0, gridPos, EDirection.Southeast, 0, Vector3.Zero)); // Do nothing at all
-                    moves.Add(new Move(0, gridPos, EDirection.Southwest, 0, Vector3.Zero)); // Do nothing at all
+                    moves.Add(new Move(0, gridPos, 0, Vector3.Zero)); // Do nothing at all
+
                     foreach (Character character in level.grid.characters.list)
                     {
                         if (character.team != team && InWeaponRange(character.gridPos))
                         {
-                            moves.Add(new Move(0, gridPos, EDirection.Northeast, 1, character.gridPos)); // Don't move, Attack character
-                            moves.Add(new Move(0, gridPos, EDirection.Northwest, 1, character.gridPos)); // Don't move, Attack character
-                            moves.Add(new Move(0, gridPos, EDirection.Southeast, 1, character.gridPos)); // Don't move, Attack character
-                            moves.Add(new Move(0, gridPos, EDirection.Southwest, 1, character.gridPos)); // Don't move, Attack character
+                            moves.Add(new Move(0, gridPos, 1, character.gridPos)); // Don't move, Attack character
                         }
                     }
                     if (CanCast(8))
@@ -931,18 +1050,12 @@ namespace pax_infinium
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if (target != null && (target.team != team || job == EJob.Soldier))
                                     {
-                                        moves.Add(new Move(0, gridPos, EDirection.Northeast, 2, cu.gridPos)); // Don't move, use special on character
-                                        moves.Add(new Move(0, gridPos, EDirection.Northwest, 2, cu.gridPos)); // Don't move, use special on character
-                                        moves.Add(new Move(0, gridPos, EDirection.Southeast, 2, cu.gridPos)); // Don't move, use special on character
-                                        moves.Add(new Move(0, gridPos, EDirection.Southwest, 2, cu.gridPos)); // Don't move, use special on character
+                                        moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(0, gridPos, EDirection.Northeast, 2, cu.gridPos)); // Don't move, use special at cube
-                                    moves.Add(new Move(0, gridPos, EDirection.Northwest, 2, cu.gridPos)); // Don't move, use special at cube
-                                    moves.Add(new Move(0, gridPos, EDirection.Southeast, 2, cu.gridPos)); // Don't move, use special at cube
-                                    moves.Add(new Move(0, gridPos, EDirection.Southwest, 2, cu.gridPos)); // Don't move, use special at cube
+                                    moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special at cube
                                 }
                             }
                         }
@@ -950,24 +1063,15 @@ namespace pax_infinium
                 }
                 else
                 {
-                    moves.Add(new Move(1, cube.gridPos, EDirection.Northeast, 0, Vector3.Zero)); // Move before to cube, do nothing
-                    moves.Add(new Move(2, cube.gridPos, EDirection.Northeast, 0, Vector3.Zero)); // Move after to cube, do nothing
-                    moves.Add(new Move(1, cube.gridPos, EDirection.Northwest, 0, Vector3.Zero)); // Move before to cube, do nothing
-                    moves.Add(new Move(2, cube.gridPos, EDirection.Northwest, 0, Vector3.Zero)); // Move after to cube, do nothing
-                    moves.Add(new Move(1, cube.gridPos, EDirection.Southeast, 0, Vector3.Zero)); // Move before to cube, do nothing
-                    moves.Add(new Move(2, cube.gridPos, EDirection.Southeast, 0, Vector3.Zero)); // Move after to cube, do nothing
-                    moves.Add(new Move(1, cube.gridPos, EDirection.Southwest, 0, Vector3.Zero)); // Move before to cube, do nothing
-                    moves.Add(new Move(2, cube.gridPos, EDirection.Southwest, 0, Vector3.Zero)); // Move after to cube, do nothing
+                    moves.Add(new Move(1, cube.gridPos, 0, Vector3.Zero)); // Move before to cube, do nothing
+                    moves.Add(new Move(2, cube.gridPos, 0, Vector3.Zero)); // Move after to cube, do nothing
 
                     //move before
                     foreach (Character character in level.grid.characters.list)
                     {
                         if (character.team != team && Game1.world.cubeDist(character.gridPos, cube.gridPos) <= weaponRange)
                         {
-                            moves.Add(new Move(1, cube.gridPos, EDirection.Northeast, 1, character.gridPos)); // Move first, Attack character
-                            moves.Add(new Move(1, cube.gridPos, EDirection.Northwest, 1, character.gridPos)); // Move first, Attack character
-                            moves.Add(new Move(1, cube.gridPos, EDirection.Southeast, 1, character.gridPos)); // Move first, Attack character
-                            moves.Add(new Move(1, cube.gridPos, EDirection.Southwest, 1, character.gridPos)); // Move first, Attack character
+                            moves.Add(new Move(1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
 
                         }
                     }
@@ -982,18 +1086,12 @@ namespace pax_infinium
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if ((target != null && target != this && (target.team != team || job == EJob.Soldier)) || (job == EJob.Soldier && cu.gridPos == cube.gridPos))
                                     {
-                                        moves.Add(new Move(1, cube.gridPos, EDirection.Northeast, 2, cu.gridPos)); // Move first, use special on character
-                                        moves.Add(new Move(1, cube.gridPos, EDirection.Northwest, 2, cu.gridPos)); // Move first, use special on character
-                                        moves.Add(new Move(1, cube.gridPos, EDirection.Southeast, 2, cu.gridPos)); // Move first, use special on character
-                                        moves.Add(new Move(1, cube.gridPos, EDirection.Southwest, 2, cu.gridPos)); // Move first, use special on character
+                                        moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(1, cube.gridPos, EDirection.Northeast, 2, cu.gridPos)); // Move first, use special at cube
-                                    moves.Add(new Move(1, cube.gridPos, EDirection.Northwest, 2, cu.gridPos)); // Move first, use special at cube
-                                    moves.Add(new Move(1, cube.gridPos, EDirection.Southeast, 2, cu.gridPos)); // Move first, use special at cube
-                                    moves.Add(new Move(1, cube.gridPos, EDirection.Southwest, 2, cu.gridPos)); // Move first, use special at cube
+                                    moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special at cube
                                 }
                             }
                         }
@@ -1004,10 +1102,7 @@ namespace pax_infinium
                     {
                         if (character.team != team && InWeaponRange(character.gridPos))
                         {
-                            moves.Add(new Move(2, cube.gridPos, EDirection.Northeast, 1, character.gridPos)); // Move after, Attack character
-                            moves.Add(new Move(2, cube.gridPos, EDirection.Northwest, 1, character.gridPos)); // Move after, Attack character
-                            moves.Add(new Move(2, cube.gridPos, EDirection.Southeast, 1, character.gridPos)); // Move after, Attack character
-                            moves.Add(new Move(2, cube.gridPos, EDirection.Southwest, 1, character.gridPos)); // Move after, Attack character
+                            moves.Add(new Move(2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
                         }
                     }
                     if (CanCast(8))
@@ -1021,18 +1116,12 @@ namespace pax_infinium
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if (target != null && (target.team != team || job == EJob.Soldier))
                                     {
-                                        moves.Add(new Move(2, cube.gridPos, EDirection.Northeast, 2, cu.gridPos)); // Move after, use special on character
-                                        moves.Add(new Move(2, cube.gridPos, EDirection.Northwest, 2, cu.gridPos)); // Move after, use special on character
-                                        moves.Add(new Move(2, cube.gridPos, EDirection.Southeast, 2, cu.gridPos)); // Move after, use special on character
-                                        moves.Add(new Move(2, cube.gridPos, EDirection.Southwest, 2, cu.gridPos)); // Move after, use special on character
+                                        moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(2, cube.gridPos, EDirection.Northeast, 2, cu.gridPos)); // Move after, use special at cube
-                                    moves.Add(new Move(2, cube.gridPos, EDirection.Northwest, 2, cu.gridPos)); // Move after, use special at cube
-                                    moves.Add(new Move(2, cube.gridPos, EDirection.Southeast, 2, cu.gridPos)); // Move after, use special at cube
-                                    moves.Add(new Move(2, cube.gridPos, EDirection.Southwest, 2, cu.gridPos)); // Move after, use special at cube
+                                    moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special at cube
                                 }
                             }
                         }

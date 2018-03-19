@@ -7,7 +7,7 @@
     {
         IEnumerable<IMove> GetMoves();
 
-        void PlayRandomlyUntilTheEnd(int maxMoves);
+        void Simulate(int maxPlayout, int maxRollout);
 
         void DoMove(IMove move);
 
