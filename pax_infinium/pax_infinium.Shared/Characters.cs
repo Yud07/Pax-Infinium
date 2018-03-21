@@ -229,6 +229,7 @@ namespace pax_infinium
 
                     break;
             }
+            //newCharacter.health /= 2;
             newCharacter.startingHealth = newCharacter.health;
             newCharacter.startingMP = newCharacter.mp;
         }
@@ -238,6 +239,19 @@ namespace pax_infinium
             clone.list = new List<Character>();
             this.list.ForEach(a => clone.list.Add((Character)a.Clone()));
             return clone;
+        }
+
+        public int CharactersPerTeam(int team)
+        {
+            int result = 0;
+            foreach(Character c in list)
+            {
+                if (c.team == team)
+                {
+                    result++;
+                }
+            }
+            return result;
         }
     }
 }

@@ -95,11 +95,14 @@ namespace MCTS.Node
         public string DisplayMostVisistedChild()
         {
             var sb = new StringBuilder();
+            int j = 0;
             foreach (var node in this.Childs)
             {
                 sb.AppendFormat("N:{0} W/V:{1}/{2}", node.Move.Name, node.Wins, node.Visits);
                 sb.AppendLine();
+                j++;
             }
+            Game1.world.level.MovesAnalyzedPerTurn.Add(j);
             return sb.ToString();
         }
 
@@ -129,12 +132,17 @@ namespace MCTS.Node
             // return first 
             if (firstVisitOrdered.Visits > (this.Visits / this.Childs.Count()) + 1)
             {
+                Game1.world.level.WinsPerChoice.Add((int)firstVisitOrdered.Wins);
+                Game1.world.level.VistsPerChoice.Add((int)firstVisitOrdered.Visits);
                 return firstVisitOrdered.Move;
             }
             // otherwise return most wins    
             else
             {
-                return this.Childs.OrderByDescending(node => node.Wins).First().Move;
+                firstVisitOrdered = this.Childs.OrderByDescending(node => node.Wins).First();
+                Game1.world.level.WinsPerChoice.Add((int)firstVisitOrdered.Wins);
+                Game1.world.level.VistsPerChoice.Add((int)firstVisitOrdered.Visits);
+                return firstVisitOrdered.Move;
             }
         }
 
@@ -153,7 +161,7 @@ namespace MCTS.Node
             // return first 
             if (firstVisitOrdered.Visits > (this.Visits / this.Childs.Count()) + 1)
             {
-                int bestScore = level.Score((Move)firstVisitOrdered.Move);
+                int bestScore = level.Score((Move)firstVisitOrdered.Move, Game1.world.level.grid.characters.list.First().team);
                 for (int i = 1; i < descending.Count(); i++)
                 {
                     INode tempNode = descending.ElementAt(i);
@@ -161,7 +169,7 @@ namespace MCTS.Node
                     {
                         break;
                     }
-                    int tempScore = level.Score((Move)tempNode.Move);
+                    int tempScore = level.Score((Move)tempNode.Move, Game1.world.level.grid.characters.list.First().team);
                     if (tempScore > bestScore)
                     {
                         firstVisitOrdered = tempNode;
@@ -170,12 +178,14 @@ namespace MCTS.Node
                     }
 
                 }
+                Game1.world.level.WinsPerChoice.Add((int)firstVisitOrdered.Wins);
+                Game1.world.level.VistsPerChoice.Add((int)firstVisitOrdered.Visits);
                 return firstVisitOrdered.Move;
             }
             // otherwise return most wins    
             else
             {
-                int bestScore = level.Score((Move)firstVisitOrdered.Move);
+                int bestScore = level.Score((Move)firstVisitOrdered.Move, Game1.world.level.grid.characters.list.First().team);
                 for (int i = 1; i < descending.Count(); i++)
                 {
                     INode tempNode = descending.ElementAt(i);
@@ -183,7 +193,7 @@ namespace MCTS.Node
                     {
                         break;
                     }
-                    int tempScore = level.Score((Move)tempNode.Move);
+                    int tempScore = level.Score((Move)tempNode.Move, Game1.world.level.grid.characters.list.First().team);
                     if (tempScore > bestScore)
                     {
                         firstVisitOrdered = tempNode;
@@ -192,7 +202,10 @@ namespace MCTS.Node
                     }
 
                 }
-                return this.Childs.OrderByDescending(node => node.Wins).First().Move;
+                firstVisitOrdered = this.Childs.OrderByDescending(node => node.Wins).First();
+                Game1.world.level.WinsPerChoice.Add((int)firstVisitOrdered.Wins);
+                Game1.world.level.VistsPerChoice.Add((int)firstVisitOrdered.Visits);
+                return firstVisitOrdered.Move;
             }
         }
 

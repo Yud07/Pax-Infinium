@@ -491,6 +491,10 @@ namespace pax_infinium
             Console.WriteLine("Chance to hit: " + chance + "%");
             if (chance >= World.Random.Next(1, 101))
             {
+                if (team == 0 && character.team == 1)
+                {
+                    Game1.world.level.damageDealtByAI += damage;
+                }
                 Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
                 //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
@@ -507,7 +511,7 @@ namespace pax_infinium
                     character.UpdateHitIcon(EHitIcon.Slash, gameTime);
                 }
 
-                Game1.world.level.recalcTeamHealthBar(); // Needs to check to make sure that if the last alive member of a team is killed, this isn't run 
+                Game1.world.level.recalcTeamHealthBar();
 
                 if (character.health <= 0)
                 {
@@ -613,6 +617,10 @@ namespace pax_infinium
             if (chance >= World.Random.Next(1, 101))
             {
                 int damage = chanceDamage[1];
+                if (team == 0 && character.team == 1)
+                {
+                    Game1.world.level.damageDealtByAI += damage;
+                }
                 Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
                 //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
@@ -656,6 +664,10 @@ namespace pax_infinium
         public void HealerSpecial(Character character, GameTime gameTime)
         {
             int health = 15;
+            if (team == 0 && character.team == 0)
+            {
+                Game1.world.level.damageDealtByAI += health;
+            }
             Console.WriteLine(character.name + " heals " + health + " points!");
             character.health += health;
             //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);

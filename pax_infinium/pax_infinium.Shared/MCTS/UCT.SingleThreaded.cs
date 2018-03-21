@@ -5,6 +5,7 @@ namespace MCTS
 
     using Interfaces;
     using Node;
+    using pax_infinium;
 
     public static partial class UCT
     {
@@ -14,7 +15,8 @@ namespace MCTS
             DateTime time = DateTime.Now;
             DateTime end = time.AddSeconds(secs);
 
-            for (int i = 0; time < end; i++)
+            int i = 0;
+            for (; time < end; i++)
             {
                 time = DateTime.Now;
 
@@ -45,6 +47,7 @@ namespace MCTS
                 // Playout + Rollout
                 state.Simulate(maxPlayout, maxRollout);
 
+
                 // Backpropagate
                 while (node != null)
                 {
@@ -52,14 +55,16 @@ namespace MCTS
                     node = node.Parent;
                 }
             }
-            
+            Game1.world.level.IterationsPerTurn.Add(i);
+
             if (verbose)
             {
                 //printfn(rootNode.DisplayTree(0));
                 printfn(rootNode.DisplayMostVisistedChild());
             }
 
-            return rootNode.MostVisitedMoveWithTieBreaks();
+            return rootNode.MostVisitedMove();
+            //return rootNode.MostVisitedMoveWithTieBreaks();
         }
     }
 }

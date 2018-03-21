@@ -700,23 +700,26 @@ namespace pax_infinium
                     }
                 }
             }
-            
-            foreach(Character character in characters.list)
+            //int vpoc = validPlacesOne.Count / 4;
+            //int vptc = validPlacesTwo.Count / 4;
+            foreach (Character character in characters.list)
             {
                 Vector3 pos;
                 if (character.team == 0)
                 {
-                    pos = validPlacesOne[World.Random.Next(validPlacesOne.Count)];
+                    pos = validPlacesOne[World.Random.Next(validPlacesOne.Count)]; // vpoc];
                     validPlacesOne.Remove(pos);
                     character.gridPos = pos;
                     character.Rotate(EDirection.Northeast);
+                    //vpoc++;
                 }
                 else
                 {
-                    pos = validPlacesTwo[World.Random.Next(validPlacesTwo.Count)];
+                    pos = validPlacesTwo[World.Random.Next(validPlacesTwo.Count)]; // vptc];
                     validPlacesTwo.Remove(pos);
                     character.gridPos = pos;
                     character.Rotate(EDirection.Southwest);
+                    //vptc++;
                 }
                 character.recalcPos();
             }

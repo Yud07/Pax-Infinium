@@ -128,6 +128,15 @@ namespace pax_infinium
         public int zeroStartHealth;
         public int oneStartHealth;
 
+        public bool printedAIStuff;
+        public List<int> IterationsPerTurn;
+        public List<int> VistsPerChoice;
+        public List<int> MovesAnalyzedPerTurn;
+        public List<int> TurnsPerSim;
+        public int damageDealtByAI;
+        public List<int> WinsPerChoice;
+        public int SimsEndedEarly;
+
         public Level(GraphicsDeviceManager graphics, string seed)
         {
             startScreen = new Background(World.textureManager["Start Screen"], graphics.GraphicsDevice.Viewport);
@@ -185,7 +194,7 @@ namespace pax_infinium
 
             playerName = new TextItem(World.fontManager["Trajanus Roman 36"], grid.characters.list[0].name);
             playerName.origin = Vector2.Zero;
-            playerName.position = new Vector2(1920/3 - 300, 750);            
+            playerName.position = new Vector2(1920 / 3 - 300, 750);
             playerName.scale = 1f;
 
             String t = grid.characters.list[0].health + "               " + grid.characters.list[0].mp;
@@ -195,7 +204,7 @@ namespace pax_infinium
             t += "\n\n\n" + grid.characters.list[0].WDefense + "               " + grid.characters.list[0].MDefense;
             t += "\n\n\n" + grid.characters.list[0].weaponRange + "                  " + grid.characters.list[0].magicRange;
             playerStatus = new TextItem(World.fontManager["InfoFont"], t);
-            playerStatus.position = new Vector2(185, 500);            
+            playerStatus.position = new Vector2(185, 500);
             playerStatus.scale = 1f;
 
             if (grid.characters.list[0].team == 0)
@@ -217,7 +226,7 @@ namespace pax_infinium
             characterName = new TextItem(World.fontManager["Trajanus Roman 36"], grid.characters.list[0].name);
             characterName.Text = "";
             characterName.origin = Vector2.Zero;
-            characterName.position = new Vector2(1920*2/3, 970);
+            characterName.position = new Vector2(1920 * 2 / 3, 970);
 
             characterStatus = new TextItem(World.fontManager["InfoFont"], t);
             characterStatus.Text = "";
@@ -289,7 +298,7 @@ namespace pax_infinium
             upButton = new UpButton(new Vector2(5, 60));
             downButton = new DownButton(new Vector2(5, 205));
             initPeelStatus(middleCube);
-           
+
             playerHealthText = new TextItem(World.fontManager["Trajanus Roman 24"], grid.characters.list[0].startingHealth + " HP");
             characterHealthText = new TextItem(World.fontManager["Trajanus Roman 24"], grid.characters.list[0].startingHealth + " HP");
             playerMagicText = new TextItem(World.fontManager["Trajanus Roman 24"], grid.characters.list[0].startingMP + " MP");
@@ -297,13 +306,13 @@ namespace pax_infinium
 
             recalcStatusBars();
 
-            Vector2 actionButtonsPos = new Vector2(1920/3 - 300, 780);
+            Vector2 actionButtonsPos = new Vector2(1920 / 3 - 300, 780);
             moveButton = new MoveButton(actionButtonsPos);
             attackButton = new AttackButton(actionButtonsPos + new Vector2(0, 55));
             specialButton = new SpecialButton(actionButtonsPos + new Vector2(0, 55 * 2));
             endTurnButton = new EndTurnButton(actionButtonsPos + new Vector2(0, 55 * 3));
             //undoButton = new UndoButton(actionButtonsPos + new Vector2(305, 0));
-            confirmButton = new ConfirmButton(new Vector2(1920/2 - 125, 1080 - 110));
+            confirmButton = new ConfirmButton(new Vector2(1920 / 2 - 125, 1080 - 110));
             cancelButton = new CancelButton(new Vector2(1920 / 2 - 125, 1080 - 55));
 
             buttons = new List<IButton>();
@@ -333,7 +342,7 @@ namespace pax_infinium
             descriptors.Add(cancelButton.GetDescriptor());
 
             Polygon teamHealthBarPoly = new Polygon();
-            float thbpX = 1920/2.75f - 400;
+            float thbpX = 1920 / 2.75f - 400;
             float thbpXb = thbpX + 800;
             Vector2 thbpTopLeft = new Vector2(thbpX, 0);
             Vector2 thbpTopRight = new Vector2(thbpXb, 0);
@@ -398,9 +407,9 @@ namespace pax_infinium
 
             Polygon playerHealthBarPoly = new Polygon();
             Vector2 phbTopLeft = new Vector2(0, 1040);
-            Vector2 phbTopRight = new Vector2(1920/3, 1040);
+            Vector2 phbTopRight = new Vector2(1920 / 3, 1040);
             Vector2 phbBotLeft = new Vector2(0, 1080);
-            Vector2 phbBotRight = new Vector2(1920/3, 1080);
+            Vector2 phbBotRight = new Vector2(1920 / 3, 1080);
             playerHealthBarPoly.Lines.Add(new PolyLine(phbTopLeft, phbTopRight));
             playerHealthBarPoly.Lines.Add(new PolyLine(phbTopLeft, phbBotLeft));
             playerHealthBarPoly.Lines.Add(new PolyLine(phbTopRight, phbBotRight));
@@ -421,7 +430,7 @@ namespace pax_infinium
             descriptors.Add(playerMagicBarDescriptor);
 
             Polygon characterFacePoly = new Polygon();
-            Vector2 cfTopLeft = new Vector2(1910-258, 677);
+            Vector2 cfTopLeft = new Vector2(1910 - 258, 677);
             Vector2 cfTopRight = new Vector2(1910, 677);
             Vector2 cfBotLeft = new Vector2(1910 - 258, 992);
             Vector2 cfBotRight = new Vector2(1910, 992);
@@ -468,7 +477,16 @@ namespace pax_infinium
             characterStatusBacker.position = new Vector2(1920 * 2 / 3, 1000);
 
             teamHealthBacker = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(800, 50, new Color(0, 0, 0, .5f)));
-            teamHealthBacker.position = new Vector2(1920 / 2.75f, + 25);
+            teamHealthBacker.position = new Vector2(1920 / 2.75f, +25);
+
+            printedAIStuff = false;
+            IterationsPerTurn = new List<int>();
+            VistsPerChoice = new List<int>();
+            MovesAnalyzedPerTurn = new List<int>();
+            TurnsPerSim = new List<int>();
+            damageDealtByAI = 0;
+            WinsPerChoice = new List<int>();
+            SimsEndedEarly = 0;
         }
 
         public void recalcTeamHealthBar()
@@ -497,16 +515,30 @@ namespace pax_infinium
 
                 int zeroSize = 400 * zeroHealth / zeroStartHealth;
                 int oneSize = 400 * oneHealth / oneStartHealth;
-                teamZeroHealth = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(zeroSize, 50, Color.Green));
-                teamZeroHealth.origin = Vector2.Zero;
-                teamZeroHealth.position = new Vector2(1920 / 2.75f - zeroSize, 0);
-                teamOneHealth = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(oneSize, 50, Color.Purple));
-                teamOneHealth.origin = Vector2.Zero;
-                teamOneHealth.position = new Vector2(1920 / 2.75f, 0);
+                if (zeroSize > 0)
+                {
+                    teamZeroHealth = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(zeroSize, 50, Color.Green));
+                    teamZeroHealth.origin = Vector2.Zero;
+                    teamZeroHealth.position = new Vector2(1920 / 2.75f - zeroSize, 0);
+                }
+                else
+                {
+                    teamZeroHealth = null;
+                }
+                if (oneSize > 0)
+                {
+                    teamOneHealth = new Sprite(Game1.world.textureConverter.GenBorderedRectangle(oneSize, 50, Color.Purple));
+                    teamOneHealth.origin = Vector2.Zero;
+                    teamOneHealth.position = new Vector2(1920 / 2.75f, 0);
+                }
+                else
+                {
+                    teamOneHealth = null;
+                }
 
 
                 zeroHealthText.Text = zeroHealth.ToString() + " HP";
-                zeroHealthText.position = new Vector2(1920/2.75f - 200, 27);
+                zeroHealthText.position = new Vector2(1920 / 2.75f - 200, 27);
                 oneHealthText.Text = oneHealth.ToString() + " HP";
                 oneHealthText.position = new Vector2(1920 / 2.75f + 200, 27);
             }
@@ -515,7 +547,7 @@ namespace pax_infinium
         public void initPeelStatus(Cube middleCube)
         {
             peelStatus = new List<Cube>();
-            for(int i = 0; i < grid.height; i++)
+            for (int i = 0; i < grid.height; i++)
             {
                 Cube c = grid.getCube((int)middleCube.gridPos.X, (int)middleCube.gridPos.Y, i);
                 int tries = 0;
@@ -528,17 +560,17 @@ namespace pax_infinium
                 }
                 if (c != null)
                 {
-                    c = new Cube(new Vector2(25, 175 - i * .25f * (c.southwestTex.Height + c.topTex.Height)/2), c.southwestTex, c.southeastTex, c.topTex);
+                    c = new Cube(new Vector2(25, 175 - i * .25f * (c.southwestTex.Height + c.topTex.Height) / 2), c.southwestTex, c.southeastTex, c.topTex);
                 }
                 peelStatus.Add(c);
             }
         }
-        
+
         public void recalcPeelStatus()
         {
             peelStatusText.Text = grid.peel + "/" + (grid.height - 1);
             int count = 0;
-            foreach(Cube c in peelStatus)
+            foreach (Cube c in peelStatus)
             {
                 if (c != null)
                 {
@@ -567,14 +599,28 @@ namespace pax_infinium
             float playerHealthRatio = (float)grid.characters.list[0].health / (float)grid.characters.list[0].startingHealth;
             float playerMPRatio = (float)grid.characters.list[0].mp / (float)grid.characters.list[0].startingMP;
 
-            playerHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * playerHealthRatio), height, Color.Red));
-            playerHealthBar.position = new Vector2((fullBarSize * playerHealthRatio)/2, 1080 - height / 2);
+            if ((int)(fullBarSize * playerHealthRatio) > 0)
+            {
+                playerHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * playerHealthRatio), height, Color.Red));
+                playerHealthBar.position = new Vector2((fullBarSize * playerHealthRatio) / 2, 1080 - height / 2);
+            }
+            else
+            {
+                playerHealthBar = null;
+            }
             playerHealthText.Text = grid.characters.list[0].health + " HP";
             playerHealthText.position = new Vector2(fullBarSize / 2, 1080 - height / 2);
             playerHealthText.position.Y += 2;
 
-            playerMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * playerMPRatio), height, Color.Blue));
-            playerMagicBar.position = new Vector2((fullBarSize * playerMPRatio) / 2, 1080 - height - yOffset);
+            if ((int)(fullBarSize * playerMPRatio) > 0)
+            {
+                playerMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * playerMPRatio), height, Color.Blue));
+                playerMagicBar.position = new Vector2((fullBarSize * playerMPRatio) / 2, 1080 - height - yOffset);
+            }
+            else
+            {
+                playerMagicBar = null;
+            }
             playerMagicText.Text = grid.characters.list[0].mp + " MP";
             playerMagicText.position = new Vector2(fullBarSize / 2, 1080 - height - yOffset);
             playerMagicText.position.Y += 2;
@@ -586,14 +632,28 @@ namespace pax_infinium
                     float characterHealthRatio = (float)highlightedCharacter.health / (float)highlightedCharacter.startingHealth;
                     float characterMPRatio = (float)highlightedCharacter.mp / (float)highlightedCharacter.startingMP;
 
-                    characterHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterHealthRatio), height, Color.Red));
-                    characterHealthBar.position = new Vector2(1920 - (fullBarSize * characterHealthRatio) / 2, 1080 - height / 2);
+                    if ((int)(fullBarSize * characterHealthRatio) > 0)
+                    {
+                        characterHealthBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterHealthRatio), height, Color.Red));
+                        characterHealthBar.position = new Vector2(1920 - (fullBarSize * characterHealthRatio) / 2, 1080 - height / 2);
+                    }
+                    else
+                    {
+                        characterHealthBar = null;
+                    }
                     characterHealthText.Text = highlightedCharacter.health + " HP";
                     characterHealthText.position = new Vector2(1920 - fullBarSize / 2, 1080 - height / 2);
                     characterHealthText.position.Y += 2;
 
-                    characterMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterMPRatio), height, Color.Blue));
-                    characterMagicBar.position = new Vector2(1920 - (fullBarSize * characterMPRatio) / 2, 1080 - height - yOffset);
+                    if ((int)(fullBarSize * characterMPRatio) > 0)
+                    {
+                        characterMagicBar = new pax_infinium.Sprite(Game1.world.textureConverter.GenBorderedRectangle((int)(fullBarSize * characterMPRatio), height, Color.Blue));
+                        characterMagicBar.position = new Vector2(1920 - (fullBarSize * characterMPRatio) / 2, 1080 - height - yOffset);
+                    }
+                    else
+                    {
+                        characterMagicBar = null;
+                    }
                     characterMagicText.Text = highlightedCharacter.mp + " MP";
                     characterMagicText.position = new Vector2(1920 - fullBarSize / 2, 1080 - height - yOffset);
                     characterMagicText.position.Y += 2;
@@ -616,12 +676,12 @@ namespace pax_infinium
 
             List<Vector3> tempVectList = new List<Vector3>();
             List<List<Vector3>> tempPathList = new List<List<Vector3>>();
-            foreach(Vector3 v in validMoveSpaces)
+            foreach (Vector3 v in validMoveSpaces)
             {
                 Point newCoords = Game1.world.rotate(new Point((int)v.X, (int)v.Y), grid.deg2Rad(degrees), new Point((int)grid.width / 2 - 1, (int)grid.depth / 2 - 1));
                 tempVectList.Add(new Vector3(newCoords.X, newCoords.Y, v.Z));
                 List<Vector3> tempVList = new List<Vector3>();
-                foreach(Vector3 vect in validMovePaths.First()){
+                foreach (Vector3 vect in validMovePaths.First()) {
                     Point newCoordinates = Game1.world.rotate(new Point((int)vect.X, (int)vect.Y), grid.deg2Rad(degrees), new Point((int)grid.width / 2 - 1, (int)grid.depth / 2 - 1));
                     tempVList.Add(new Vector3(newCoordinates.X, newCoordinates.Y, vect.Z));
                 }
@@ -657,7 +717,7 @@ namespace pax_infinium
                         }
                         drawBVD = false;
                     }
-                }                
+                }
             }
 
             if (toBeKilled.Count > 0) {
@@ -694,7 +754,7 @@ namespace pax_infinium
                     RotateTo = null;
                 }
             }
-            
+
             if (OneTeamRemaining())
             {
                 if (grid.characters.list[0].team == 1)
@@ -704,6 +764,55 @@ namespace pax_infinium
                 else
                 {
                     battleVictoryDefeat.Text = "Defeat";
+                }
+                if (!printedAIStuff)
+                {
+                    int totalIterationsAnalyzed = 0;
+                    foreach (int i in IterationsPerTurn)
+                    {
+                        totalIterationsAnalyzed += i;
+                    }
+                    float avgIterationsPerTurn = (float) totalIterationsAnalyzed / IterationsPerTurn.Count;
+
+                    int totalVisitsOfChoice = 0;
+                    foreach (int j in VistsPerChoice)
+                    {
+                        totalVisitsOfChoice += j;
+                    }
+                    float avgVisitsPerChoice = (float) totalVisitsOfChoice / VistsPerChoice.Count;
+
+                    int totalMovesAnalyzedPerTurn = 0;
+                    foreach (int k in MovesAnalyzedPerTurn)
+                    {
+                        totalMovesAnalyzedPerTurn += k;
+                    }
+                    float avgMovesAnalyzedPerTurn = (float) totalMovesAnalyzedPerTurn / MovesAnalyzedPerTurn.Count;
+
+                    int totalTurnsSimed = 0;
+                    foreach (int k in TurnsPerSim)
+                    {
+                        totalTurnsSimed += k;
+                    }
+                    float avgTurnsPerSim = (float) totalTurnsSimed / TurnsPerSim.Count;
+
+                    int totalChoiceWins = 0;
+                    foreach (int l in WinsPerChoice)
+                    {
+                        totalChoiceWins += l;
+                    }
+                    float avgWinsPerChoice = (float)totalChoiceWins / WinsPerChoice.Count;
+
+                    float SimsEndedEarlyPerTurn = (float)SimsEndedEarly / IterationsPerTurn.Count;
+
+                    Console.WriteLine("Avg Iterations: " + avgIterationsPerTurn);
+                    Console.WriteLine("Avg Moves Analyzed: " + avgMovesAnalyzedPerTurn);
+                    Console.WriteLine("Avg Turns per Sim: " + avgTurnsPerSim);
+                    Console.WriteLine("Avg Wins Per Choice: " + avgWinsPerChoice);
+                    Console.WriteLine("Avg Visits of Choice: " + avgVisitsPerChoice);
+                    Console.WriteLine("Damage By AI: " + damageDealtByAI);
+                    Console.WriteLine("Sims ended Early Per Turn: " + SimsEndedEarlyPerTurn);
+                    
+                    printedAIStuff = true;
                 }
                 drawBVD = true;
             }
@@ -747,7 +856,7 @@ namespace pax_infinium
                     characterFace.visible = true;
                     characterHealthBar.visible = true;
                     characterMagicBar.visible = true;
-                    
+
                     characterName.Draw(spriteBatch);
                     characterFace.Draw(spriteBatch);
                     if (drawInfo)
@@ -756,9 +865,15 @@ namespace pax_infinium
                         characterStatusIcons.Draw(spriteBatch);
                     }
                     characterStatusBacker.Draw(spriteBatch);
-                    characterHealthBar.Draw(spriteBatch);
+                    if (characterHealthBar != null)
+                    {
+                        characterHealthBar.Draw(spriteBatch);
+                    }
                     characterHealthText.Draw(spriteBatch);
-                    characterMagicBar.Draw(spriteBatch);
+                    if (characterMagicBar != null)
+                    {
+                        characterMagicBar.Draw(spriteBatch);
+                    }
                     characterMagicText.Draw(spriteBatch);
                 }
                 else
@@ -794,7 +909,7 @@ namespace pax_infinium
                     drewThoughtBubble = true;
                 }
 
-                if(drawBVD)
+                if (drawBVD)
                 {
                     battleVictoryDefeat.Draw(spriteBatch);
                 }
@@ -808,13 +923,20 @@ namespace pax_infinium
                 //rightButton.Draw(spriteBatch);
 
                 teamHealthBacker.Draw(spriteBatch);
-                teamZeroHealth.Draw(spriteBatch);
+                if (teamZeroHealth != null)
+                {
+                    teamZeroHealth.Draw(spriteBatch);
+                }
+                if (teamOneHealth != null)
+                {
+                    teamOneHealth.Draw(spriteBatch);
+                }
                 teamOneHealth.Draw(spriteBatch);
                 zeroHealthText.Draw(spriteBatch);
                 oneHealthText.Draw(spriteBatch);
 
                 peelStatusText.Draw(spriteBatch);
-                foreach(Cube c in peelStatus)
+                foreach (Cube c in peelStatus)
                 {
                     if (c != null)
                     {
@@ -825,21 +947,27 @@ namespace pax_infinium
                 //downButton.Draw(spriteBatch);
 
                 playerStatusBacker.Draw(spriteBatch);
-                playerHealthBar.Draw(spriteBatch);
+                if (playerHealthBar != null)
+                {
+                    playerHealthBar.Draw(spriteBatch);
+                }
                 playerHealthText.Draw(spriteBatch);
-                playerMagicBar.Draw(spriteBatch);
+                if (playerMagicBar != null)
+                {
+                    playerMagicBar.Draw(spriteBatch);
+                }
                 playerMagicText.Draw(spriteBatch);
 
-                foreach(IButton b in buttons)
+                foreach (IButton b in buttons)
                 {
                     b.Draw(spriteBatch);
                 }
 
-                foreach(Descriptor d in descriptors)
+                foreach (Descriptor d in descriptors)
                 {
                     d.Draw(spriteBatch);
                 }
-                
+
             }
         }
 
@@ -847,7 +975,7 @@ namespace pax_infinium
         {
             turn++;
             recalcTeamHealthBar();
-            grid.peel = grid.height-1;
+            grid.peel = grid.height - 1;
             recalcPeelStatus();
             Character tempCharacter = grid.characters.list[0];
             grid.characters.list.Remove(tempCharacter);
@@ -878,14 +1006,14 @@ namespace pax_infinium
             playerFace.tex = player.faceLeft;
             if (player.team == 0)
             {
-                playerName.position = new Vector2(1920/3 - 300, 970);
+                playerName.position = new Vector2(1920 / 3 - 300, 970);
                 playerName.color = Color.Green;
                 playerStatus.color = Color.Green;
 
             }
             else if (player.team == 1)
             {
-                playerName.position = new Vector2(1920/3 -300, 750);
+                playerName.position = new Vector2(1920 / 3 - 300, 750);
                 playerName.color = Color.Purple;
                 playerStatus.color = Color.Purple;
             }
@@ -912,7 +1040,7 @@ namespace pax_infinium
                 //Game1.world.triggerAI(this, gameTime);
             }
         }
-        
+
         public void setCharacter(Character c)
         {
             highlightedCharacter = c;
@@ -938,7 +1066,7 @@ namespace pax_infinium
             }
 
             recalcStatusBars();
-            
+
 
             characterFace.tex = highlightedCharacter.faceRight;
         }
@@ -975,8 +1103,8 @@ namespace pax_infinium
 
                 /*if (index % 2 == 0)
                 {*/
-                    turnOrderIcons.Add(new Sprite(c.faceLeft));
-                    turnOrderIcons[index].position = new Vector2(offset + index * width - 9 , 5);
+                turnOrderIcons.Add(new Sprite(c.faceLeft));
+                turnOrderIcons[index].position = new Vector2(offset + index * width - 9, 5);
 
                 /*}
                 else
@@ -987,7 +1115,7 @@ namespace pax_infinium
                 index++;
             }
             turnOrderIcons.Reverse();
-        }        
+        }
 
         public void SetConfirmationText(int chance, int damage)
         {
@@ -1008,7 +1136,7 @@ namespace pax_infinium
             confirmationSprite.position = confirmationText.position;
             confirmationSprite.position.Y -= 25;
             confirmationSprite.position.X -= 10;
-            
+
         }
 
         public void SetConfirmationText(String text)
@@ -1031,9 +1159,9 @@ namespace pax_infinium
                 confirmationSprite.position = confirmationText.position;
                 confirmationSprite.position.Y -= 25;
                 confirmationSprite.position.X -= 10;
-            }   
+            }
         }
-        
+
         public bool OneTeamRemaining()
         {
             int team = -1;
@@ -1057,7 +1185,7 @@ namespace pax_infinium
         // ---  MCTS ----
         public IGameState Clone()
         {
-            Level clone = (Level) this.MemberwiseClone();
+            Level clone = (Level)this.MemberwiseClone();
             String[] words = clone.name.Split(' ');
             if (words.Length > 1)
             {
@@ -1070,7 +1198,7 @@ namespace pax_infinium
             {
                 clone.name += " 1";
             }
-            clone.grid = (Grid) grid.Clone();
+            clone.grid = (Grid)grid.Clone();
             return clone;
         }
 
@@ -1092,13 +1220,14 @@ namespace pax_infinium
             bool checkUnwinnable = true;
             while (!OneTeamRemaining())
             {
-                if (turn > (maxRollout + maxPlayout))
+                /*if (turn > (maxRollout + maxPlayout))
                 {
+                    SimsEndedEarly++;
                     Console.WriteLine("Too Many Moves");
                     break;
-                }
-                int playerTeamHealth = 0;
-                int aiTeamHealth = 0;
+                }*/
+                float playerTeamHealth = 0;
+                float aiTeamHealth = 0;
                 foreach (Character c in grid.characters.list)
                 {
                     if (c.team == 0)
@@ -1110,7 +1239,7 @@ namespace pax_infinium
                         playerTeamHealth += c.health;
                     }
                 }
-                if (checkUnwinnable && playerTeamHealth / aiTeamHealth >= 2) // Good for increasing number of moves evaluated
+                if (checkUnwinnable && playerTeamHealth / aiTeamHealth >= 3) // Good for increasing number of moves evaluated
                 {
                     if (startTurn == turn)
                     {
@@ -1118,32 +1247,41 @@ namespace pax_infinium
                     }
                     else
                     {
+                        Game1.world.level.SimsEndedEarly++;
                         Console.WriteLine("Unwinnable");
                         break;
                     }
                 }
                 List<Move> moves = (List<Move>)GetMoves();
-                if (turn > startTurn + maxPlayout) //* 2)|| grid.characters.list[0].team == 1) // True random // only use eval for first 20 ai moves
+                if (turn > startTurn + maxPlayout) // rollout
                 {
                     int random = World.Random.Next(moves.Count);
                     DoMove(moves[random]);
                 }
-                else // Greedy Health
+                else // playout
                 {
-                    DoMove(GetBestMove(moves));
+                    if (grid.characters.list[0].team == 0) // ai playout uses greedy evaluation/score function
+                    {
+                        DoMove(GetBestMove(moves, grid.characters.list.First().team));
+                    }
+                    else
+                    {
+                        DoMove(GetOpponnentMove(moves, grid.characters.list.First().team));
+                    }
                 }
                 i++;
             }
+            Game1.world.level.TurnsPerSim.Add(turn - startTurn);
             Console.WriteLine("Game took " + turn + " moves");
         }
 
-        public Move GetBestMove(List<Move> moves)
+        public Move GetBestMove(List<Move> moves, int team)
         {
             Move result = moves[0];
-            int score = Score(result);
+            int score = Score(result, team);
             foreach (Move m in moves)
             {
-                int tempScore = Score(m);
+                int tempScore = Score(m, team);
                 if (tempScore > score)
                 {
                     result = m;
@@ -1153,10 +1291,10 @@ namespace pax_infinium
             return result;
         }
 
-        public int Score(Move move)
+        public int Score(Move move, int team)
         {
             int score = 0;
-            Level clone = (Level) Clone();
+            Level clone = (Level)Clone();
             clone.DoMove(move);
             if (move.noneMoveBeforeMoveAfter > 0)
             {
@@ -1168,18 +1306,136 @@ namespace pax_infinium
             }
             foreach (Character c in clone.grid.characters.list)
             {
-                if (c.team == 0)
+                if (c.team == team)
                 {
-                    score += 50; // if they have ally alive
+                    if (c == clone.grid.characters.list.First())
+                    {
+                        score += 50;// 100; // if they are still alive
+                    }
+                    else
+                    {
+                        score += 25;//50; // if they have ally alive
+                    }
                     score += c.health;
                 }
                 else
                 {
-                    score -= 50; // if they have enemy alive
+                    score -= 25;// 50; // if they have enemy alive
                     score -= c.health;
                 }
             }
             return score;
+        }
+
+        // Some quick move picking to represent human moves
+        public Move GetOpponnentMove(List<Move> moves, int team)
+        {
+            Move result = moves[0];
+            Character activeCharacter = grid.characters.list.First();
+            Character target;
+            if (activeCharacter.job != EJob.Healer)
+            {
+                if (team == 0)
+                {
+                    target = GetNearestMemberOfTeam(activeCharacter, 1);
+                }
+                else
+                {
+                    target = GetNearestMemberOfTeam(activeCharacter, 0);
+                }
+            }
+            else // Healer
+            {
+                target = GetNearestMemberOfTeam(activeCharacter, team);
+            }
+            int dist = int.MaxValue;
+            Move[] tempMoves = new Move[moves.Count];
+            moves.CopyTo(tempMoves);
+            foreach (Move m in tempMoves)
+            {
+                if (activeCharacter.job == EJob.Healer || activeCharacter.job == EJob.Mage) // mage and healer just want to use special on target
+                {
+                    if (m.attackSpecialPos == target.gridPos && m.nothingAttackSpecial == 2)
+                    {
+                        return m;
+                    }
+                }
+                else
+                {
+                    if (m.attackSpecialPos == target.gridPos && m.nothingAttackSpecial == 1) // everyone else just wants to attack target
+                    {
+                        return m;
+                    }
+                }
+                int tempDist = Game1.world.cubeDist(m.movePos, target.gridPos);
+                if (tempDist < dist)
+                {
+                    dist = tempDist;
+                }
+                if (dist != tempDist)
+                {
+                    moves.Remove(m);
+                }
+                
+            }
+            tempMoves = new Move[moves.Count];
+            moves.CopyTo(tempMoves);
+            foreach (Move m in tempMoves) // Delete earlier closest dist moves
+            {
+                int tempDist = Game1.world.cubeDist(m.movePos, target.gridPos);
+                if (tempDist != dist)
+                {
+                    moves.Remove(m);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            Move bestMove = null;
+            foreach (Move m in moves) // go through list of closest moves
+            {
+                if (bestMove == null)
+                {
+                    bestMove = m;
+                }
+                if (m.nothingAttackSpecial == 1)
+                {
+                    if (activeCharacter.job != EJob.Healer && activeCharacter.job != EJob.Mage && m.attackSpecialPos == target.gridPos)
+                    {
+                        bestMove = m;
+                        break;
+                    }
+                }
+                else if (m.nothingAttackSpecial == 2)
+                {
+                    if (activeCharacter.job == EJob.Healer || activeCharacter.job == EJob.Mage && m.attackSpecialPos == target.gridPos)
+                    {
+                        bestMove = m;
+                        break;
+                    }
+                }
+            }
+            return bestMove;
+        }
+
+        public Character GetNearestMemberOfTeam(Character activeCharacter, int team)
+        {
+            Character result = null;
+            int dist = 0;
+            foreach(Character c in grid.characters.list)
+            {
+                if (c.team == team && c != activeCharacter) {
+                    int tempDist = Game1.world.cubeDist(activeCharacter.gridPos, c.gridPos);
+                    if (result == null || tempDist < dist)
+                    {
+                        result = c;
+                        dist = tempDist;
+                    }
+                }
+            }
+            return result;
         }
 
         public IPlayer PlayerJustMoved => players[grid.characters.list.Last().team]; // thief special will break this on success also broken by a death
