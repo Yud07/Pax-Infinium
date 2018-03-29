@@ -1048,7 +1048,7 @@ namespace pax_infinium
                     {
                         if (character.team != team && InWeaponRange(character.gridPos))
                         {
-                            moves.Add(new Move(0, gridPos, 1, character.gridPos)); // Don't move, Attack character
+                            moves.Add(new Move(0, gridPos, 1, character.gridPos, character.name)); // Don't move, Attack character
                         }
                     }
                     if (CanCast(8))
@@ -1057,17 +1057,35 @@ namespace pax_infinium
                         {
                             if (InMagicRange(cu.gridPos) && level.grid.TopExposed(cu.gridPos))
                             {
-                                if (job != EJob.Mage || job != EJob.Healer)
+                                if (job != EJob.Mage && job != EJob.Healer)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if (target != null && (target.team != team || job == EJob.Soldier))
                                     {
-                                        moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special on character
+                                        moves.Add(new Move(0, gridPos, 2, cu.gridPos, target.name)); // Don't move, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(0, gridPos, 2, cu.gridPos)); // Don't move, use special at cube
+                                    foreach (Character c in level.grid.characters.list)
+                                    {
+                                        if (c.team == team)
+                                        {
+                                            if (job == EJob.Healer && (cu.isAdjacent(c.gridPos) || cu.gridPos == c.gridPos))
+                                            {
+                                                moves.Add(new Move(0, gridPos, 2, cu.gridPos, c.name)); // Don't move, use special at cube
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (job == EJob.Mage && (cu.isAdjacent(c.gridPos) || cu.gridPos == c.gridPos))
+                                            {
+                                                moves.Add(new Move(0, gridPos, 2, cu.gridPos, c.name)); // Don't move, use special at cube
+                                                break;
+                                            }
+                                        }
+                                    }                                    
                                 }
                             }
                         }
@@ -1083,7 +1101,7 @@ namespace pax_infinium
                     {
                         if (character.team != team && Game1.world.cubeDist(character.gridPos, cube.gridPos) <= weaponRange)
                         {
-                            moves.Add(new Move(1, cube.gridPos, 1, character.gridPos)); // Move first, Attack character
+                            moves.Add(new Move(1, cube.gridPos, 1, character.gridPos, character.name)); // Move first, Attack character
 
                         }
                     }
@@ -1093,17 +1111,39 @@ namespace pax_infinium
                         {
                             if (Vector3.Distance(cu.gridPos, cube.gridPos) <= magicRange && level.grid.TopExposed(cu.gridPos))
                             {
-                                if (job != EJob.Mage || job != EJob.Healer)
+                                if (job != EJob.Mage && job != EJob.Healer)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
-                                    if ((target != null && target != this && (target.team != team || job == EJob.Soldier)) || (job == EJob.Soldier && cu.gridPos == cube.gridPos))
+                                    if (target != null && target != this && (target.team != team || job == EJob.Soldier))
                                     {
-                                        moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special on character
+                                        moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos, target.name)); // Move first, use special on character
+                                    }
+                                    else if (job == EJob.Soldier && cu.gridPos == cube.gridPos)
+                                    {
+                                        moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos, name)); // Move first, use special on self
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos)); // Move first, use special at cube
+                                    foreach (Character c in level.grid.characters.list)
+                                    { 
+                                        if (c.team == team)
+                                        {
+                                            if (job == EJob.Healer && (cu.isAdjacent(c.gridPos) || cu.gridPos == c.gridPos))
+                                            {
+                                                moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos, c.name)); // Move first, use special at cube
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (job == EJob.Mage && (cu.isAdjacent(c.gridPos) || cu.gridPos == c.gridPos))
+                                            {
+                                                moves.Add(new Move(1, cube.gridPos, 2, cu.gridPos, c.name)); // Move first, use special at cube
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1114,7 +1154,7 @@ namespace pax_infinium
                     {
                         if (character.team != team && InWeaponRange(character.gridPos))
                         {
-                            moves.Add(new Move(2, cube.gridPos, 1, character.gridPos)); // Move after, Attack character
+                            moves.Add(new Move(2, cube.gridPos, 1, character.gridPos, character.name)); // Move after, Attack character
                         }
                     }
                     if (CanCast(8))
@@ -1123,17 +1163,35 @@ namespace pax_infinium
                         {
                             if (InMagicRange(cu.gridPos) && level.grid.TopExposed(cu.gridPos))
                             {
-                                if (job != EJob.Mage || job != EJob.Healer)
+                                if (job != EJob.Mage && job != EJob.Healer)
                                 {
                                     Character target = level.grid.CharacterAtPos(cu.gridPos);
                                     if (target != null && (target.team != team || job == EJob.Soldier))
                                     {
-                                        moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special on character
+                                        moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos, target.name)); // Move after, use special on character
                                     }
                                 }
                                 else
                                 {
-                                    moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos)); // Move after, use special at cube
+                                    foreach (Character c in level.grid.characters.list)
+                                    {
+                                        if (c.team == team)
+                                        {
+                                            if (job == EJob.Healer && (cu.isAdjacent(c.gridPos) || cu.gridPos == c.gridPos))
+                                            {
+                                                moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos, c.name)); // Move after, use special at cube
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (job == EJob.Mage && (cu.isAdjacent(c.gridPos) || cu.gridPos == c.gridPos))
+                                            {
+                                                moves.Add(new Move(2, cube.gridPos, 2, cu.gridPos, c.name)); // Move after, use special at cube
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -1239,7 +1239,7 @@ namespace pax_infinium
                         playerTeamHealth += c.health;
                     }
                 }
-                if (checkUnwinnable && playerTeamHealth / aiTeamHealth >= 3) // Good for increasing number of moves evaluated
+                if (checkUnwinnable && playerTeamHealth / aiTeamHealth >= 4) // Good for increasing number of moves evaluated
                 {
                     if (startTurn == turn)
                     {
@@ -1253,7 +1253,7 @@ namespace pax_infinium
                     }
                 }
                 List<Move> moves = (List<Move>)GetMoves();
-                if (turn > startTurn + maxPlayout) // rollout
+                if (turn > startTurn + maxPlayout || maxPlayout == 0) // rollout
                 {
                     int random = World.Random.Next(moves.Count);
                     DoMove(moves[random]);

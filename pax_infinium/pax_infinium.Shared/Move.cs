@@ -17,7 +17,7 @@ namespace pax_infinium
         public Vector3 attackSpecialPos; // irrelevant if nothingAttackSpecial is 0
         //public EDirection rotDir;
 
-        public Move(int noneMoveBeforeMoveAfter, Vector3 movement, int nothingAttackSpecial, Vector3 attackSpecialPos)
+        public Move(int noneMoveBeforeMoveAfter, Vector3 movement, int nothingAttackSpecial, Vector3 attackSpecialPos, String target = "")
         {
             this.noneMoveBeforeMoveAfter = noneMoveBeforeMoveAfter;
             this.movePos = movement;
@@ -49,6 +49,7 @@ namespace pax_infinium
             {
                 name += ", use special at " + attackSpecialPos;  
             }
+            name += " T: " + target;
             //name += ", Rotate " + rotDir.ToString();
         }
 

@@ -229,7 +229,10 @@ namespace pax_infinium
 
                     break;
             }
-            //newCharacter.health /= 2;
+            if (true)//newCharacter.team == 1)
+            {
+                newCharacter.health /= 2;
+            }
             newCharacter.startingHealth = newCharacter.health;
             newCharacter.startingMP = newCharacter.mp;
         }

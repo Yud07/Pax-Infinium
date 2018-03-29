@@ -98,6 +98,7 @@ namespace MCTS.Node
             int j = 0;
             foreach (var node in this.Childs)
             {
+
                 sb.AppendFormat("N:{0} W/V:{1}/{2}", node.Move.Name, node.Wins, node.Visits);
                 sb.AppendLine();
                 j++;
@@ -207,6 +208,98 @@ namespace MCTS.Node
                 Game1.world.level.VistsPerChoice.Add((int)firstVisitOrdered.Visits);
                 return firstVisitOrdered.Move;
             }
+        }
+
+        public IMove MostVisitedMoveTieBreak()
+        {
+            IEnumerable<INode> descending = this.Childs.OrderByDescending(node => node.Visits);
+            var firstVisitOrdered = descending.First();
+
+            // most visited move is a really above other moves.
+            // done to avoid :
+            //      Node 1 : Visit = 334, Win = 2 (selected)
+            //      Node 2 : Visit = 333, Win = 330 (most promising)
+            //      Node 3 : Visit = 333, Win = 5
+            // return first 
+            if (firstVisitOrdered.Visits > (this.Visits / this.Childs.Count()) + 1)
+            {                
+            }
+            // otherwise return most wins    
+            else
+            {
+                firstVisitOrdered = this.Childs.OrderByDescending(node => node.Wins).First();
+            }
+
+            if (firstVisitOrdered.Wins == 0) // if no wins, use greedy eval
+            {
+                Level level = Game1.world.level;
+                int bestScore = level.Score((Move)firstVisitOrdered.Move, Game1.world.level.grid.characters.list.First().team);
+                for (int i = 1; i < descending.Count(); i++)
+                {
+                    INode tempNode = descending.ElementAt(i);
+                    int tempScore = level.Score((Move)tempNode.Move, Game1.world.level.grid.characters.list.First().team);
+                    if (tempScore > bestScore)
+                    {
+                        firstVisitOrdered = tempNode;
+                        bestScore = tempScore;
+                        Console.WriteLine("No Wins Tie Broke");
+                    }
+
+                }
+            }
+            else if (firstVisitOrdered.Visits == descending.ElementAt(1).Visits) // if visits tie
+            {
+                bool winBreak = false;
+                for (int j = 1; j < descending.Count(); j++)
+                {
+                    INode tempNode = descending.ElementAt(j);
+                    if (firstVisitOrdered.Wins == tempNode.Wins && firstVisitOrdered.Visits == tempNode.Visits)
+                    {
+                        winBreak = true;
+                        break;
+                    }
+                }
+                if (winBreak) // If there is a tie for top move (wins and visits tied)
+                {
+                    Level level = Game1.world.level;
+                    int bestScore = level.Score((Move)firstVisitOrdered.Move, Game1.world.level.grid.characters.list.First().team);
+                    for (int i = 1; i < descending.Count(); i++)
+                    {
+                        INode tempNode = descending.ElementAt(i);
+                        if (firstVisitOrdered.Wins == tempNode.Wins && firstVisitOrdered.Visits == tempNode.Visits)
+                        {
+                            int tempScore = level.Score((Move)tempNode.Move, Game1.world.level.grid.characters.list.First().team);
+                            if (tempScore > bestScore)
+                            {
+                                firstVisitOrdered = tempNode;
+                                bestScore = tempScore;
+                                Console.WriteLine("Equal Wins and Visits Tie Broke");
+                            }
+                        }
+
+                    }
+                }
+                else // if just visits tie, pick most wins
+                {
+                    int mostWins = (int)firstVisitOrdered.Wins;
+                    for (int i = 1; i < descending.Count(); i++)
+                    {
+                        INode tempNode = descending.ElementAt(i);
+                        int tempWins = (int)tempNode.Wins;
+                        if (tempWins > mostWins && tempNode.Visits == firstVisitOrdered.Visits)
+                        {
+                            firstVisitOrdered = tempNode;
+                            mostWins = tempWins;
+                            Console.WriteLine("Visits Tie Broke With Wins");
+                        }
+                    }
+                }
+            }
+            
+            Console.WriteLine("Wins: " + (int)firstVisitOrdered.Wins + " / Visits: " + (int)firstVisitOrdered.Visits);
+            Game1.world.level.WinsPerChoice.Add((int)firstVisitOrdered.Wins);
+            Game1.world.level.VistsPerChoice.Add((int)firstVisitOrdered.Visits);
+            return firstVisitOrdered.Move;
         }
 
         public INode UCTSelectChild()

@@ -240,7 +240,10 @@ namespace pax_infinium
             {
                 top.Draw(spriteBatch);
             }
-            //text.Draw(spriteBatch);
+            if (text != null)
+            {
+                //text.Draw(spriteBatch);
+            }
             if (rectangleTex != null)
             {
                 rectangleSprite.Draw(spriteBatch);
