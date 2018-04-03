@@ -215,7 +215,7 @@ namespace pax_infinium
         {
             Action<string> print = s => Console.WriteLine(s);
             print(level.ToString());
-            IMove move = UCT.ComputeSingleThreadedUCT(level, true, print, 0.7F, 15, 10, 0);//275);//1000, true, print, 0.7F, 15, 700);
+            IMove move = UCT.ComputeSingleThreadedUCT(level, true, print, 0.7F, 15, 0, 0);//275);//1000, true, print, 0.7F, 15, 700);
             print(move.Name);
             triggerAIBool = false;
             //currentMove = (Move)move;

@@ -65,7 +65,7 @@ namespace MCTS
 
             //return rootNode.MostVisitedMove();
             //return rootNode.MostVisitedMoveWithTieBreaks();
-            return rootNode.MostVisitedMoveTieBreak();
+            return rootNode.MostVisitedMoveTieBreakWithPlayoutHybrid();
         }
     }
 }

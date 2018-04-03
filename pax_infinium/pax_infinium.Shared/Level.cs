@@ -1253,7 +1253,7 @@ namespace pax_infinium
                     }
                 }
                 List<Move> moves = (List<Move>)GetMoves();
-                if (turn > startTurn + maxPlayout || maxPlayout == 0) // rollout
+                if (true)//turn > startTurn + maxPlayout || maxPlayout == 0) // rollout
                 {
                     int random = World.Random.Next(moves.Count);
                     DoMove(moves[random]);
@@ -1273,6 +1273,36 @@ namespace pax_infinium
             }
             Game1.world.level.TurnsPerSim.Add(turn - startTurn);
             Console.WriteLine("Game took " + turn + " moves");
+        }
+
+        public float Playout(Move move, int maxPlayout, float learningRate=.75f)
+        {
+            Level clone = (Level)Clone();
+            clone.DoMove(move);
+            float score = 0;
+            int startTurn = clone.turn;
+            int i = 0;
+            int team = grid.characters.list.First().team;
+            while (clone.turn <= startTurn + maxPlayout)
+            {
+                List<Move> moves = (List<Move>)clone.GetMoves();
+                // playout
+                if (clone.grid.characters.list[0].team == 0) // ai playout uses greedy evaluation/score function
+                {
+                    Move m = clone.GetBestMove(moves, clone.grid.characters.list.First().team);
+                    clone.DoMove(m);
+                    score += (float) Math.Pow(learningRate, clone.turn - startTurn) * clone.Score(team); // Learning discount rule
+                }
+                else
+                {
+                    Move m = clone.GetOpponnentMove(moves, clone.grid.characters.list.First().team);
+                    clone.DoMove(m);
+                    score += (float)Math.Pow(learningRate, clone.turn - startTurn) * clone.Score(team); // Learning discount rule
+                }
+                i++;
+            }
+            Console.WriteLine(move.Name + " Playout Score: " + score);
+            return score;
         }
 
         public Move GetBestMove(List<Move> moves, int team)
@@ -1327,6 +1357,32 @@ namespace pax_infinium
             return score;
         }
 
+        public int Score(int team)
+        {
+            int score = 0;
+            foreach (Character c in grid.characters.list)
+            {
+                if (c.team == team)
+                {
+                    if (c == grid.characters.list.First())
+                    {
+                        score += 50;// 100; // if they are still alive
+                    }
+                    else
+                    {
+                        score += 25;//50; // if they have ally alive
+                    }
+                    score += c.health;
+                }
+                else
+                {
+                    score -= 25;// 50; // if they have enemy alive
+                    score -= c.health;
+                }
+            }
+            return score;
+        }
+
         // Some quick move picking to represent human moves
         public Move GetOpponnentMove(List<Move> moves, int team)
         {
@@ -1348,74 +1404,80 @@ namespace pax_infinium
             {
                 target = GetNearestMemberOfTeam(activeCharacter, team);
             }
-            int dist = int.MaxValue;
-            Move[] tempMoves = new Move[moves.Count];
-            moves.CopyTo(tempMoves);
-            foreach (Move m in tempMoves)
-            {
-                if (activeCharacter.job == EJob.Healer || activeCharacter.job == EJob.Mage) // mage and healer just want to use special on target
-                {
-                    if (m.attackSpecialPos == target.gridPos && m.nothingAttackSpecial == 2)
-                    {
-                        return m;
-                    }
-                }
-                else
-                {
-                    if (m.attackSpecialPos == target.gridPos && m.nothingAttackSpecial == 1) // everyone else just wants to attack target
-                    {
-                        return m;
-                    }
-                }
-                int tempDist = Game1.world.cubeDist(m.movePos, target.gridPos);
-                if (tempDist < dist)
-                {
-                    dist = tempDist;
-                }
-                if (dist != tempDist)
-                {
-                    moves.Remove(m);
-                }
-                
-            }
-            tempMoves = new Move[moves.Count];
-            moves.CopyTo(tempMoves);
-            foreach (Move m in tempMoves) // Delete earlier closest dist moves
-            {
-                int tempDist = Game1.world.cubeDist(m.movePos, target.gridPos);
-                if (tempDist != dist)
-                {
-                    moves.Remove(m);
-                }
-                else
-                {
-                    break;
-                }
-            }
-
             Move bestMove = null;
-            foreach (Move m in moves) // go through list of closest moves
+            if (target != null)
             {
-                if (bestMove == null)
+                int dist = int.MaxValue;
+                Move[] tempMoves = new Move[moves.Count];
+                moves.CopyTo(tempMoves);
+                foreach (Move m in tempMoves)
                 {
-                    bestMove = m;
-                }
-                if (m.nothingAttackSpecial == 1)
-                {
-                    if (activeCharacter.job != EJob.Healer && activeCharacter.job != EJob.Mage && m.attackSpecialPos == target.gridPos)
+                    if (activeCharacter.job == EJob.Healer || activeCharacter.job == EJob.Mage) // mage and healer just want to use special on target
                     {
-                        bestMove = m;
+                        if (m.attackSpecialPos == target.gridPos && m.nothingAttackSpecial == 2)
+                        {
+                            return m;
+                        }
+                    }
+                    else
+                    {
+                        if (m.attackSpecialPos == target.gridPos && m.nothingAttackSpecial == 1) // everyone else just wants to attack target
+                        {
+                            return m;
+                        }
+                    }
+                    int tempDist = Game1.world.cubeDist(m.movePos, target.gridPos);
+                    if (tempDist < dist)
+                    {
+                        dist = tempDist;
+                    }
+                    if (dist != tempDist)
+                    {
+                        moves.Remove(m);
+                    }
+
+                }
+                tempMoves = new Move[moves.Count];
+                moves.CopyTo(tempMoves);
+                foreach (Move m in tempMoves) // Delete earlier closest dist moves
+                {
+                    int tempDist = Game1.world.cubeDist(m.movePos, target.gridPos);
+                    if (tempDist != dist)
+                    {
+                        moves.Remove(m);
+                    }
+                    else
+                    {
                         break;
                     }
                 }
-                else if (m.nothingAttackSpecial == 2)
+                foreach (Move m in moves) // go through list of closest moves
                 {
-                    if (activeCharacter.job == EJob.Healer || activeCharacter.job == EJob.Mage && m.attackSpecialPos == target.gridPos)
+                    if (bestMove == null)
                     {
                         bestMove = m;
-                        break;
+                    }
+                    if (m.nothingAttackSpecial == 1)
+                    {
+                        if (activeCharacter.job != EJob.Healer && activeCharacter.job != EJob.Mage && m.attackSpecialPos == target.gridPos)
+                        {
+                            bestMove = m;
+                            break;
+                        }
+                    }
+                    else if (m.nothingAttackSpecial == 2)
+                    {
+                        if (activeCharacter.job == EJob.Healer || activeCharacter.job == EJob.Mage && m.attackSpecialPos == target.gridPos)
+                        {
+                            bestMove = m;
+                            break;
+                        }
                     }
                 }
+            }
+            else
+            {
+                bestMove = moves.First();
             }
             return bestMove;
         }
