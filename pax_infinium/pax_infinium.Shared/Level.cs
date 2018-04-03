@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Linq;
-using MCTS.Interfaces;
+using MCTS.V2.Interfaces;
 using MCTS.Enum;
 using pax_infinium.Enum;
 using pax_infinium.Buttons;
@@ -1212,7 +1212,7 @@ namespace pax_infinium
             ((Move)move).DoMove(this, gameTime);
         }
 
-        public void Simulate(int maxPlayout, int maxRollout)
+        public IGameState PlayRandomlyUntilTheEnd()
         {
             //Console.WriteLine("PlayingRandomlyUntilEnd");
             int startTurn = turn;
@@ -1273,7 +1273,71 @@ namespace pax_infinium
             }
             Game1.world.level.TurnsPerSim.Add(turn - startTurn);
             Console.WriteLine("Game took " + turn + " moves");
+            return this;
         }
+
+        /*public void Simulate(int maxPlayout, int maxRollout)
+        {
+            //Console.WriteLine("PlayingRandomlyUntilEnd");
+            int startTurn = turn;
+            int i = 0;
+            bool checkUnwinnable = true;
+            while (!OneTeamRemaining())
+            {
+                /*if (turn > (maxRollout + maxPlayout))
+                {
+                    SimsEndedEarly++;
+                    Console.WriteLine("Too Many Moves");
+                    break;
+                }*//*
+                float playerTeamHealth = 0;
+                float aiTeamHealth = 0;
+                foreach (Character c in grid.characters.list)
+                {
+                    if (c.team == 0)
+                    {
+                        aiTeamHealth += c.health;
+                    }
+                    else
+                    {
+                        playerTeamHealth += c.health;
+                    }
+                }
+                if (checkUnwinnable && playerTeamHealth / aiTeamHealth >= 4) // Good for increasing number of moves evaluated
+                {
+                    if (startTurn == turn)
+                    {
+                        checkUnwinnable = false;
+                    }
+                    else
+                    {
+                        Game1.world.level.SimsEndedEarly++;
+                        Console.WriteLine("Unwinnable");
+                        break;
+                    }
+                }
+                List<Move> moves = (List<Move>)GetMoves();
+                if (true)//turn > startTurn + maxPlayout || maxPlayout == 0) // rollout
+                {
+                    int random = World.Random.Next(moves.Count);
+                    DoMove(moves[random]);
+                }
+                else // playout
+                {
+                    if (grid.characters.list[0].team == 0) // ai playout uses greedy evaluation/score function
+                    {
+                        DoMove(GetBestMove(moves, grid.characters.list.First().team));
+                    }
+                    else
+                    {
+                        DoMove(GetOpponnentMove(moves, grid.characters.list.First().team));
+                    }
+                }
+                i++;
+            }
+            Game1.world.level.TurnsPerSim.Add(turn - startTurn);
+            Console.WriteLine("Game took " + turn + " moves");
+        }*/
 
         public float Playout(Move move, int maxPlayout, float learningRate=.75f)
         {
@@ -1714,6 +1778,5 @@ namespace pax_infinium
                 }
             }
         }
-
     }
 }

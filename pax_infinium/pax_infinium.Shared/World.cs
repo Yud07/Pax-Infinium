@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MCTS.Interfaces;
-using MCTS;
 using System.Linq;
+using MCTS.V2.Interfaces;
+using MCTS.V2.UCT;
 
 namespace pax_infinium
 {
@@ -215,7 +215,8 @@ namespace pax_infinium
         {
             Action<string> print = s => Console.WriteLine(s);
             print(level.ToString());
-            IMove move = UCT.ComputeSingleThreadedUCT(level, true, print, 0.7F, 15, 0, 0);//275);//1000, true, print, 0.7F, 15, 700);
+            IMove move = SingleThreaded.ComputeSingleThreadedUCT(level, true, print, 0.7F, 15);
+            //IMove move = MultiThreaded.ComputeRootParallization(level, 100, true, print, 0.7f);
             print(move.Name);
             triggerAIBool = false;
             //currentMove = (Move)move;

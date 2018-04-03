@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using MCTS.Interfaces;
+using MCTS.V2.Interfaces;
 
 namespace pax_infinium
 {

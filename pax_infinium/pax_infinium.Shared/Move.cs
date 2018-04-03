@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using System.Linq;
-using MCTS.Interfaces;
+using MCTS.V2.Interfaces;
 using pax_infinium.Enum;
 
 namespace pax_infinium
@@ -61,8 +61,9 @@ namespace pax_infinium
             }
         }
 
-        public void DoMove(Level level)
+        public IGameState DoMove(IGameState gameState)
         {
+            Level level = (Level)gameState;// (Level)((Level)gameState).Clone();
             Character player = level.grid.characters.list[0];
             switch (noneMoveBeforeMoveAfter) {
                 case 0:
@@ -84,6 +85,7 @@ namespace pax_infinium
             //player.Rotate(rotDir, false);
             //player.RotateBest(level, false);
             EndTurn(level);
+            return level;
         }
 
         public void DoMove(Level level, GameTime gameTime)
