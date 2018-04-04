@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using pax_infinium.Enum;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 
@@ -69,6 +70,11 @@ namespace pax_infinium
 
         public Move currentMove;
         public int moveCounter;
+
+        public int[] genes;
+        public EPersonality personality;
+        public float personalityScore;
+
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -143,6 +149,8 @@ namespace pax_infinium
 
             currentMove = null;
             moveCounter = 0;
+            genes = new int[7];
+            personalityScore = 0;
         }
 
         public void recalcPos()
@@ -1206,12 +1214,16 @@ namespace pax_infinium
         {
             Character clone = (Character)this.MemberwiseClone();
             String[] words = clone.name.Split(' ');
-            if (words.Length > 2)
-            {
+            if (words[words.Length - 2] == "clone")
+            {                
                 String number = words[words.Length - 1];
                 int num = Int32.Parse(number);
                 num++;
-                clone.name = words[0] + " " + words[1] + " clone " + num;
+                for (int i = 0; i < words.Length - 2; i++)
+                {
+                    clone.name += words[i] + " ";
+                }
+                clone.name +=  num;
             }
             else
             {
@@ -1324,6 +1336,61 @@ namespace pax_infinium
                 {
                     hitSprite.position = position;
                 }
+            }
+        }
+
+        public void SaveGene()
+        {
+            String path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            String filePath = path + @"\Genes";
+            switch ((int)job)
+            {
+                case 0: // Soldier
+                    filePath += @"\Soldier";
+                    break;
+                case 1: // Hunter
+                    filePath += @"\Hunter";
+                    break;
+                case 2: // Black Mage
+                    filePath += @"\Mage";
+                    break;
+                case 3: // White Mage/Healer
+                    filePath += @"\Healer";
+                    break;
+                case 4: // Thief
+                    filePath += @"\Thief";
+                    break;
+                default:
+                    throw new NotImplementedException();
+                    break;
+            }
+            switch ((int)personality)
+            {
+                case 1:
+                    filePath += @"\Aggressive.txt";
+                    break;
+                case 2:
+                    filePath += @"\Defensive.txt";
+                    break;
+                default:
+                    filePath += @"\Default.txt";
+                    break;
+            }
+            Console.WriteLine(filePath);
+            Console.WriteLine("pScore: " + personalityScore);
+            StreamWriter sw = new StreamWriter(filePath);
+            sw.WriteLine(genes[0] + " " + genes[1] + " " + genes[2] + " " + genes[3] +
+                " " + genes[4] + " " + genes[5] + " " + genes[6] + " " + personalityScore);
+            sw.Close();
+            StreamReader sr = new StreamReader(filePath);
+            String line = "";
+            if ((line = sr.ReadLine()) != null)
+            {
+                Console.WriteLine(line);
+            }
+            else
+            {
+                Console.WriteLine("Nope");
             }
         }
     }

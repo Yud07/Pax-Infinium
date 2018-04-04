@@ -168,16 +168,33 @@ namespace pax_infinium
             players.Add(new Player("AI"));
             players.Add(new Player("Human"));
             grid.characters = new Characters();
-            grid.characters.AddCharacter("Green Soldier", EJob.Soldier, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Purple Soldier", EJob.Soldier, 1, grid.origin, graphics);
-            grid.characters.AddCharacter("Green Hunter", EJob.Hunter, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Purple Hunter", EJob.Hunter, 1, grid.origin, graphics);
-            grid.characters.AddCharacter("Green Mage", EJob.Mage, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Purple Mage", EJob.Mage, 1, grid.origin, graphics);
-            grid.characters.AddCharacter("Green Healer", EJob.Healer, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Purple Healer", EJob.Healer, 1, grid.origin, graphics);
-            grid.characters.AddCharacter("Green Thief", EJob.Thief, 0, grid.origin, graphics);
-            grid.characters.AddCharacter("Purple Thief", EJob.Thief, 1, grid.origin, graphics);
+            EPersonality[] personalities = new EPersonality[5];
+            for(int i = 0; i < 5; i++)
+            {
+                int roll = World.Random.Next(0, 3);
+                if (roll == 0)
+                {
+                    personalities[i] = EPersonality.Default;
+                }
+                else if (roll == 1)
+                {
+                    personalities[i] = EPersonality.Aggressive;
+                }
+                else
+                {
+                    personalities[i] = EPersonality.Defensive;
+                }
+            }
+            grid.characters.AddCharacter(EJob.Soldier, 0, personalities[0], grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Soldier, 1, EPersonality.Default, grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Hunter, 0, personalities[1], grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Hunter, 1, EPersonality.Default, grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Mage, 0, personalities[2], grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Mage, 1, EPersonality.Default, grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Healer, 0, personalities[3], grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Healer, 1, EPersonality.Default, grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Thief, 0, personalities[4], grid.origin, graphics);
+            grid.characters.AddCharacter(EJob.Thief, 1, EPersonality.Default, grid.origin, graphics);
             grid.characters.list.Sort(Character.CompareBySpeed);
             grid.characters.list.Reverse();
             grid.placeCharacters();
@@ -727,6 +744,10 @@ namespace pax_infinium
                     if (c.hitType == 0)
                     {
                         tempCharacters.Add(c);
+                        if (c.team == 0)
+                        {
+                            c.SaveGene();
+                        }
                         grid.characters.list.Remove(c);
                     }
                 }
@@ -981,6 +1002,8 @@ namespace pax_infinium
             grid.characters.list.Remove(tempCharacter);
             grid.characters.list.Add(tempCharacter);
 
+            UpdatePersonalityScores();
+
             CalcValidMoveSpaces();
 
             Character player = grid.characters.list[0];
@@ -1218,6 +1241,8 @@ namespace pax_infinium
             int startTurn = turn;
             int i = 0;
             bool checkUnwinnable = true;
+            int[] genes = new int[7];
+            genes = grid.characters.list.First().genes;
             while (!OneTeamRemaining())
             {
                 /*if (turn > (maxRollout + maxPlayout))
@@ -1262,7 +1287,7 @@ namespace pax_infinium
                 {
                     if (grid.characters.list[0].team == 0) // ai playout uses greedy evaluation/score function
                     {
-                        DoMove(GetBestMove(moves, grid.characters.list.First().team));
+                        DoMove(GetBestMove(moves, grid.characters.list.First().team, genes));
                     }
                     else
                     {
@@ -1347,21 +1372,23 @@ namespace pax_infinium
             int startTurn = clone.turn;
             int i = 0;
             int team = grid.characters.list.First().team;
+            int[] genes = new int[7];
+            genes = grid.characters.list.First().genes;
             while (clone.turn <= startTurn + maxPlayout)
             {
                 List<Move> moves = (List<Move>)clone.GetMoves();
                 // playout
                 if (clone.grid.characters.list[0].team == 0) // ai playout uses greedy evaluation/score function
                 {
-                    Move m = clone.GetBestMove(moves, clone.grid.characters.list.First().team);
+                    Move m = clone.GetBestMove(moves, clone.grid.characters.list.First().team, genes);
                     clone.DoMove(m);
-                    score += (float) Math.Pow(learningRate, clone.turn - startTurn) * clone.Score(team); // Learning discount rule
+                    score += (float) Math.Pow(learningRate, clone.turn - startTurn) * clone.Score(team, genes); // Learning discount rule
                 }
                 else
                 {
                     Move m = clone.GetOpponnentMove(moves, clone.grid.characters.list.First().team);
                     clone.DoMove(m);
-                    score += (float)Math.Pow(learningRate, clone.turn - startTurn) * clone.Score(team); // Learning discount rule
+                    score += (float)Math.Pow(learningRate, clone.turn - startTurn) * clone.Score(team, genes); // Learning discount rule
                 }
                 i++;
             }
@@ -1369,13 +1396,13 @@ namespace pax_infinium
             return score;
         }
 
-        public Move GetBestMove(List<Move> moves, int team)
+        public Move GetBestMove(List<Move> moves, int team, int[] genes)
         {
             Move result = moves[0];
-            int score = Score(result, team);
+            int score = Score(result, team, genes);
             foreach (Move m in moves)
             {
-                int tempScore = Score(m, team);
+                int tempScore = Score(m, team, genes);
                 if (tempScore > score)
                 {
                     result = m;
@@ -1385,7 +1412,7 @@ namespace pax_infinium
             return result;
         }
 
-        public int Score(Move move, int team)
+        /*public int Score(Move move, int team)
         {
             int score = 0;
             Level clone = (Level)Clone();
@@ -1442,6 +1469,68 @@ namespace pax_infinium
                 {
                     score -= 25;// 50; // if they have enemy alive
                     score -= c.health;
+                }
+            }
+            return score;
+        }*/
+
+        public int Score(Move move, int team, int[] genes)
+        {
+            int score = 0;
+            Level clone = (Level)Clone();
+            clone.DoMove(move);
+            if (move.noneMoveBeforeMoveAfter > 0)
+            {
+                score += genes[0];
+            }
+            if (move.nothingAttackSpecial > 0)
+            {
+                score += genes[1];
+            }
+            foreach (Character c in clone.grid.characters.list)
+            {
+                if (c.team == team)
+                {
+                    if (c == clone.grid.characters.list.First())
+                    {
+                        score += genes[2];// 100; // if they are still alive
+                    }
+                    else
+                    {
+                        score += genes[3];//50; // if they have ally alive
+                    }
+                    score += c.health * genes[4];
+                }
+                else
+                {
+                    score -= genes[5];// 50; // if they have enemy alive
+                    score -= c.health * genes[6];
+                }
+            }
+            return score;
+        }
+
+        public int Score(int team, int[] genes)
+        {
+            int score = 0;
+            foreach (Character c in grid.characters.list)
+            {
+                if (c.team == team)
+                {
+                    if (c == grid.characters.list.First())
+                    {
+                        score += genes[2];// 100; // if they are still alive
+                    }
+                    else
+                    {
+                        score += genes[3];//50; // if they have ally alive
+                    }
+                    score += c.health * genes[4];
+                }
+                else
+                {
+                    score -= genes[5];// 50; // if they have enemy alive
+                    score -= c.health * genes[6];
                 }
             }
             return score;
@@ -1775,6 +1864,51 @@ namespace pax_infinium
                     //Console.WriteLine("north");
                     grid.rotate(true, this);
                     grid.rotate(true, this);
+                }
+            }
+        }
+
+        public void UpdatePersonalityScores()
+        {
+            foreach (Character c in grid.characters.list)
+            {
+                if (c.team == 0)
+                {
+                    if (c.personality == EPersonality.Default)
+                    {
+                        foreach (Character character in grid.characters.list)
+                        {
+                            if (character.team == 0)
+                            {
+                                c.personalityScore += character.health;
+                            }
+                            else
+                            {
+                                c.personalityScore -= character.health;
+                            }
+                        }
+                    }
+                    else if (c.personality == EPersonality.Aggressive)
+                    {
+                        c.personalityScore += 659;
+                        foreach (Character character in grid.characters.list)
+                        {
+                            if (character.team == 1)
+                            {
+                                c.personalityScore -= character.health;
+                            }
+                        }
+                    }
+                    else if (c.personality == EPersonality.Defensive)
+                    {
+                        foreach (Character character in grid.characters.list)
+                        {
+                            if (character.team == 0)
+                            {
+                                c.personalityScore += character.health;
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -147,7 +147,7 @@ namespace MCTS1.Node
             }
         }
 
-        public IMove MostVisitedMoveWithTieBreaks()
+        /*public IMove MostVisitedMoveWithTieBreaks()
         {
             IEnumerable<INode> descending = this.Childs.OrderByDescending(node => node.Visits);
             var firstVisitOrdered = descending.First();
@@ -433,7 +433,7 @@ namespace MCTS1.Node
             Game1.world.level.WinsPerChoice.Add((int)firstVisitOrdered.Wins);
             Game1.world.level.VistsPerChoice.Add((int)firstVisitOrdered.Visits);
             return firstVisitOrdered.Move;
-        }
+        }*/
 
         public INode UCTSelectChild()
         {

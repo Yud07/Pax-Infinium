@@ -63,9 +63,9 @@ namespace MCTS1
                 printfn(rootNode.DisplayMostVisistedChild());
             }
 
-            //return rootNode.MostVisitedMove();
+            return rootNode.MostVisitedMove();
             //return rootNode.MostVisitedMoveWithTieBreaks();
-            return rootNode.MostVisitedMoveTieBreakWithPlayoutHybrid();
+            //return rootNode.MostVisitedMoveTieBreakWithPlayoutHybrid();
         }
     }
 }

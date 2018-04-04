@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using pax_infinium.Enum;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace pax_infinium
@@ -34,7 +36,7 @@ namespace pax_infinium
             }
         }
 
-        public void AddCharacter(string name, EJob job, int team, Vector2 origin, GraphicsDeviceManager graphics)
+        public void AddCharacter(EJob job, int team, EPersonality personality, Vector2 origin, GraphicsDeviceManager graphics)
         {
             Texture2D nw;
             Texture2D ne;
@@ -148,10 +150,49 @@ namespace pax_infinium
                     nw = ne = sw = se = fl = fr = Game1.world.textureConverter.GenRectangle(64, 128, Color.Blue);
                     break;
             }
+            String name = "";
+            if (personality == EPersonality.Aggressive)
+            {
+                name += "Aggressive ";
+            }
+            else if (personality == EPersonality.Defensive)
+            {
+                name += "Defensive ";
+            }
+            if (team == 0)
+            {
+                name += "Green ";
+            }
+            else
+            {
+                name += "Purple ";
+            }
+            if (job == EJob.Soldier)
+            {
+                name += "Soldier";
+            }
+            else if (job == EJob.Hunter)
+            {
+                name += "Hunter";
+            }
+            else if (job == EJob.Mage)
+            {
+                name += "Mage";
+            }
+            else if (job == EJob.Healer)
+            {
+                name += "Healer";
+            }
+            else if (job == EJob.Thief)
+            {
+                name += "Thief";
+            }
             list.Add(new Character(name, team, origin, nw, ne, sw, se, fl, fr, graphics, new SpriteSheetInfo(64, 128)));
 
             Character newCharacter = list[list.Count - 1];
             newCharacter.job = job;
+            newCharacter.personality = personality;
+            newCharacter.genes = selectGenes(job, personality);
 
             switch ((int) job)
             {
@@ -256,5 +297,220 @@ namespace pax_infinium
             }
             return result;
         }
+
+        public int[] selectGenes(EJob job, EPersonality personality)
+        {
+            int[] gene = new int[7];
+            String path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Console.WriteLine("Path: " + path);
+            if (!Directory.Exists(path + @"\Genes")){
+                CreateGeneDirectory(path);
+            }
+            String filePath = path + @"\Genes";
+            switch ((int)job)
+            {
+                case 0: // Soldier
+                    filePath += @"\Soldier";
+                    break;
+                case 1: // Hunter
+                    filePath += @"\Hunter";
+                    break;
+                case 2: // Black Mage
+                    filePath += @"\Mage";
+                    break;
+                case 3: // White Mage/Healer
+                    filePath += @"\Healer";
+                    break;
+                case 4: // Thief
+                    filePath += @"\Thief";
+                    break;
+                default:
+                    throw new NotImplementedException();
+                    break;
+            }
+            switch ((int)personality)
+            {
+                case 1:
+                    filePath += @"\Aggressive.txt";
+                    break;
+                case 2:
+                    filePath += @"\Defensive.txt";
+                    break;
+                default:
+                    filePath += @"\Default.txt";
+                    break;
+            }
+            StreamReader sr = new StreamReader(filePath);
+            String line;
+            List<int[]> genes = new List<int[]>();
+            List<float> scores = new List<float>();
+            while ((line = sr.ReadLine()) != null)
+            {
+                String[] entries = line.Split(' ');
+                int i = 0;
+                int[] g = new int[8];
+                if (entries.Length == 8)
+                {
+                    foreach (String entry in entries)
+                    {
+                        if (i < 7)
+                        {
+                            g[i] = Int32.Parse(entry);
+                        }
+                        else
+                        {
+                            genes.Add(g);
+                            scores.Add(float.Parse(entry));
+                        }
+                        i++;
+                    }
+                }
+            }
+
+            if (genes.Count == 0)
+            {
+                gene = new int[7] {1, 2, 50, 25, 1, 25, 1}; // Default values
+            }
+            else if (genes.Count == 1)
+            {
+                for(int i = 0; i < 7; i++)
+                {
+                    gene[i] = World.Random.Next(0, 101); // 0-100
+                }
+            }
+            else
+            {
+                int roll = World.Random.Next(0, 100); // 0-99
+                if (roll < 10) // 10 Chance new entry
+                {
+                    for (int i = 0; i < 7; i++)
+                    {
+                        gene[i] = World.Random.Next(0, 101); // 0-100
+                    }
+                }
+                else if (roll < 30) // 20 Chance random procreation
+                {
+                    int aIndex = World.Random.Next(0, genes.Count);
+                    int bIndex = World.Random.Next(0, genes.Count);
+
+                    int[] geneA = genes[aIndex];
+                    int[] geneB = genes[bIndex];
+
+                    for(int i = 0; i < 7; i++)
+                    {
+                        int r = World.Random.Next(0, 100); // 0-99
+                        if (r < 10) // 10 Chance random mutation
+                        {
+                            gene[i] = World.Random.Next(0, 101); // 0-100
+                        }
+                        else if (r < 55) // 45 Chance A gene
+                        {
+                            gene[i] = geneA[i];
+                        }
+                        else // 45 Chance B gene
+                        {
+                            gene[i] = geneB[i];
+                        }
+                    }
+                }
+                else // 70 Chance best procreate
+                {
+                    List<int> topTenIndex = new List<int>();
+
+                    int i = 0;
+                    int minIndex = 0;
+                    float minVal = scores[0];
+                    foreach (int s in scores)
+                    {
+                        if (topTenIndex.Count < 10)
+                        {
+                            if (s < minVal)
+                            {
+                                minVal = s;
+                                minIndex = i;
+                            }
+                            topTenIndex.Add(i);
+                        }
+                        else
+                        {
+                            if (s > minVal)
+                            {
+                                topTenIndex.Remove(minIndex);
+                                topTenIndex.Add(i);
+                                minVal = s;
+                                minIndex = i;
+                                foreach (int j in topTenIndex)
+                                {
+                                    if (scores[j] < minVal)
+                                    {
+                                        minVal = scores[j];
+                                        minIndex = j;
+                                    }
+                                }                                
+                            }
+                        }
+                        i++;
+                    }
+
+                    // Pick 2 from top ten genes
+                    int aIndex = World.Random.Next(0, topTenIndex.Count);
+                    int bIndex = World.Random.Next(0, topTenIndex.Count);
+
+                    int[] geneA = genes[aIndex];
+                    int[] geneB = genes[bIndex];
+
+                    for (int k = 0; i < 7; k++)
+                    {
+                        int r = World.Random.Next(0, 100); // 0-99
+                        if (r < 10) // 10 Chance random mutation
+                        {
+                            gene[k] = World.Random.Next(0, 101); // 0-100
+                        }
+                        else if (r < 55) // 45 Chance A gene
+                        {
+                            gene[k] = geneA[k];
+                        }
+                        else // 45 Chance B gene
+                        {
+                            gene[k] = geneB[k];
+                        }
+                    }
+                }
+            }
+
+            return gene;
+        }
+
+        void CreateGeneDirectory(String path)
+        {
+            Directory.CreateDirectory(path + @"\Genes");
+
+            Directory.CreateDirectory(path + @"\Genes\Soldier");
+            File.Create(path + @"\Genes\Soldier\Aggressive.txt");
+            File.Create(path + @"\Genes\Soldier\Defensive.txt");
+            File.Create(path + @"\Genes\Soldier\Default.txt");
+
+            Directory.CreateDirectory(path + @"\Genes\Hunter");
+            File.Create(path + @"\Genes\Hunter\Aggressive.txt");
+            File.Create(path + @"\Genes\Hunter\Defensive.txt");
+            File.Create(path + @"\Genes\Hunter\Default.txt");
+
+            Directory.CreateDirectory(path + @"\Genes\Mage");
+            File.Create(path + @"\Genes\Mage\Aggressive.txt");
+            File.Create(path + @"\Genes\Mage\Defensive.txt");
+            File.Create(path + @"\Genes\Mage\Default.txt");
+
+            Directory.CreateDirectory(path + @"\Genes\Healer");
+            File.Create(path + @"\Genes\Healer\Aggressive.txt");
+            File.Create(path + @"\Genes\Healer\Defensive.txt");
+            File.Create(path + @"\Genes\Healer\Default.txt");
+
+            Directory.CreateDirectory(path + @"\Genes\Thief");
+            File.Create(path + @"\Genes\Thief\Aggressive.txt");
+            File.Create(path + @"\Genes\Thief\Defensive.txt");
+            File.Create(path + @"\Genes\Thief\Default.txt");
+        }
+
+
     }
 }

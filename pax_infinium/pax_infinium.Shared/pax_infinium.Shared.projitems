@@ -71,6 +71,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EDirection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EHitIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enum\EJob.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enum\EPersonality.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Animations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Background.cs" />

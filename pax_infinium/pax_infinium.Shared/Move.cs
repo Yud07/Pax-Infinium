@@ -321,6 +321,8 @@ namespace pax_infinium
                 }
                 level.grid.onCharacterMoved(level);*/
 
+                level.UpdatePersonalityScores();
+
                 level.CalcValidMoveSpaces();
                 level.setupTurnOrderIcons();
 
