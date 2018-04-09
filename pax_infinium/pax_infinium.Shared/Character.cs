@@ -789,9 +789,16 @@ namespace pax_infinium
 
         public int CalculateHunterSpecial(Character character)
         {
-            int chance = 75 - character.evasion + accuracyMod;
+            if (character != null)
+            {
+                int chance = 75 - character.evasion + accuracyMod;
 
-            return chance;
+                return chance;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public void HunterSpecial(Character character)
@@ -1378,11 +1385,11 @@ namespace pax_infinium
             }
             Console.WriteLine(filePath);
             Console.WriteLine("pScore: " + personalityScore);
-            StreamWriter sw = new StreamWriter(filePath);
+            StreamWriter sw = new StreamWriter(filePath, true);
             sw.WriteLine(genes[0] + " " + genes[1] + " " + genes[2] + " " + genes[3] +
                 " " + genes[4] + " " + genes[5] + " " + genes[6] + " " + personalityScore);
             sw.Close();
-            StreamReader sr = new StreamReader(filePath);
+            /*StreamReader sr = new StreamReader(filePath);
             String line = "";
             if ((line = sr.ReadLine()) != null)
             {
@@ -1391,7 +1398,7 @@ namespace pax_infinium
             else
             {
                 Console.WriteLine("Nope");
-            }
+            }*/
         }
     }
 }

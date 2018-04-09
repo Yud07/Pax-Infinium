@@ -5,6 +5,7 @@
     using Interfaces;
     using Node;
     using pax_infinium;
+    using System.Linq;
 
     public static class SingleThreaded
     {
@@ -13,6 +14,7 @@
             var rootNode = new SingleThreadedNode(null, null, gameState, uctk);
             DateTime time = DateTime.Now;
             DateTime end = time.AddSeconds(secs);
+            bool exitEarlyCheck = true;
 
             int i = 0;
             for (; time < end; i++)
@@ -20,6 +22,30 @@
                 time = DateTime.Now;
 
                 INode node = rootNode;
+
+                // Exit early if we're not learning anything --> Go straight to tiebreak/playout
+                if (exitEarlyCheck && ((SingleThreadedNode)node).Childs.Count() >= ((SingleThreadedNode)node).numMoves)
+                {
+                    bool atLeastOneWin = false;
+                    foreach (INode c in ((SingleThreadedNode)node).Childs)
+                    {
+                        if (c.Wins > 0)
+                        {
+                            atLeastOneWin = true;
+                            break;
+                        }
+                    }
+                    if (!atLeastOneWin)
+                    {
+                        Console.WriteLine("No Wins, Quit Early With this long left: " + (end - time).ToString());
+                        break;
+                    }
+                    else
+                    {
+                        exitEarlyCheck = false;
+                    }
+                }
+
                 var state = ((Level)gameState).Clone();
 
                 // Select

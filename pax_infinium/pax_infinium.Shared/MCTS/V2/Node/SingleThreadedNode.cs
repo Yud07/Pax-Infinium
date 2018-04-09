@@ -6,7 +6,7 @@
     using Interfaces;
     using Utils;
     using System.Collections.Generic;
-
+    using System.Linq;
 
     internal class SingleThreadedNode : NodeBase
     {
@@ -15,6 +15,7 @@
 
         private long wins;
         private long visits;
+        public int numMoves;
 
         internal SingleThreadedNode(INode parent, IMove move, IGameState gameState, float uctk)
             : base(parent, move, uctk, gameState.PlayerJustMoved)
@@ -23,6 +24,7 @@
             this.visits = 0L;
             this.childs = new List<INode>();
             var moves = gameState.GetMoves();
+            numMoves = ((IEnumerable <IMove>) moves).Count();
             var shuffled = moves.Shuffle();
             this.untriedMoves = new Stack<IMove>(shuffled); //randomize Moves
         }

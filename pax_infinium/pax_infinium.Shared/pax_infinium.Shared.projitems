@@ -86,15 +86,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ISpell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Level.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Line.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\Enum\EGameFinalStatus.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\Interfaces\IGameState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\Interfaces\IMove.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\Interfaces\INode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\Interfaces\IPlayer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\Node\NodeBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\Node\SingleThreadedNode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\UCT.SingleThreaded.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MCTS1\Utils\Shuffle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MCTS\Enum\EGameFinalStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MCTS\Utils\Shuffle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MCTS\V1\Interfaces\IGameState.cs" />

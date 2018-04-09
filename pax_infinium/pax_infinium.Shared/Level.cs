@@ -746,7 +746,7 @@ namespace pax_infinium
                         tempCharacters.Add(c);
                         if (c.team == 0)
                         {
-                            c.SaveGene();
+                            //c.SaveGene();
                         }
                         grid.characters.list.Remove(c);
                     }

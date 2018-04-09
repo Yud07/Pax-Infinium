@@ -144,6 +144,9 @@
 
         public IMove MostVisitedMoveTieBreakWithPlayoutHybrid()
         {
+            DateTime start = DateTime.Now;
+            DateTime time = start;
+            DateTime end = start.AddSeconds(15);
             IEnumerable<INode> descending = this.Childs.OrderByDescending(node => node.Visits);
             var firstVisitOrdered = descending.First();
 
@@ -166,8 +169,9 @@
             {
                 Level level = Game1.world.level;
                 float bestScore = level.Playout((Move)firstVisitOrdered.Move, 10, .75f);
-                for (int i = 1; i < descending.Count(); i++)
+                for (int i = 1; i < descending.Count() && time < end; i++)
                 {
+                    time = DateTime.Now;
                     INode tempNode = descending.ElementAt(i);
                     float tempScore = level.Playout((Move)tempNode.Move, 10, .75f);
                     if (tempScore > bestScore)
@@ -194,8 +198,9 @@
                 {
                     Level level = Game1.world.level;
                     float bestScore = level.Playout((Move)firstVisitOrdered.Move, 10, .75f);
-                    for (int i = 1; i < descending.Count(); i++)
+                    for (int i = 1; i < descending.Count() && time < end; i++)
                     {
+                        time = DateTime.Now;
                         INode tempNode = descending.ElementAt(i);
                         if (firstVisitOrdered.Wins == tempNode.Wins && firstVisitOrdered.Visits == tempNode.Visits)
                         {
@@ -226,6 +231,7 @@
                 }
             }
 
+            Console.WriteLine("TieBreak took: " + (DateTime.Now - start).ToString());
             Console.WriteLine("\nWins: " + (int)firstVisitOrdered.Wins + " / Visits: " + (int)firstVisitOrdered.Visits);
             Game1.world.level.WinsPerChoice.Add((int)firstVisitOrdered.Wins);
             Game1.world.level.VistsPerChoice.Add((int)firstVisitOrdered.Visits);

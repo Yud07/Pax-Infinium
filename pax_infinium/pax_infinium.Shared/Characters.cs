@@ -300,7 +300,8 @@ namespace pax_infinium
 
         public int[] selectGenes(EJob job, EPersonality personality)
         {
-            int[] gene = new int[7];
+            return new int[7] { 1, 2, 50, 25, 1, 25, 1 }; // Default values
+            /*int[] gene = new int[7];
             String path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Console.WriteLine("Path: " + path);
             if (!Directory.Exists(path + @"\Genes")){
@@ -348,7 +349,7 @@ namespace pax_infinium
             {
                 String[] entries = line.Split(' ');
                 int i = 0;
-                int[] g = new int[8];
+                int[] g = new int[7];
                 if (entries.Length == 8)
                 {
                     foreach (String entry in entries)
@@ -375,7 +376,14 @@ namespace pax_infinium
             {
                 for(int i = 0; i < 7; i++)
                 {
-                    gene[i] = World.Random.Next(0, 101); // 0-100
+                    if (i == 4 || i == 6)
+                    {
+                        gene[i] = World.Random.Next(0, 11); // 0-10
+                    }
+                    else
+                    {
+                        gene[i] = World.Random.Next(0, 101); // 0-100
+                    }
                 }
             }
             else
@@ -385,7 +393,14 @@ namespace pax_infinium
                 {
                     for (int i = 0; i < 7; i++)
                     {
-                        gene[i] = World.Random.Next(0, 101); // 0-100
+                        if (i == 4 || i == 6)
+                        {
+                            gene[i] = World.Random.Next(0, 11); // 0-10
+                        }
+                        else
+                        {
+                            gene[i] = World.Random.Next(0, 101); // 0-100
+                        }
                     }
                 }
                 else if (roll < 30) // 20 Chance random procreation
@@ -401,7 +416,14 @@ namespace pax_infinium
                         int r = World.Random.Next(0, 100); // 0-99
                         if (r < 10) // 10 Chance random mutation
                         {
-                            gene[i] = World.Random.Next(0, 101); // 0-100
+                            if (i == 4 || i == 6)
+                            {
+                                gene[i] = World.Random.Next(0, 11); // 0-10
+                            }
+                            else
+                            {
+                                gene[i] = World.Random.Next(0, 101); // 0-100
+                            }
                         }
                         else if (r < 55) // 45 Chance A gene
                         {
@@ -459,12 +481,19 @@ namespace pax_infinium
                     int[] geneA = genes[aIndex];
                     int[] geneB = genes[bIndex];
 
-                    for (int k = 0; i < 7; k++)
+                    for (int k = 0; k < 7; k++)
                     {
                         int r = World.Random.Next(0, 100); // 0-99
                         if (r < 10) // 10 Chance random mutation
                         {
-                            gene[k] = World.Random.Next(0, 101); // 0-100
+                            if (i == 4 || i == 6)
+                            {
+                                gene[k] = World.Random.Next(0, 11); // 0-10
+                            }
+                            else
+                            {
+                                gene[k] = World.Random.Next(0, 101); // 0-100
+                            }
                         }
                         else if (r < 55) // 45 Chance A gene
                         {
@@ -478,7 +507,7 @@ namespace pax_infinium
                 }
             }
 
-            return gene;
+            return gene;*/
         }
 
         void CreateGeneDirectory(String path)

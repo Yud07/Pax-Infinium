@@ -27,6 +27,8 @@ namespace pax_infinium
         public Descriptor activeDescriptor;
         public TimeSpan descriptorTimer;
 
+        public object ProjectionMatrix { get; private set; }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -280,6 +282,10 @@ namespace pax_infinium
             {
                 Exit();
             }
+            else if (keyboardState.IsKeyDown(Keys.F) && previousKeyboardState.IsKeyUp(Keys.F))
+            {
+                graphics.ToggleFullScreen();
+            }
 
             if (world.state == 1 && !world.level.drawBVD)
             {
@@ -409,7 +415,8 @@ namespace pax_infinium
                         //printRelevantInfo();
                         //Console.WriteLine("After cancel");
                     }
-                    else if (keyboardState.IsKeyDown(Keys.I) && previousKeyboardState.IsKeyUp(Keys.I)){
+                    else if (keyboardState.IsKeyDown(Keys.I) && previousKeyboardState.IsKeyUp(Keys.I))
+                    {
                         world.level.drawInfo = !world.level.drawInfo;
                     }
 
