@@ -300,8 +300,8 @@ namespace pax_infinium
 
         public int[] selectGenes(EJob job, EPersonality personality)
         {
-            return new int[7] { 1, 2, 50, 25, 1, 25, 1 }; // Default values
-            /*int[] gene = new int[7];
+            //return new int[7] { 1, 2, 50, 25, 1, 25, 1 }; // Default values
+            int[] gene = new int[7];
             String path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Console.WriteLine("Path: " + path);
             if (!Directory.Exists(path + @"\Genes")){
@@ -341,31 +341,39 @@ namespace pax_infinium
                     filePath += @"\Default.txt";
                     break;
             }
-            StreamReader sr = new StreamReader(filePath);
-            String line;
+
             List<int[]> genes = new List<int[]>();
             List<float> scores = new List<float>();
-            while ((line = sr.ReadLine()) != null)
+            try
             {
-                String[] entries = line.Split(' ');
-                int i = 0;
-                int[] g = new int[7];
-                if (entries.Length == 8)
+                StreamReader sr = new StreamReader(filePath);
+                String line;
+                while ((line = sr.ReadLine()) != null)
                 {
-                    foreach (String entry in entries)
+                    String[] entries = line.Split(' ');
+                    int i = 0;
+                    int[] g = new int[7];
+                    if (entries.Length == 8)
                     {
-                        if (i < 7)
+                        foreach (String entry in entries)
                         {
-                            g[i] = Int32.Parse(entry);
+                            if (i < 7)
+                            {
+                                g[i] = Int32.Parse(entry);
+                            }
+                            else
+                            {
+                                genes.Add(g);
+                                scores.Add(float.Parse(entry));
+                            }
+                            i++;
                         }
-                        else
-                        {
-                            genes.Add(g);
-                            scores.Add(float.Parse(entry));
-                        }
-                        i++;
                     }
                 }
+            }
+            catch
+            {
+                Console.WriteLine("StreamReader Exception during gene read");
             }
 
             if (genes.Count == 0)
@@ -507,7 +515,7 @@ namespace pax_infinium
                 }
             }
 
-            return gene;*/
+            return gene;
         }
 
         void CreateGeneDirectory(String path)

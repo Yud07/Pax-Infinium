@@ -165,7 +165,11 @@
                 firstVisitOrdered = this.Childs.OrderByDescending(node => node.Wins).First();
             }
 
-            if (firstVisitOrdered.Wins == 0) // if no wins, use greedy eval
+            if (descending.Count() == 1)
+            {
+                // Do nothing
+            }
+            else if (firstVisitOrdered.Wins == 0) // if no wins, use greedy eval
             {
                 Level level = Game1.world.level;
                 float bestScore = level.Playout((Move)firstVisitOrdered.Move, 10, .75f);

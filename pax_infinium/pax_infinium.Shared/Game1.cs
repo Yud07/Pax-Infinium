@@ -347,6 +347,7 @@ namespace pax_infinium
                         }
                         else
                         {
+                            lastClickMouseState = Vector2.Zero;
                             selectedAction = "attack";
                         }
                     }
@@ -359,6 +360,7 @@ namespace pax_infinium
                         }
                         else
                         {
+                            lastClickMouseState = Vector2.Zero;
                             selectedAction = "special";
                         }
                     }
@@ -373,6 +375,7 @@ namespace pax_infinium
                             }
                             else
                             {
+                                lastClickMouseState = Vector2.Zero;
                                 selectedAction = "move";
                             }
                         }
@@ -593,15 +596,15 @@ namespace pax_infinium
                                 world.level.grid.TopExposed(cube.gridPos) && topVisible)
                             {
                                 mouseInBounds = true;
-                                if (!cube.highLight)
+                                /*if (!cube.highLight)
                                 {
                                     cube.highLight = true;
                                 }
                                 else
                                 {
-                                    cube.highLight = false;
+                                    cube.highLight = false;*/
                                     cube.invert = true;
-                                }
+                                //}
 
                                 world.level.grid.onHighlightMoved(cube);
                                 world.level.grid.onCharacterMoved(world.level);

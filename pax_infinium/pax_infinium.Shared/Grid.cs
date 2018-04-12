@@ -257,14 +257,14 @@ namespace pax_infinium
                                 if (x > 0)
                                 {
                                     //topLeft = isoarray[x - 1][y].Count - 1 < z;
-                                    topLeft = !binMatrix[x - 1, y, z];
+                                    topLeft = !binMatrix[x - 1, y, z] && !binMatrix[x - 1, y, z + 1];
 
                                 }
 
                                 if (y > 0)
                                 {
                                     //topRight = isoarray[x][y - 1].Count - 1 < z;
-                                    topRight = !binMatrix[x, y - 1, z];
+                                    topRight = !binMatrix[x, y - 1, z] && !binMatrix[x, y - 1, z + 1];
                                 }
 
                                 // draw lines for each of the top 2 sides that lacks a neighbor
@@ -280,12 +280,12 @@ namespace pax_infinium
                             {
                                 //                 no east cube same level and no southeast east cube same level
                                 //right = isoarray[x][y - 1].Count - 1 < z && isoarray[x + 1][y - 1].Count - 1 < z;
-                                right = !binMatrix[x, y - 1, z] && !binMatrix[x + 1, y - 1, z];
+                                right = !binMatrix[x, y - 1, z] && !binMatrix[x + 1, y - 1, z] && !binMatrix[x + 1, y - 1, z];
                             }
                             else if (y > 0)
                             {
                                 //right = isoarray[x][y - 1].Count - 1 < z;
-                                right = !binMatrix[x, y - 1, z];
+                                right = !binMatrix[x, y - 1, z] && !binMatrix[x + 1, y - 1, z];
                             }
 
                             // draw lines for each of the top 2 sides that lacks a neighbor
@@ -300,12 +300,12 @@ namespace pax_infinium
                             {
                                 //                 no north cube same level and no north southwest cube same level
                                 //left = isoarray[x - 1][y].Count - 1 < z && isoarray[x - 1][y + 1].Count - 1 < z;
-                                left = !binMatrix[x - 1, y, z] && !binMatrix[x - 1, y + 1, z];
+                                left = !binMatrix[x - 1, y, z] && !binMatrix[x - 1, y + 1, z] && !binMatrix[x - 1, y + 1, z];
                             }
                             else if (x > 0)
                             {
                                 //left = isoarray[x - 1][y].Count - 1 < z;
-                                left = !binMatrix[x - 1, y, z];
+                                left = !binMatrix[x - 1, y, z] && !binMatrix[x - 1, y + 1, z];
                             }
                             if (left) { a = true; lineNumA = 1; }
 
