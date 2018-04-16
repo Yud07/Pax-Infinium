@@ -11,5 +11,13 @@ namespace pax_infinium.Enum
         Aggressive = 1,
 
         Defensive = 2,
+        
+        SelfishAggressive = 3,
+
+        SelfishDefensive = 4,
+
+        Selfish = 5,
+        
+        Survivalist = 6,
     }
 }

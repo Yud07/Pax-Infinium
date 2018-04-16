@@ -1,12 +1,168 @@
-1 2 50 25 1 25 1 3284
-100 67 16 84 39 22 0 8506
-100 67 16 84 39 22 0 3312
-100 67 16 84 39 22 0 4223
-100 19 50 84 1 22 1 8351
-100 19 16 84 39 22 1 3586
-100 67 16 25 1 22 1 1216
-100 60 16 88 1 22 1 2054
-100 19 50 84 1 22 49 2729
-100 19 87 84 39 22 0 4536
-100 19 50 100 39 22 1 1290
-100 67 16 84 39 22 0 3406
+# 1-10 - 12133.9 avg
+# 46-54 - 9560.3 avg
+# 99-108 - 10359 avg
+1 2 50 25 1 25 1 11883 <-Score Turns:43 Dmg2Player:732
+0 51 12 24 10 44 5 4795 <-Score Turns:27 Dmg2Player:560
+37 21 4 94 9 69 3 17657 <-Score Turns:48 Dmg2Player:1059
+75 16 5 8 2 98 2 18169 <-Score Turns:56 Dmg2Player:1116
+1 2 12 24 1 25 5 10920 <-Score Turns:43 Dmg2Player:1005
+1 2 50 25 1 25 1 11746 <-Score Turns:47 Dmg2Player:994
+0 51 12 24 10 44 5 18760 <-Score Turns:84 Dmg2Player:806
+0 51 12 24 8 44 5 17674 <-Score Turns:52 Dmg2Player:919
+37 48 4 94 9 69 3 13079 <-Score Turns:51 Dmg2Player:540
+37 21 4 94 3 69 3 33090 <-Score Turns:89 Dmg2Player:899
+75 16 5 8 1 82 47 13736 <-Score Turns:54 Dmg2Player:1109
+1 2 12 24 1 25 1 20336 <-Score Turns:61 Dmg2Player:1045
+0 2 12 24 94 46 1 5216 <-Score Turns:28 Dmg2Player:547
+10 21 4 24 9 25 5 23101 <-Score Turns:57 Dmg2Player:707
+37 48 5 9 2 69 2 9392 <-Score Turns:34 Dmg2Player:997
+75 16 5 8 2 98 2 15071 <-Score Turns:46 Dmg2Player:625
+50 89 41 24 6 14 10 7875 <-Score Turns:40 Dmg2Player:530
+93 51 12 24 10 44 20 7630 <-Score Turns:33 Dmg2Player:920
+37 48 64 9 1 69 2 11620 <-Score Turns:39 Dmg2Player:937
+37 21 4 94 98 69 3 8502 <-Score Turns:41 Dmg2Player:610
+1 2 12 24 1 69 3 17165 <-Score Turns:54 Dmg2Player:1022
+75 2 5 24 2 25 5 31144 <-Score Turns:88 Dmg2Player:1389
+54 51 12 24 9 44 3 27025 <-Score Turns:77 Dmg2Player:1133
+0 51 12 24 3 69 5 6336 <-Score Turns:27 Dmg2Player:553
+37 2 4 2 9 64 3 3208 <-Score Turns:27 Dmg2Player:508
+1 2 12 25 1 25 1 280 <-Score Turns:12 Dmg2Player:150
+75 11 40 66 6 4 2 18540 <-Score Turns:98 Dmg2Player:761
+0 51 12 24 10 44 5 5074 <-Score Turns:41 Dmg2Player:462
+37 2 50 94 9 69 1 11285 <-Score Turns:42 Dmg2Player:947
+0 11 4 94 10 69 5 11651 <-Score Turns:34 Dmg2Player:794
+37 16 5 8 2 98 3 14143 <-Score Turns:51 Dmg2Player:997
+50 17 98 25 6 25 1 4369 <-Score Turns:38 Dmg2Player:445
+0 2 12 25 8 25 5 8929 <-Score Turns:34 Dmg2Player:720
+75 32 4 94 2 78 3 13053 <-Score Turns:42 Dmg2Player:955
+1 11 40 66 1 4 2 12801 <-Score Turns:40 Dmg2Player:1043
+37 2 50 25 9 25 3 10517 <-Score Turns:38 Dmg2Player:862
+1 2 50 24 10 25 93 36225 <-Score Turns:84 Dmg2Player:1195
+1 12 50 25 1 25 12 17000 <-Score Turns:53 Dmg2Player:975
+0 51 12 24 10 44 5 4599 <-Score Turns:29 Dmg2Player:364
+1 67 12 25 1 25 1 12357 <-Score Turns:37 Dmg2Player:844
+37 17 98 23 6 25 1 14581 <-Score Turns:50 Dmg2Player:1051
+1 2 50 24 10 44 5 25921 <-Score Turns:73 Dmg2Player:1281
+75 16 5 24 2 98 2 2542 <-Score Turns:31 Dmg2Player:338
+53 21 4 94 3 69 3 1003 <-Score Turns:12 Dmg2Player:137
+37 21 4 94 1 69 3 22156 <-Score Turns:67 Dmg2Player:1243
+0 51 12 24 8 44 5 12829 <-Score Turns:39 Dmg2Player:947
+75 2 5 8 1 98 4 1946 <-Score Turns:22 Dmg2Player:300
+21 16 5 8 2 98 5 16866 <-Score Turns:50 Dmg2Player:1094
+75 21 5 94 2 98 3 99 <-Score Turns:10 Dmg2Player:76
+0 2 12 24 10 44 1 2495 <-Score Turns:18 Dmg2Player:415
+0 51 12 24 52 44 5 3194 <-Score Turns:23 Dmg2Player:444
+37 48 5 24 10 69 5 24755 <-Score Turns:82 Dmg2Player:1167
+37 21 50 94 77 25 3 10260 <-Score Turns:34 Dmg2Player:881
+3 4 80 81 5 79 9 13672 <-Score Turns:40 Dmg2Player:875
+61 36 9 84 0 28 0 11634 <-Score Turns:50 Dmg2Player:771
+0 51 12 24 10 44 5 13623 <-Score Turns:44 Dmg2Player:669
+1 2 49 25 1 25 1 12049 <-Score Turns:39 Dmg2Player:935
+1 2 50 94 1 69 3 838 <-Score Turns:25 Dmg2Player:213
+50 41 98 25 9 25 1 5191 <-Score Turns:54 Dmg2Player:519
+1 2 50 25 1 25 41 10652 <-Score Turns:40 Dmg2Player:792
+46 2 50 24 90 39 1 21200 <-Score Turns:84 Dmg2Player:1166
+37 2 12 94 3 69 5 102 <-Score Turns:18 Dmg2Player:108
+0 17 50 25 10 44 1 15590 <-Score Turns:50 Dmg2Player:1013
+37 48 98 24 6 69 1 22953 <-Score Turns:71 Dmg2Player:1066
+0 21 12 94 8 44 3 4192 <-Score Turns:29 Dmg2Player:466
+33 48 5 8 9 69 2 14674 <-Score Turns:46 Dmg2Player:918
+0 51 18 24 10 44 5 6192 <-Score Turns:36 Dmg2Player:597
+33 16 26 8 2 98 3 7873 <-Score Turns:38 Dmg2Player:576
+1 2 4 25 1 69 1 10742 <-Score Turns:42 Dmg2Player:848
+0 51 4 94 8 44 3 11215 <-Score Turns:45 Dmg2Player:846
+1 2 49 24 1 25 1 4752 <-Score Turns:30 Dmg2Player:414
+1 2 50 94 9 25 58 11133 <-Score Turns:40 Dmg2Player:896
+0 48 12 24 9 44 5 12004 <-Score Turns:39 Dmg2Player:998
+18 73 61 98 5 18 10 48 <-Score Turns:12 Dmg2Player:15
+0 51 12 24 8 44 5 1823 <-Score Turns:24 Dmg2Player:313
+1 2 12 24 1 25 1 29051 <-Score Turns:96 Dmg2Player:1114
+1 2 82 24 1 25 5 4528 <-Score Turns:52 Dmg2Player:526
+37 21 4 94 19 69 5 4501 <-Score Turns:39 Dmg2Player:503
+60 43 9 88 4 21 3 15697 <-Score Turns:57 Dmg2Player:814
+54 16 5 8 2 98 2 8603 <-Score Turns:42 Dmg2Player:438
+0 21 4 94 10 44 5 4195 <-Score Turns:43 Dmg2Player:454
+21 36 5 8 0 28 5 4426 <-Score Turns:21 Dmg2Player:421
+37 21 4 94 9 69 3 14554 <-Score Turns:50 Dmg2Player:885
+1 2 13 25 1 55 1 15960 <-Score Turns:46 Dmg2Player:963
+37 21 4 94 9 69 3 9537 <-Score Turns:35 Dmg2Player:690
+37 21 12 94 3 69 3 10393 <-Score Turns:45 Dmg2Player:498
+1 51 12 24 1 42 5 13084 <-Score Turns:49 Dmg2Player:930
+37 21 70 94 3 69 3 12706 <-Score Turns:53 Dmg2Player:1052
+1 2 96 25 1 25 1 22923 <-Score Turns:74 Dmg2Player:1145
+20 10 92 46 5 96 4 17283 <-Score Turns:71 Dmg2Player:1112
+37 48 4 94 9 69 3 22053 <-Score Turns:73 Dmg2Player:1233
+54 17 5 25 6 98 2 23148 <-Score Turns:68 Dmg2Player:1259
+37 2 50 94 1 69 3 10584 <-Score Turns:38 Dmg2Player:930
+1 51 12 24 10 44 5 8251 <-Score Turns:59 Dmg2Player:556
+0 5 12 24 3 69 5 11870 <-Score Turns:50 Dmg2Player:762
+0 51 12 24 50 44 5 14358 <-Score Turns:51 Dmg2Player:1038
+0 2 50 24 10 25 5 6300 <-Score Turns:36 Dmg2Player:573
+37 2 50 94 3 25 1 9818 <-Score Turns:40 Dmg2Player:687
+37 21 4 94 9 98 3 20389 <-Score Turns:62 Dmg2Player:942
+1 51 12 24 10 25 5 14461 <-Score Turns:52 Dmg2Player:971
+73 84 7 20 3 53 9 7183 <-Score Turns:33 Dmg2Player:711
+37 21 4 24 9 69 5 13888 <-Score Turns:47 Dmg2Player:774
+37 30 50 94 3 69 3 4741 <-Score Turns:30 Dmg2Player:484
+75 16 5 8 2 98 2 12269 <-Score Turns:43 Dmg2Player:949
+1 2 4 25 1 69 1 4153 <-Score Turns:33 Dmg2Player:617
+1 2 50 25 1 25 1 11822 <-Score Turns:44 Dmg2Player:1042
+0 9 12 24 9 14 5 8542 <-Score Turns:34 Dmg2Player:809
+75 21 5 94 2 98 2 6142 <-Score Turns:43 Dmg2Player:492
+1 2 12 24 72 25 68 6249 <-Score Turns:46 Dmg2Player:412
+75 16 5 8 8 44 2 8008 <-Score Turns:44 Dmg2Player:534
+37 2 50 64 1 25 3 44786 <-Score Turns:121 Dmg2Player:1615
+1 2 12 24 5 18 10 23753 <-Score Turns:66 Dmg2Player:774
+0 51 12 24 1 44 5 4464 <-Score Turns:26 Dmg2Player:539
+37 21 5 94 0 69 3 7827 <-Score Turns:39 Dmg2Player:625
+1 67 12 25 1 25 1 14121 <-Score Turns:50 Dmg2Player:1038
+37 21 4 94 9 69 3 6339 <-Score Turns:71 Dmg2Player:583
+0 21 4 24 10 44 5 6538 <-Score Turns:42 Dmg2Player:574
+37 21 4 94 9 69 3 17471 <-Score Turns:50 Dmg2Player:1013
+37 48 4 24 9 25 3 14028 <-Score Turns:47 Dmg2Player:849
+1 21 80 25 1 25 3 13129 <-Score Turns:41 Dmg2Player:981
+1 2 50 94 9 25 1 15625 <-Score Turns:42 Dmg2Player:914
+0 51 12 24 9 69 5 19682 <-Score Turns:52 Dmg2Player:888
+37 51 4 94 3 69 3 210 <-Score Turns:15 Dmg2Player:133
+21 29 81 37 4 65 6 1885 <-Score Turns:18 Dmg2Player:294
+0 59 50 24 10 25 1 10145 <-Score Turns:51 Dmg2Player:526
+0 51 4 24 9 69 3 15915 <-Score Turns:53 Dmg2Player:573
+0 21 4 94 8 69 5 2088 <-Score Turns:17 Dmg2Player:179
+37 48 4 51 40 69 3 5702 <-Score Turns:32 Dmg2Player:594
+1 2 50 25 1 25 1 393 <-Score Turns:9 Dmg2Player:229
+0 51 50 25 10 44 5 19698 <-Score Turns:57 Dmg2Player:952
+0 21 4 94 21 44 3 18559 <-Score Turns:73 Dmg2Player:1099
+37 4 4 94 2 69 3 21895 <-Score Turns:59 Dmg2Player:940
+0 51 12 24 9 69 5 17008 <-Score Turns:54 Dmg2Player:1105
+47 98 47 73 2 67 8 16316 <-Score Turns:46 Dmg2Player:1030
+0 21 5 24 10 98 5 2750 <-Score Turns:18 Dmg2Player:373
+75 51 45 24 2 98 5 15677 <-Score Turns:55 Dmg2Player:946
+37 48 4 94 9 69 3 45261 <-Score Turns:118 Dmg2Player:1434
+0 51 12 24 10 44 5 33090 <-Score Turns:79 Dmg2Player:1167
+80 2 50 18 1 25 5 12140 <-Score Turns:46 Dmg2Player:627
+37 48 5 3 9 69 3 18417 <-Score Turns:80 Dmg2Player:1271
+37 21 4 94 1 25 5 2044 <-Score Turns:22 Dmg2Player:261
+37 51 4 94 10 44 5 13200 <-Score Turns:61 Dmg2Player:706
+0 48 4 94 9 69 5 14686 <-Score Turns:58 Dmg2Player:1095
+0 51 5 8 2 44 2 11673 <-Score Turns:47 Dmg2Player:695
+37 51 12 94 9 44 5 15120 <-Score Turns:51 Dmg2Player:1061
+75 36 95 25 1 25 1 17095 <-Score Turns:47 Dmg2Player:808
+22 38 67 40 2 56 5 5160 <-Score Turns:30 Dmg2Player:538
+37 2 5 94 1 25 4 17669 <-Score Turns:63 Dmg2Player:1035
+52 66 50 24 3 25 1 27973 <-Score Turns:78 Dmg2Player:1377
+37 23 12 94 9 44 5 22706 <-Score Turns:55 Dmg2Player:1078
+75 16 5 8 2 98 5 18677 <-Score Turns:95 Dmg2Player:1423
+0 17 12 35 35 44 5 7736 <-Score Turns:39 Dmg2Player:540
+75 16 5 8 2 98 42 434 <-Score Turns:8 Dmg2Player:185
+37 2 12 24 3 69 3 876 <-Score Turns:10 Dmg2Player:214
+1 2 50 38 1 25 44 8948 <-Score Turns:34 Dmg2Player:758
+59 51 12 24 1 69 5 12049 <-Score Turns:44 Dmg2Player:996
+0 2 50 25 1 25 1 8631 <-Score Turns:43 Dmg2Player:461
+75 36 61 8 1 25 5 14134 <-Score Turns:48 Dmg2Player:850
+0 51 12 24 10 44 5 14754 <-Score Turns:43 Dmg2Player:879
+1 36 50 25 10 25 93 10982 <-Score Turns:41 Dmg2Player:981
+0 51 64 24 50 69 5 18529 <-Score Turns:73 Dmg2Player:875
+0 51 12 24 1 44 5 15633 <-Score Turns:65 Dmg2Player:751
+1 48 64 9 1 25 1 7094 <-Score Turns:33 Dmg2Player:545
+11 2 5 8 2 98 2 1898 30 357
+0 51 12 24 10 44 21 3271 29 362

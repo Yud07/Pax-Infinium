@@ -74,6 +74,8 @@ namespace pax_infinium
 
         public bool finishedMove;
         //public Move currentMove;
+        public int gameMode;
+        public bool triggerPlayerBool;
 
         public World(GraphicsDeviceManager graphics)
         {
@@ -83,6 +85,7 @@ namespace pax_infinium
             rooms.AddState("game", new Room(graphics));
             state = 0;
             finishedMove = false;
+            gameMode = 0;// 2;
             //currentMove = null;
         }
 
@@ -92,6 +95,12 @@ namespace pax_infinium
             {
                 triggerAI(level, gameTime);
             }
+
+            if (triggerPlayerBool && level.drewThoughtBubble)
+            {
+                triggerPlayer(level, gameTime);
+            }
+            
             /*if (finishedMove)
             {
                 //Console.WriteLine("Finished Move");
@@ -230,6 +239,24 @@ namespace pax_infinium
             const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[Random.Next(s.Length)]).ToArray());
+        }
+
+        public void triggerPlayer(Level level, GameTime gameTime)
+        {
+            Action<string> print = s => Console.WriteLine(s);
+            print(level.ToString());
+            IMove move = GetPlayerMove(level);
+            print(move.Name);
+            triggerPlayerBool = false;
+            //currentMove = (Move)move;
+            level.DoMove(move, gameTime); // Add boolean so that this animates and only prints this move
+            level.thoughtBubble.position = Vector2.Zero;
+            level.drewThoughtBubble = false;
+        }
+
+        public IMove GetPlayerMove(Level level)
+        {
+            return level.GetOpponnentMove((List<Move>)level.GetMoves(), 1);
         }
     }
 }

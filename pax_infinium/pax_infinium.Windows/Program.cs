@@ -14,8 +14,18 @@ namespace pax_infinium
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
-                game.Run();
+            /*while (true)
+            {
+                try
+                {*/
+                    using (var game = new Game1())
+                        game.Run();
+                /*}
+                catch
+                {
+                    // Do nothing
+                }
+            }*/
         }
     }
 #endif

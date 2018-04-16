@@ -371,6 +371,13 @@ namespace pax_infinium
                     level.thoughtBubble.position.Y -= 50;
                     Game1.world.triggerAIBool = true;
                 }
+                else if (Game1.world.gameMode == 2)
+                {
+                    level.thoughtBubble.position = player.position;
+                    level.thoughtBubble.position.X += 10;
+                    level.thoughtBubble.position.Y -= 50;
+                    Game1.world.triggerPlayerBool = true;
+                }
             }
 
             /*level.thoughtBubble.position = Vector2.Zero;

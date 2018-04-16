@@ -75,6 +75,8 @@ namespace pax_infinium
         public EPersonality personality;
         public float personalityScore;
 
+        public int damageInflicted;
+
 
         public Character(string name, int team, Vector2 origin, Texture2D nwTex, Texture2D neTex, Texture2D swTex, Texture2D seTex, Texture2D faceL, Texture2D faceR, GraphicsDeviceManager graphics, SpriteSheetInfo spriteSheetInfo)
         {
@@ -151,6 +153,7 @@ namespace pax_infinium
             moveCounter = 0;
             genes = new int[7];
             personalityScore = 0;
+            damageInflicted = 0;
         }
 
         public void recalcPos()
@@ -191,7 +194,16 @@ namespace pax_infinium
 
         public void DoMove(GameTime gameTime)
         {
-            Object[] obj;
+            int secs;
+            if (Game1.world.gameMode == 2)
+            {
+                secs = 2;
+            }
+            else
+            {
+                secs = 2;
+            }
+            //Object[] obj;
             switch (currentMove.noneMoveBeforeMoveAfter)
             {
                 case 0: // Don't Move
@@ -199,13 +211,13 @@ namespace pax_infinium
                     {
                         case 0: // None
                             currentMove.NothingAttackSpecial(this, Game1.world.level, gameTime);
-                            Object[] objA = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            Object[] objA = { gameTime.TotalGameTime + new TimeSpan(0, 0, secs), "DoMove" };
                             timedEvents.Add(objA);
                             break;
                         case 1: // Rotate
                             //Rotate(currentMove.rotDir);
                             //RotateBest(Game1.world.level);
-                            Object[] objB = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            Object[] objB = { gameTime.TotalGameTime + new TimeSpan(0, 0, secs), "DoMove" };
                             timedEvents.Add(objB);
                             break;
                         case 2: // EndTurn
@@ -221,13 +233,13 @@ namespace pax_infinium
                             break;
                         case 1: // NothingAttackSpecial
                             currentMove.NothingAttackSpecial(this, Game1.world.level, gameTime);
-                            Object[] objC = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            Object[] objC = { gameTime.TotalGameTime + new TimeSpan(0, 0, secs), "DoMove" };
                             timedEvents.Add(objC);
                             break;
                         case 2: // Rotate
                             //Rotate(currentMove.rotDir);
                             //RotateBest(Game1.world.level);
-                            Object[] objD = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            Object[] objD = { gameTime.TotalGameTime + new TimeSpan(0, 0, secs), "DoMove" };
                             timedEvents.Add(objD);
                             break;
                         case 3: // EndTurn
@@ -240,7 +252,7 @@ namespace pax_infinium
                     {
                         case 0: // NothingAttackSpecial
                             currentMove.NothingAttackSpecial(this, Game1.world.level, gameTime);
-                            Object[] objE = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            Object[] objE = { gameTime.TotalGameTime + new TimeSpan(0, 0, secs), "DoMove" };
                             timedEvents.Add(objE);
                             break;
                         case 1: // Move
@@ -249,7 +261,7 @@ namespace pax_infinium
                         case 2: // Rotate
                             //Rotate(currentMove.rotDir);
                             //RotateBest(Game1.world.level);
-                            Object[] objF = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                            Object[] objF = { gameTime.TotalGameTime + new TimeSpan(0, 0, secs), "DoMove" };
                             timedEvents.Add(objF);
                             break;
                         case 3: // EndTurn
@@ -307,11 +319,23 @@ namespace pax_infinium
 
         public void handleMoveEvent(GameTime gameTime)
         {
+            int moveSecs;
+            int secs;
+            if (Game1.world.gameMode == 2)
+            {
+                moveSecs = 1;
+                secs = 2;
+            }
+            else
+            {
+                moveSecs = 1;
+                secs = 2;
+            }
             if (movePath.Count > 0)
             {
                 if (moveTime == TimeSpan.MinValue)
                 {
-                    moveTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 1);
+                    moveTime = gameTime.TotalGameTime + new TimeSpan(0, 0, moveSecs);
                 }
                 else if (moveTime < gameTime.TotalGameTime)
                 {
@@ -321,9 +345,9 @@ namespace pax_infinium
                         Rotate(newPos, true);
                     }
                     gridPos = newPos;
-                    if (movePath.Count == 1 && team == 0)
+                    if (movePath.Count == 1 && (team == 0 || Game1.world.gameMode == 2))
                     {
-                        Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 2), "DoMove" };
+                        Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, secs), "DoMove" };
                         timedEvents.Add(obj);
                     }
                     movePath.RemoveAt(0);
@@ -435,14 +459,20 @@ namespace pax_infinium
             bool canAttack;
 
             canAttack = character != this;
-
-            if (job != EJob.Hunter)
+            if (character != null)
             {
-                canAttack = canAttack && character.isAdjacent(gridPos);
+                if (job != EJob.Hunter)
+                {
+                    canAttack = canAttack && character.isAdjacent(gridPos);
+                }
+                else
+                {
+                    canAttack = canAttack && Vector3.Distance(character.gridPos, gridPos) <= weaponRange;// Game1.world.cubeDist(gridPos, character.gridPos) <= weaponRange;
+                }
             }
             else
             {
-                canAttack = canAttack && Vector3.Distance(character.gridPos, gridPos) <= weaponRange;// Game1.world.cubeDist(gridPos, character.gridPos) <= weaponRange;
+                canAttack = false;
             }
 
             if (canAttack)
@@ -471,6 +501,10 @@ namespace pax_infinium
             {
                 //Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
+                if (character.team != team)
+                {
+                    damageInflicted += damage;
+                }
                 
                 if (character.health <= 0)
                 {
@@ -505,6 +539,10 @@ namespace pax_infinium
                 }
                 Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
+                if (character.team != team)
+                {
+                    damageInflicted += damage;
+                }
                 //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                 Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
                 character.timedEvents.Add(obj);
@@ -598,8 +636,11 @@ namespace pax_infinium
                 int damage = chanceDamage[1];
                 //Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
+                if (character.team != team)
+                {
+                    damageInflicted += damage;
+                }
 
-                
                 if (character.health <= 0)
                 {
                     //Console.WriteLine(character.name + " has died!");
@@ -631,6 +672,10 @@ namespace pax_infinium
                 }
                 Console.WriteLine("Hit! " + character.name + " takes " + damage + " damage!");
                 character.health -= damage;
+                if (character.team != team)
+                {
+                    damageInflicted += damage;
+                }
                 //character.textTime = gameTime.TotalGameTime + new TimeSpan(0, 0, 5);
                 Object[] obj = { gameTime.TotalGameTime + new TimeSpan(0, 0, 5), "clearText" };
                 character.timedEvents.Add(obj);
@@ -1373,21 +1418,33 @@ namespace pax_infinium
             }
             switch ((int)personality)
             {
+                case 0:
+                    filePath += @"\Default.txt";
+                    break;
                 case 1:
                     filePath += @"\Aggressive.txt";
                     break;
                 case 2:
                     filePath += @"\Defensive.txt";
+                    break;                
+                case 3:
+                    filePath += @"\SelfishAggressive.txt";
                     break;
-                default:
-                    filePath += @"\Default.txt";
+                case 4:
+                    filePath += @"\SelfishDefensive.txt";
+                    break;
+                case 5:
+                    filePath += @"\Selfish.txt";
+                    break;
+                case 6:
+                    filePath += @"\Survivalist.txt";
                     break;
             }
             Console.WriteLine(filePath);
             Console.WriteLine("pScore: " + personalityScore);
             StreamWriter sw = new StreamWriter(filePath, true);
             sw.WriteLine(genes[0] + " " + genes[1] + " " + genes[2] + " " + genes[3] +
-                " " + genes[4] + " " + genes[5] + " " + genes[6] + " " + personalityScore);
+                " " + genes[4] + " " + genes[5] + " " + genes[6] + " " + personalityScore + " " + Game1.world.level.turn + " " + Game1.world.level.damageDealtByAI);
             sw.Close();
             /*StreamReader sr = new StreamReader(filePath);
             String line = "";

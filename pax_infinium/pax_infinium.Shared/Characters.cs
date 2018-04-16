@@ -159,6 +159,22 @@ namespace pax_infinium
             {
                 name += "Defensive ";
             }
+            else if (personality == EPersonality.SelfishAggressive)
+            {
+                name += "SAggressive ";
+            }
+            else if (personality == EPersonality.SelfishDefensive)
+            {
+                name += "SDefensive ";
+            }
+            else if (personality == EPersonality.Selfish)
+            {
+                name += "Selfish ";
+            }
+            else if (personality == EPersonality.Survivalist)
+            {
+                name += "Survivalist ";
+            }
             if (team == 0)
             {
                 name += "Green ";
@@ -331,14 +347,26 @@ namespace pax_infinium
             }
             switch ((int)personality)
             {
+                case 0:
+                    filePath += @"\Default.txt";
+                    break;
                 case 1:
                     filePath += @"\Aggressive.txt";
                     break;
                 case 2:
                     filePath += @"\Defensive.txt";
                     break;
-                default:
-                    filePath += @"\Default.txt";
+                case 3:
+                    filePath += @"\SelfishAggressive.txt";
+                    break;
+                case 4:
+                    filePath += @"\SelfishDefensive.txt";
+                    break;
+                case 5:
+                    filePath += @"\Selfish.txt";
+                    break;
+                case 6:
+                    filePath += @"\Survivalist.txt";
                     break;
             }
 
@@ -353,7 +381,7 @@ namespace pax_infinium
                     String[] entries = line.Split(' ');
                     int i = 0;
                     int[] g = new int[7];
-                    if (entries.Length == 8)
+                    if (entries[0] != "#")//entries.Length == 8)
                     {
                         foreach (String entry in entries)
                         {
@@ -365,6 +393,7 @@ namespace pax_infinium
                             {
                                 genes.Add(g);
                                 scores.Add(float.Parse(entry));
+                                break;
                             }
                             i++;
                         }
@@ -452,31 +481,34 @@ namespace pax_infinium
                     float minVal = scores[0];
                     foreach (int s in scores)
                     {
-                        if (topTenIndex.Count < 10)
+                        if (i >= genes.Count / 3)
                         {
-                            if (s < minVal)
+                            if (topTenIndex.Count < 10)
                             {
-                                minVal = s;
-                                minIndex = i;
-                            }
-                            topTenIndex.Add(i);
-                        }
-                        else
-                        {
-                            if (s > minVal)
-                            {
-                                topTenIndex.Remove(minIndex);
-                                topTenIndex.Add(i);
-                                minVal = s;
-                                minIndex = i;
-                                foreach (int j in topTenIndex)
+                                if (s < minVal)
                                 {
-                                    if (scores[j] < minVal)
+                                    minVal = s;
+                                    minIndex = i;
+                                }
+                                topTenIndex.Add(i);
+                            }
+                            else
+                            {
+                                if (s > minVal)
+                                {
+                                    topTenIndex.Remove(minIndex);
+                                    topTenIndex.Add(i);
+                                    minVal = s;
+                                    minIndex = i;
+                                    foreach (int j in topTenIndex)
                                     {
-                                        minVal = scores[j];
-                                        minIndex = j;
+                                        if (scores[j] < minVal)
+                                        {
+                                            minVal = scores[j];
+                                            minIndex = j;
+                                        }
                                     }
-                                }                                
+                                }
                             }
                         }
                         i++;
@@ -522,30 +554,47 @@ namespace pax_infinium
         {
             Directory.CreateDirectory(path + @"\Genes");
 
+            List<String> paths = new List<String>();
+
             Directory.CreateDirectory(path + @"\Genes\Soldier");
-            File.Create(path + @"\Genes\Soldier\Aggressive.txt");
-            File.Create(path + @"\Genes\Soldier\Defensive.txt");
-            File.Create(path + @"\Genes\Soldier\Default.txt");
+            paths.Add(path + @"\Genes\Soldier\Aggressive.txt");
+            paths.Add(path + @"\Genes\Soldier\Defensive.txt");
+            paths.Add(path + @"\Genes\Soldier\Default.txt");
+            paths.Add(path + @"\Genes\Soldier\SelfishAggressive.txt");
+            paths.Add(path + @"\Genes\Soldier\SelfishDefensive.txt");
 
             Directory.CreateDirectory(path + @"\Genes\Hunter");
-            File.Create(path + @"\Genes\Hunter\Aggressive.txt");
-            File.Create(path + @"\Genes\Hunter\Defensive.txt");
-            File.Create(path + @"\Genes\Hunter\Default.txt");
+            paths.Add(path + @"\Genes\Hunter\Aggressive.txt");
+            paths.Add(path + @"\Genes\Hunter\Defensive.txt");
+            paths.Add(path + @"\Genes\Hunter\Default.txt");
+            paths.Add(path + @"\Genes\Hunter\SelfishAggressive.txt");
+            paths.Add(path + @"\Genes\Hunter\SelfishDefensive.txt");
 
             Directory.CreateDirectory(path + @"\Genes\Mage");
-            File.Create(path + @"\Genes\Mage\Aggressive.txt");
-            File.Create(path + @"\Genes\Mage\Defensive.txt");
-            File.Create(path + @"\Genes\Mage\Default.txt");
+            paths.Add(path + @"\Genes\Mage\Aggressive.txt");
+            paths.Add(path + @"\Genes\Mage\Defensive.txt");
+            paths.Add(path + @"\Genes\Mage\Default.txt");
+            paths.Add(path + @"\Genes\Mage\SelfishAggressive.txt");
+            paths.Add(path + @"\Genes\Mage\SelfishDefensive.txt");
 
             Directory.CreateDirectory(path + @"\Genes\Healer");
-            File.Create(path + @"\Genes\Healer\Aggressive.txt");
-            File.Create(path + @"\Genes\Healer\Defensive.txt");
-            File.Create(path + @"\Genes\Healer\Default.txt");
+            paths.Add(path + @"\Genes\Healer\Aggressive.txt");
+            paths.Add(path + @"\Genes\Healer\Defensive.txt");
+            paths.Add(path + @"\Genes\Healer\Default.txt");
+            paths.Add(path + @"\Genes\Healer\SelfishAggressive.txt");
+            paths.Add(path + @"\Genes\Healer\SelfishDefensive.txt");
 
             Directory.CreateDirectory(path + @"\Genes\Thief");
-            File.Create(path + @"\Genes\Thief\Aggressive.txt");
-            File.Create(path + @"\Genes\Thief\Defensive.txt");
-            File.Create(path + @"\Genes\Thief\Default.txt");
+            paths.Add(path + @"\Genes\Thief\Aggressive.txt");
+            paths.Add(path + @"\Genes\Thief\Defensive.txt");
+            paths.Add(path + @"\Genes\Thief\Default.txt");
+            paths.Add(path + @"\Genes\Thief\SelfishAggressive.txt");
+            paths.Add(path + @"\Genes\Thief\SelfishDefensive.txt");
+
+            foreach (String p in paths)
+            {
+                File.WriteAllText(p, "# MoveReward\n# ActionReward\n#   SelfAliveReward\n#      AllyAliveReward\n#         AllyHealthRewardMultiplier\n#           NegEnemyAliveReward\n#              NegEnemyAliveRewardMultiplier\n#                PersonalityScore\n");
+            }
         }
 
 

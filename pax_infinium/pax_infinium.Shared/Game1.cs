@@ -26,6 +26,7 @@ namespace pax_infinium
         public Vector2 activeMouseState;
         public Descriptor activeDescriptor;
         public TimeSpan descriptorTimer;
+        public bool firstMoveTriggered;
 
         public object ProjectionMatrix { get; private set; }
 
@@ -60,6 +61,7 @@ namespace pax_infinium
             selectedAction = "";
             confirmAction = false;
             lastClickMouseState = Vector2.Zero;
+            firstMoveTriggered = false;
             base.Initialize();
         }
 
@@ -203,6 +205,11 @@ namespace pax_infinium
             Cube exampleCube = world.level.grid.cubes[0];
             Character player;
 
+            if (world.gameMode == 2 && world.level.drawBVD == true && world.level.battleVictoryDefeat.Text != "Battle")
+            {
+                this.Exit();
+            }
+
             if (activeDescriptor != null)
             {
                 activeDescriptor.trigger = false;
@@ -232,6 +239,11 @@ namespace pax_infinium
                 activeDescriptor = null;
             }
 
+            if (Game1.world.gameMode == 2 && world.state == 0)
+            {
+                resetConfirmation();
+                world.state = 1;
+            }
             bool clickedAButton = false;
             // saves last click state
             if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
@@ -289,6 +301,13 @@ namespace pax_infinium
 
             if (world.state == 1 && !world.level.drawBVD)
             {
+                if (world.level.turn == 0 && world.gameMode == 2 && !firstMoveTriggered && world.level.firstRotate)
+                {
+                    world.level.thoughtBubble.position = world.level.grid.characters.list.First().position; 
+                    world.triggerPlayerBool = true;
+                    firstMoveTriggered = true;
+                }
+
                 if (world.level.grid.characters.list[0].movePath.Count == 0)
                 {
                     // left arrow rotates left
@@ -327,7 +346,7 @@ namespace pax_infinium
                 }
 
                 // if there are characters
-                if (world.level.grid.characters.list.Count > 0)
+                if (world.level.grid.characters.list.Count > 0 && world.gameMode == 0)
                 {
                     player = world.level.grid.characters.list[0];
 
@@ -426,7 +445,7 @@ namespace pax_infinium
                     foreach (Cube cube in world.level.grid.cubes) // clear highlights
                     {
                         cube.highLight = false;
-                        if (player.gridPos == cube.gridPos && gameTime.TotalGameTime.Seconds%2 == 0 && player.team == 1)
+                        if (player.gridPos == cube.gridPos && gameTime.TotalGameTime.Seconds % 2 == 0 && player.team == 1)
                         {
                             cube.invert = true;
                         }
@@ -436,7 +455,7 @@ namespace pax_infinium
                         }
                     }
 
-                     world.level.handleActionTextColors(selectedAction);
+                    world.level.handleActionTextColors(selectedAction);
 
                     if (selectedAction != "")
                     {
@@ -556,7 +575,7 @@ namespace pax_infinium
                     world.level.specialButton.ResetTrigger();
                     world.level.moveButton.ResetTrigger();
                     world.level.endTurnButton.ResetTrigger();
-                   //world.level.undoButton.ResetTrigger();
+                    //world.level.undoButton.ResetTrigger();
                     world.level.cancelButton.ResetTrigger();
                     world.level.confirmButton.ResetTrigger();
 
@@ -574,275 +593,275 @@ namespace pax_infinium
 
                     /*if (!clickedAButton)
                     {*/
-                        // highlight scrolled over cube
-                        foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
+                    // highlight scrolled over cube
+                    foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
+                    {
+                        bool topVisible = true;
+                        foreach (Cube c in world.level.grid.cubes)
                         {
-                            bool topVisible = true;
-                            foreach (Cube c in world.level.grid.cubes)
+                            if (c != cube && c.gridPos.Z < world.level.grid.peel)
                             {
-                                if (c != cube && c.gridPos.Z < world.level.grid.peel)
+                                if (c.topPoly.Contains(activeMouseState))
                                 {
-                                    if (c.topPoly.Contains(activeMouseState))
+                                    if (cube.DrawOrder() < c.DrawOrder())
                                     {
-                                        if (cube.DrawOrder() < c.DrawOrder())
-                                        {
-                                            topVisible = false;
-                                        }
+                                        topVisible = false;
                                     }
                                 }
                             }
+                        }
 
-                            if (cube.topPoly.Contains(activeMouseState) &&
-                                world.level.grid.TopExposed(cube.gridPos) && topVisible)
+                        if (cube.topPoly.Contains(activeMouseState) &&
+                            world.level.grid.TopExposed(cube.gridPos) && topVisible)
+                        {
+                            mouseInBounds = true;
+                            /*if (!cube.highLight)
                             {
-                                mouseInBounds = true;
-                                /*if (!cube.highLight)
-                                {
-                                    cube.highLight = true;
-                                }
-                                else
-                                {
-                                    cube.highLight = false;*/
-                                    cube.invert = true;
-                                //}
+                                cube.highLight = true;
+                            }
+                            else
+                            {
+                                cube.highLight = false;*/
+                            cube.invert = true;
+                            //}
 
-                                world.level.grid.onHighlightMoved(cube);
-                                world.level.grid.onCharacterMoved(world.level);
-                                world.level.grid.peelCubes();
+                            world.level.grid.onHighlightMoved(cube);
+                            world.level.grid.onCharacterMoved(world.level);
+                            world.level.grid.peelCubes();
 
 
-                                world.level.clearCharacter();
-                                foreach (Character c in world.level.grid.characters.list)
+                            world.level.clearCharacter();
+                            foreach (Character c in world.level.grid.characters.list)
+                            {
+                                if (cube.gridPos == c.gridPos)
                                 {
-                                    if (cube.gridPos == c.gridPos)
+                                    /*if (world.level.highlightedCharacter != c)
                                     {
-                                        /*if (world.level.highlightedCharacter != c)
-                                        {
-                                            Console.WriteLine("Character Scale = " + c.sprite.scale);
-                                        }*/
-                                        world.level.setCharacter(c);
-                                    }
+                                        Console.WriteLine("Character Scale = " + c.sprite.scale);
+                                    }*/
+                                    world.level.setCharacter(c);
                                 }
+                            }
 
-                                if (!world.level.rotated && !world.triggerAIBool && player.movePath.Count == 0 && player.team == 1) //ai trigger check prevents accidental rotation on end turn
-                                {
-                                    player.Rotate(cube.gridPos, true);
-                                }
+                            if (!world.level.rotated && !world.triggerAIBool && player.movePath.Count == 0 && player.team == 1) //ai trigger check prevents accidental rotation on end turn
+                            {
+                                player.Rotate(cube.gridPos, true);
+                            }
 
-                                if (!confirmAction && selectedAction != "" && lastClickMouseState != Vector2.Zero)
+                            if (!confirmAction && selectedAction != "" && lastClickMouseState != Vector2.Zero)
+                            {
+                                if ((selectedAction == "special" || selectedAction == "attack") && !world.level.attacked) // Attack
                                 {
-                                    if ((selectedAction == "special" || selectedAction == "attack") && !world.level.attacked) // Attack
+                                    if (selectedAction == "special")
                                     {
-                                        if (selectedAction == "special")
+                                        if (player.CanCast(8))
                                         {
-                                            if (player.CanCast(8))
+                                            if (player.job == EJob.Mage || player.job == EJob.Healer)
                                             {
-                                                if (player.job == EJob.Mage || player.job == EJob.Healer)
+                                                foreach (Character character in world.level.grid.characters.list)
                                                 {
-                                                    foreach (Character character in world.level.grid.characters.list)
+                                                    if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
+                                                        player.InMagicRange(cube.gridPos))
                                                     {
-                                                        if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
-                                                            player.InMagicRange(cube.gridPos))
+                                                        if (player.job == EJob.Mage)
                                                         {
-                                                            if (player.job == EJob.Mage)
-                                                            {
-                                                                int[] chanceDamage;
-                                                                chanceDamage = player.calculateMageSpecial(character);
-                                                                world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
-                                                            }
-                                                            else if (player.job == EJob.Healer)// healer
-                                                            {
-                                                                int health = 15;
-                                                                world.level.SetConfirmationText("+" + health + "HP");
-                                                            }
+                                                            int[] chanceDamage;
+                                                            chanceDamage = player.calculateMageSpecial(character);
+                                                            world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
+                                                        }
+                                                        else if (player.job == EJob.Healer)// healer
+                                                        {
+                                                            int health = 15;
+                                                            world.level.SetConfirmationText("+" + health + "HP");
                                                         }
                                                     }
                                                 }
-                                                else if (player.job == EJob.Thief)// thief special
+                                            }
+                                            else if (player.job == EJob.Thief)// thief special
+                                            {
+                                                foreach (Character character in world.level.grid.characters.list)
                                                 {
-                                                    foreach (Character character in world.level.grid.characters.list)
+                                                    if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
+                                                        player.InMagicRange(character.gridPos))
                                                     {
-                                                        if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
-                                                            player.InMagicRange(character.gridPos))
-                                                        {
-                                                            int chance = player.CalculateThiefSpecial(character);
+                                                        int chance = player.CalculateThiefSpecial(character);
 
-                                                            world.level.SetConfirmationText("Chance " + chance + "% to Skip");
-                                                        }
+                                                        world.level.SetConfirmationText("Chance " + chance + "% to Skip");
                                                     }
                                                 }
-                                                else if (player.job == EJob.Soldier)// soldier special
+                                            }
+                                            else if (player.job == EJob.Soldier)// soldier special
+                                            {
+                                                foreach (Character character in world.level.grid.characters.list)
                                                 {
-                                                    foreach (Character character in world.level.grid.characters.list)
+                                                    if (!world.level.attacked && cube.gridPos == character.gridPos &&
+                                                        player.InMagicRange(character.gridPos))
                                                     {
-                                                        if (!world.level.attacked && cube.gridPos == character.gridPos &&
-                                                            player.InMagicRange(character.gridPos))
-                                                        {
-                                                            int defenseBoost = 20;
-                                                            world.level.SetConfirmationText("+" + defenseBoost + "WD");
-                                                        }
+                                                        int defenseBoost = 20;
+                                                        world.level.SetConfirmationText("+" + defenseBoost + "WD");
                                                     }
                                                 }
-                                                else if (player.job == EJob.Hunter) // hunter special
+                                            }
+                                            else if (player.job == EJob.Hunter) // hunter special
+                                            {
+                                                foreach (Character character in world.level.grid.characters.list)
                                                 {
-                                                    foreach (Character character in world.level.grid.characters.list)
+                                                    if (!world.level.attacked && cube.gridPos == character.gridPos &&
+                                                        player.InMagicRange(character.gridPos))
                                                     {
-                                                        if (!world.level.attacked && cube.gridPos == character.gridPos && 
-                                                            player.InMagicRange(character.gridPos))
-                                                        {
 
-                                                        int chance = player.CalculateHunterSpecial(character);                                                        
+                                                        int chance = player.CalculateHunterSpecial(character);
                                                         int accuracyDrop = 5;
-                                                            world.level.SetConfirmationText("Chance " + chance + "% -" + accuracyDrop + " ACC");
-                                                        }
+                                                        world.level.SetConfirmationText("Chance " + chance + "% -" + accuracyDrop + " ACC");
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("Not enough mp to cast!");
-                                            }
-                                        }
-                                        else // attack
-                                        {
-                                            int[] chanceDamage;
-                                            foreach (Character character in world.level.grid.characters.list)
-                                            {
-                                                if (cube.gridPos == character.gridPos)
-                                                {
-                                                    chanceDamage = player.calculateAttack(character);
-                                                    world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else if (selectedAction == "move" && world.level.validMoveSpaces.Contains(cube.gridPos) &&//player.inMoveRange(cube.gridPos, world.level) &&
-                                        !world.level.moved) // Move
-                                    {
-                                        world.level.grid.peel = world.level.grid.height - 1;
-                                        //world.level.SetConfirmationText("Move? Confirm Y / N");
-                                        world.level.movedFrom = player.gridPos;
-                                        player.Move(cube.gridPos, world.level);
-                                        //world.level.grid.onCharacterMoved();
-                                        world.level.moved = true;
-                                        world.level.rotated = false;
-                                        resetConfirmation();
-                                    }
-                                }
-                                else if (confirmAction && selectedAction != "" && lastClickMouseState != Vector2.Zero) // Confirmed
-                                {
-                                    if ((selectedAction == "special" || selectedAction == "attack") && !world.level.attacked) // Attack
-                                    {
-                                        if (selectedAction == "special")
-                                        {
-                                            if (player.CanCast(8))
-                                            {
-                                                player.payForCast(8, gameTime);
-
-                                                if (player.job == EJob.Mage || player.job == EJob.Healer)
-                                                {
-                                                    foreach (Character character in world.level.grid.characters.list)
-                                                    {
-                                                        if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
-                                                            player.InMagicRange(cube.gridPos))
-                                                        {
-                                                            if (player.job == EJob.Mage)
-                                                            {
-                                                                Character result = player.MageSpecial(character, gameTime);
-                                                                if (result != null)
-                                                                {
-                                                                    world.level.toBeKilled.Add(result);
-                                                                }
-                                                            }
-                                                            else if (player.job == EJob.Healer)// healer
-                                                            {
-                                                                player.HealerSpecial(character, gameTime);
-                                                            }
-                                                        }
-                                                    }
-                                                    world.level.attacked = true;
-                                                    resetConfirmation();
-                                                }
-                                                else if (player.job == EJob.Thief)// thief special
-                                                {
-                                                    Character toSkipTurn = null;
-                                                    foreach (Character character in world.level.grid.characters.list)
-                                                    {
-                                                        if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
-                                                            player.InMagicRange(character.gridPos))
-                                                        {
-                                                            toSkipTurn = player.ThiefSpecial(character, gameTime);
-
-                                                            world.level.attacked = true;
-                                                            resetConfirmation();
-                                                        }
-                                                    }
-                                                    if (toSkipTurn != null)
-                                                    {
-                                                        world.level.grid.characters.list.Remove(toSkipTurn);
-                                                        world.level.grid.characters.list.Add(toSkipTurn);
-                                                        world.level.setupTurnOrderIcons();
-                                                    }
-                                                }
-                                                else if (player.job == EJob.Soldier)// soldier special
-                                                {
-                                                    foreach (Character character in world.level.grid.characters.list)
-                                                    {
-                                                        if (!world.level.attacked && cube.gridPos == character.gridPos &&
-                                                            player.InMagicRange(character.gridPos))
-                                                        {
-                                                            player.SoldierSpecial(character, gameTime);
-
-                                                            world.level.attacked = true;
-                                                            resetConfirmation();
-                                                        }
-                                                    }
-                                                }
-                                                else if (player.job == EJob.Hunter)
-                                                {
-                                                    foreach (Character character in world.level.grid.characters.list)
-                                                    {
-                                                        if (!world.level.attacked && cube.gridPos == character.gridPos &&
-                                                            player.InMagicRange(character.gridPos))
-                                                        {
-                                                            player.HunterSpecial(character, gameTime);
-
-                                                            world.level.attacked = true;
-                                                            resetConfirmation();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("Not enough mp to cast!");
                                             }
                                         }
                                         else
                                         {
-                                            Character tBKill = null;
-                                            foreach (Character character in world.level.grid.characters.list)
+                                            Console.WriteLine("Not enough mp to cast!");
+                                        }
+                                    }
+                                    else // attack
+                                    {
+                                        int[] chanceDamage;
+                                        foreach (Character character in world.level.grid.characters.list)
+                                        {
+                                            if (cube.gridPos == character.gridPos)
                                             {
-                                                if (cube.gridPos == character.gridPos)
-                                                {
-
-                                                    tBKill = player.attack(character, gameTime);
-
-                                                    world.level.attacked = true;
-                                                    resetConfirmation();
-                                                }
-                                            }
-                                            if (tBKill != null)
-                                            {
-                                                world.level.toBeKilled.Add(tBKill);
+                                                chanceDamage = player.calculateAttack(character);
+                                                world.level.SetConfirmationText(chanceDamage[0], chanceDamage[1]);
                                             }
                                         }
                                     }
                                 }
-
-
+                                else if (selectedAction == "move" && world.level.validMoveSpaces.Contains(cube.gridPos) &&//player.inMoveRange(cube.gridPos, world.level) &&
+                                    !world.level.moved) // Move
+                                {
+                                    world.level.grid.peel = world.level.grid.height - 1;
+                                    //world.level.SetConfirmationText("Move? Confirm Y / N");
+                                    world.level.movedFrom = player.gridPos;
+                                    player.Move(cube.gridPos, world.level);
+                                    //world.level.grid.onCharacterMoved();
+                                    world.level.moved = true;
+                                    world.level.rotated = false;
+                                    resetConfirmation();
+                                }
                             }
+                            else if (confirmAction && selectedAction != "" && lastClickMouseState != Vector2.Zero) // Confirmed
+                            {
+                                if ((selectedAction == "special" || selectedAction == "attack") && !world.level.attacked) // Attack
+                                {
+                                    if (selectedAction == "special")
+                                    {
+                                        if (player.CanCast(8))
+                                        {
+                                            player.payForCast(8, gameTime);
+
+                                            if (player.job == EJob.Mage || player.job == EJob.Healer)
+                                            {
+                                                foreach (Character character in world.level.grid.characters.list)
+                                                {
+                                                    if (!world.level.attacked && (cube.isAdjacent(character.gridPos) || character.gridPos == cube.gridPos) &&
+                                                        player.InMagicRange(cube.gridPos))
+                                                    {
+                                                        if (player.job == EJob.Mage)
+                                                        {
+                                                            Character result = player.MageSpecial(character, gameTime);
+                                                            if (result != null)
+                                                            {
+                                                                world.level.toBeKilled.Add(result);
+                                                            }
+                                                        }
+                                                        else if (player.job == EJob.Healer)// healer
+                                                        {
+                                                            player.HealerSpecial(character, gameTime);
+                                                        }
+                                                    }
+                                                }
+                                                world.level.attacked = true;
+                                                resetConfirmation();
+                                            }
+                                            else if (player.job == EJob.Thief)// thief special
+                                            {
+                                                Character toSkipTurn = null;
+                                                foreach (Character character in world.level.grid.characters.list)
+                                                {
+                                                    if (character != player && !world.level.attacked && cube.gridPos == character.gridPos &&
+                                                        player.InMagicRange(character.gridPos))
+                                                    {
+                                                        toSkipTurn = player.ThiefSpecial(character, gameTime);
+
+                                                        world.level.attacked = true;
+                                                        resetConfirmation();
+                                                    }
+                                                }
+                                                if (toSkipTurn != null)
+                                                {
+                                                    world.level.grid.characters.list.Remove(toSkipTurn);
+                                                    world.level.grid.characters.list.Add(toSkipTurn);
+                                                    world.level.setupTurnOrderIcons();
+                                                }
+                                            }
+                                            else if (player.job == EJob.Soldier)// soldier special
+                                            {
+                                                foreach (Character character in world.level.grid.characters.list)
+                                                {
+                                                    if (!world.level.attacked && cube.gridPos == character.gridPos &&
+                                                        player.InMagicRange(character.gridPos))
+                                                    {
+                                                        player.SoldierSpecial(character, gameTime);
+
+                                                        world.level.attacked = true;
+                                                        resetConfirmation();
+                                                    }
+                                                }
+                                            }
+                                            else if (player.job == EJob.Hunter)
+                                            {
+                                                foreach (Character character in world.level.grid.characters.list)
+                                                {
+                                                    if (!world.level.attacked && cube.gridPos == character.gridPos &&
+                                                        player.InMagicRange(character.gridPos))
+                                                    {
+                                                        player.HunterSpecial(character, gameTime);
+
+                                                        world.level.attacked = true;
+                                                        resetConfirmation();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Not enough mp to cast!");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Character tBKill = null;
+                                        foreach (Character character in world.level.grid.characters.list)
+                                        {
+                                            if (cube.gridPos == character.gridPos)
+                                            {
+
+                                                tBKill = player.attack(character, gameTime);
+
+                                                world.level.attacked = true;
+                                                resetConfirmation();
+                                            }
+                                        }
+                                        if (tBKill != null)
+                                        {
+                                            world.level.toBeKilled.Add(tBKill);
+                                        }
+                                    }
+                                }
+                            }
+
+
                         }
+                    }
                     if (!mouseInBounds)
                     {
                         if (!clickedAButton)
@@ -854,8 +873,85 @@ namespace pax_infinium
                         world.level.grid.onCharacterMoved(world.level);
                         world.level.grid.peelCubes();
                     }
+                }
+                else if (world.level.grid.characters.list.Count > 0 && world.gameMode == 2) // Sim mode
+                {
+                    player = world.level.grid.characters.list[0];
 
-                    
+                    foreach (Cube cube in world.level.grid.cubes) // clear highlights
+                    {
+                        cube.highLight = false;
+                        if (player.gridPos == cube.gridPos && gameTime.TotalGameTime.Seconds % 2 == 0 && player.team == 1)
+                        {
+                            cube.invert = true;
+                        }
+                        else
+                        {
+                            cube.invert = false;
+                        }
+                    }
+
+                    if (player.movePath.Count > 0)
+                    {
+                        Cube temp = world.level.grid.getCube(player.movePath.Last());
+
+                        if (temp != null)
+                        {
+                            temp.highLight = true;
+                        }
+                    }
+
+                    bool mouseInBounds = false;
+
+                    // highlight scrolled over cube
+                    foreach (Cube cube in world.level.grid.cubes) // SHOULD BE POSSIBLE TO ONLY CHECK THE CUBE THE MOUSE IS ABOVE
+                    {
+                        bool topVisible = true;
+                        foreach (Cube c in world.level.grid.cubes)
+                        {
+                            if (c != cube && c.gridPos.Z < world.level.grid.peel)
+                            {
+                                if (c.topPoly.Contains(activeMouseState))
+                                {
+                                    if (cube.DrawOrder() < c.DrawOrder())
+                                    {
+                                        topVisible = false;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (cube.topPoly.Contains(activeMouseState) &&
+                            world.level.grid.TopExposed(cube.gridPos) && topVisible)
+                        {
+                            mouseInBounds = true;
+                            cube.invert = true;
+
+                            world.level.grid.onHighlightMoved(cube);
+                            world.level.grid.onCharacterMoved(world.level);
+                            world.level.grid.peelCubes();
+
+                            world.level.clearCharacter();
+                            foreach (Character c in world.level.grid.characters.list)
+                            {
+                                if (cube.gridPos == c.gridPos)
+                                {
+                                    world.level.setCharacter(c);
+                                }
+                            }
+                        }
+                    }
+                    if (!mouseInBounds)
+                    {
+                        if (!clickedAButton)
+                        {
+                            lastClickMouseState = Vector2.Zero;
+                        }
+
+                        world.level.grid.clearTransparencies();
+                        world.level.grid.onCharacterMoved(world.level);
+                        world.level.grid.peelCubes();
+                    }
                 }
             }
 
