@@ -91,10 +91,10 @@ namespace pax_infinium
 
             colorSet = World.Random.Next(0, 5);
 
-            cubesA = createGrid(binaryMatrix);
-            cubesB = createGrid(binaryMatrixB);
-            cubesC = createGrid(binaryMatrixC);
-            cubesD = createGrid(binaryMatrixD);
+            cubesA = createGrid(binaryMatrix, false);
+            cubesB = createGrid(binaryMatrixB, true);
+            cubesC = createGrid(binaryMatrixC, false);
+            cubesD = createGrid(binaryMatrixD, true);
 
             cubes = cubesA;
 
@@ -216,12 +216,12 @@ namespace pax_infinium
             }
         }
 
-        public void createGrid()
+        /*public void createGrid()
         {
             cubes = createGrid(binaryMatrix);
-        }
+        }*/
 
-        public List<Cube> createGrid(bool [,,] binMatrix)
+        public List<Cube> createGrid(bool [,,] binMatrix, bool flipColors)
         {
             int texWidth = 64;
             int texHeight = 64;
@@ -384,6 +384,13 @@ namespace pax_infinium
                                     colorB = Color.LightGoldenrodYellow;
                                     colorC = Color.Beige;
                                     break;
+                            }
+
+                            if (flipColors)
+                            {
+                                Color temp = colorA;
+                                colorA = colorB;
+                                colorB = temp;
                             }
 
                             if (z < height - 2)

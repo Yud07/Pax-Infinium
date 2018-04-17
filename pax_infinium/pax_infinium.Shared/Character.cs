@@ -1442,10 +1442,14 @@ namespace pax_infinium
             }
             Console.WriteLine(filePath);
             Console.WriteLine("pScore: " + personalityScore);
-            StreamWriter sw = new StreamWriter(filePath, true);
-            sw.WriteLine(genes[0] + " " + genes[1] + " " + genes[2] + " " + genes[3] +
-                " " + genes[4] + " " + genes[5] + " " + genes[6] + " " + personalityScore + " " + Game1.world.level.turn + " " + Game1.world.level.damageDealtByAI);
-            sw.Close();
+            try
+            {
+                StreamWriter sw = new StreamWriter(filePath, true);
+                sw.WriteLine(genes[0] + " " + genes[1] + " " + genes[2] + " " + genes[3] +
+                    " " + genes[4] + " " + genes[5] + " " + genes[6] + " " + personalityScore + " " + Game1.world.level.turn + " " + Game1.world.level.damageDealtByAI);
+                sw.Close();
+            }
+            catch { }
             /*StreamReader sr = new StreamReader(filePath);
             String line = "";
             if ((line = sr.ReadLine()) != null)

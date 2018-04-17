@@ -171,7 +171,7 @@ namespace pax_infinium
             EPersonality[] personalities = new EPersonality[5];
             for(int i = 0; i < 5; i++)
             {
-                int roll = World.Random.Next(0, 3);//7); //0, 5);
+                int roll = World.Random.Next(0, 7); //0, 5);
                 if (roll == 0)
                 {
                     personalities[i] = EPersonality.Default;
@@ -1414,7 +1414,7 @@ namespace pax_infinium
                 // playout
                 if (clone.grid.characters.list[0].team == 0) // ai playout uses greedy evaluation/score function
                 {
-                    Move m = clone.GetBestMove(moves, clone.grid.characters.list.First().team, genes);
+                    Move m = clone.GetBestMove(moves, clone.grid.characters.list.First().team, clone.grid.characters.list.First().genes);
                     clone.DoMove(m);
                     score += (float) Math.Pow(learningRate, clone.turn - startTurn) * clone.Score(team, genes); // Learning discount rule
                 }
